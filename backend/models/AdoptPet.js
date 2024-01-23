@@ -13,6 +13,8 @@ const adoptSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    age: Number,
+    species: String,
     weight: Number,
     height: Number,
     petImage: String,

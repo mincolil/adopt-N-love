@@ -1,0 +1,33 @@
+/* ImageAndText.css */
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    border: 1px solid #ccc;
+    max-width: 70%; /* Adjust as needed */
+    margin: 0 auto;
+  }
+  
+  .image-container {
+    flex: 0 0 40%; /* 40% width for the image container */
+    margin-right: 20px; /* Adjust as needed */
+  }
+  
+  .image-container img {
+    width: 50%;
+    height: auto;
+    border-radius: 8px; /* Optional: Add border radius to the image */
+  }
+  
+  .text-container {
+    flex: 0 0 55%; /* 55% width for the text container */
+  }
+  
+  .text-container p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+  }
+  

@@ -31,34 +31,19 @@ const createNewAdopt = async (req, res) => {
 }
 
 const getAllAdopt = async (req, res) => {
+    //get all adoptpet
     try {
-        const { title, page, limit, sort } = req.query
-
-        const query = {}
-        if (!title) {
-            query.title = { $regex: new RegExp(title, 'i') }
-        }
-        const options = {
-            page: parseInt(page) || 1,
-            limit: parseInt(limit) || 10,
-            sort: { createdAt: -1 }, // mắc định sắp xếp theo thời gian gần đây nhất
-            populate: 'userId',
-        }
-        if (sort === 'acs') {
-            options.sort = 1
-        }
-        if (sort === 'desc') {
-            options.sort = -1
-        }
-        const blogs = await Blog.paginate(query, options)
-        if (!blogs) {
-            res.status(204).json({ error: "There are no blog in database" })
-        } else res.status(200).json(blogs)
+        const result = await AdoptPet.find()
+        if (!result) return res.json({
+            error: "No adopt pet found"
+        })
+        res.status(200).json(result)
     } catch (error) {
-        console.log(error)
-        res.json({ error: "Internal Server Error" })
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
     }
-
 }
 
 module.exports = {

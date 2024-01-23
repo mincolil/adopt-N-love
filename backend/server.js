@@ -43,6 +43,7 @@ app.use('/dashboard', require('./routes/dashBoardRoutes'))
 app.use('/feedback', require('./routes/feedbackRoutes'))
 app.use('/blog', require('./routes/blogRoutes'))
 app.use('/serviceDashboard', require('./routes/serviceDashBoardRoutes'))
+app.use('/adopt', require('./routes/adoptRoutes'))
 
 
 app.all('*', (req, res) => {

@@ -4,7 +4,7 @@ const authController = require('../controllers/authController')
 const validateAuth = require('../middleware/validateAuthInput')
 
 router.post('/login', validateAuth.validateLoginData, authController.login)
-    .post('/check', authController.check)
+    .get('/check', authController.check)
     .post('/register', validateAuth.validateRegisterData, authController.register)
     .put('/changePassword', authController.changePassword)
     .get('/profile', authController.getProfile)

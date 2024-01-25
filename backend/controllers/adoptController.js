@@ -2,7 +2,7 @@ const AdoptPet = require('../models/AdoptPet')
 
 const createNewAdopt = async (req, res) => {
     try {
-        const { userId, petName, age, species, weight, height, petImage } = req.body
+        const { userId, petName, age, species, weight, height, petImage, vaccine, sterilization, rabies, toilet, childFriendly, petFriendly } = req.body
         const adoptPet = new AdoptPet({
             userId,
             petName,
@@ -10,7 +10,13 @@ const createNewAdopt = async (req, res) => {
             species,
             weight,
             height,
-            petImage
+            petImage,
+            vaccine,
+            sterilization,
+            rabies,
+            toilet,
+            childFriendly,
+            petFriendly
         })
         const result = await adoptPet.save()
         if (result) {
@@ -100,7 +106,7 @@ const deleteOne = async (req, res) => {
 
 const updateAdopt = async (req, res) => {
     try {
-        const { id, userId, petName, age, species, weight, height, petImage } = req.body
+        const { id, userId, petName, age, species, weight, height, petImage, vaccine, sterilization, rabies, toilet, childFriendly, petFriendly } = req.body
         const adoptPet = await AdoptPet.findById(id)
         adoptPet.userId = userId
         adoptPet.petName = petName
@@ -109,6 +115,12 @@ const updateAdopt = async (req, res) => {
         adoptPet.weight = weight
         adoptPet.height = height
         adoptPet.petImage = petImage
+        adoptPet.vaccine = vaccine
+        adoptPet.sterilization = sterilization
+        adoptPet.rabies = rabies
+        adoptPet.toilet = toilet
+        adoptPet.childFriendly = childFriendly
+        adoptPet.petFriendly = petFriendly
 
         await adoptPet.save()
         res.status(201).json({

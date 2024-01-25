@@ -98,10 +98,33 @@ const deleteOne = async (req, res) => {
     }
 }
 
+const updateAdopt = async (req, res) => {
+    try {
+        const { id, userId, petName, age, species, weight, height, petImage } = req.body
+        const adoptPet = await AdoptPet.findById(id)
+        adoptPet.userId = userId
+        adoptPet.petName = petName
+        adoptPet.age = age
+        adoptPet.species = species
+        adoptPet.weight = weight
+        adoptPet.height = height
+        adoptPet.petImage = petImage
+
+        await adoptPet.save()
+        res.status(201).json({
+            message: `Updated ${petName}`
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json(err)
+    }
+}
+
 module.exports = {
     createNewAdopt,
     getAllAdopt,
     getAdoptByUserId,
     updateStatus,
-    deleteOne
+    deleteOne,
+    updateAdopt
 }

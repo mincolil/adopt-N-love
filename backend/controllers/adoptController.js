@@ -46,7 +46,62 @@ const getAllAdopt = async (req, res) => {
     }
 }
 
+const getAdoptByUserId = async (req, res) => {
+    //get adoptpet by userId
+    try {
+        const { userId } = req.body
+        const result = await AdoptPet.find({ userId: userId })
+        if (!result) return res.json({
+            error: "No adopt pet found"
+        })
+        res.status(200).json(result)
+    } catch (error) {
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
+    }
+}
+
+//update status
+const updateStatus = async (req, res) => {
+    try {
+        const { id, status } = req.body
+        const updateStatus = await AdoptPet.findOneAndUpdate(
+            { _id: id },
+            { $set: { status: status } },
+            { new: true }
+        )
+        res.json(updateStatus)
+    } catch (error) {
+        console.log(error)
+        res.json({ error: "Internal Server Error" })
+    }
+
+}
+
+const deleteOne = async (req, res) => {
+    try {
+        const { id } = req.params
+        const result = await AdoptPet.findByIdAndDelete(id)
+        if (!result) return res.json({
+            error: "No adopt pet found"
+        })
+        res.status(200).json({
+            message: `Deleted ${result.petName}`
+        })
+    } catch (error) {
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
+    }
+}
+
 module.exports = {
     createNewAdopt,
-    getAllAdopt
+    getAllAdopt,
+    getAdoptByUserId,
+    updateStatus,
+    deleteOne
 }

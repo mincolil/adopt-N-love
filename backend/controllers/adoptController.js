@@ -37,13 +37,36 @@ const createNewAdopt = async (req, res) => {
 }
 
 const getAllAdopt = async (req, res) => {
-    //get all adoptpet
     try {
-        const result = await AdoptPet.find()
+        const { page, limit, petName, sort } = req.query
+
+        const query = {}
+
+        if (petName) {
+            query.petName = { $regex: new RegExp(petName, 'i') }
+        }
+
+        const options = {
+            page: parseInt(page, 10) || 1,
+            limit: parseInt(limit, 10) || 10,
+            sort: { createdAt: -1 }, // mắc định sắp xếp theo thời gian gần đây nhất
+        }
+
+        if (sort === 'acs') {
+            options.sort = 1
+        }
+        if (sort === 'desc') {
+            options.sort = -1
+        }
+
+        const result = await AdoptPet.paginate(query, options)
         if (!result) return res.json({
             error: "No adopt pet found"
         })
-        res.status(200).json(result)
+        res.status(200).json({
+            result,
+            "query": query
+        })
     } catch (error) {
         console.log(err)
         res.status(500).json({

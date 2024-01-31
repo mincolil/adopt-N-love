@@ -4,7 +4,8 @@ const adoptController = require('../controllers/adoptController');
 
 
 router.get('/', adoptController.getAllAdopt)
-    .post('/create-new-adopt', adoptController.createNewAdopt)
+    .post('/', adoptController.createNewAdopt)
+    .patch('/', adoptController.updateAdopt)
     .get('/userid', adoptController.getAdoptByUserId)
     .put('/updateStatus', adoptController.updateStatus)
     .delete('/:id', adoptController.deleteOne)

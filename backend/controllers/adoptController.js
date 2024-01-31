@@ -2,7 +2,7 @@ const AdoptPet = require('../models/AdoptPet')
 
 const createNewAdopt = async (req, res) => {
     try {
-        const { userId, petName, age, species, weight, height, petImage } = req.body
+        const { userId, petName, age, species, weight, height, petImage, vaccine, sterilization, rabies, toilet, childFriendly, petFriendly } = req.body
         const adoptPet = new AdoptPet({
             userId,
             petName,
@@ -10,7 +10,13 @@ const createNewAdopt = async (req, res) => {
             species,
             weight,
             height,
-            petImage
+            petImage,
+            vaccine,
+            sterilization,
+            rabies,
+            toilet,
+            childFriendly,
+            petFriendly
         })
         const result = await adoptPet.save()
         if (result) {
@@ -31,13 +37,36 @@ const createNewAdopt = async (req, res) => {
 }
 
 const getAllAdopt = async (req, res) => {
-    //get all adoptpet
     try {
-        const result = await AdoptPet.find()
+        const { page, limit, petName, sort } = req.query
+
+        const query = {}
+
+        if (petName) {
+            query.petName = { $regex: new RegExp(petName, 'i') }
+        }
+
+        const options = {
+            page: parseInt(page, 10) || 1,
+            limit: parseInt(limit, 10) || 10,
+            sort: { createdAt: -1 }, // mắc định sắp xếp theo thời gian gần đây nhất
+        }
+
+        if (sort === 'acs') {
+            options.sort = 1
+        }
+        if (sort === 'desc') {
+            options.sort = -1
+        }
+
+        const result = await AdoptPet.paginate(query, options)
         if (!result) return res.json({
             error: "No adopt pet found"
         })
-        res.status(200).json(result)
+        res.status(200).json({
+            result,
+            "query": query
+        })
     } catch (error) {
         console.log(err)
         res.status(500).json({
@@ -98,10 +127,39 @@ const deleteOne = async (req, res) => {
     }
 }
 
+const updateAdopt = async (req, res) => {
+    try {
+        const { id, userId, petName, age, species, weight, height, petImage, vaccine, sterilization, rabies, toilet, childFriendly, petFriendly } = req.body
+        const adoptPet = await AdoptPet.findById(id)
+        adoptPet.userId = userId
+        adoptPet.petName = petName
+        adoptPet.age = age
+        adoptPet.species = species
+        adoptPet.weight = weight
+        adoptPet.height = height
+        adoptPet.petImage = petImage
+        adoptPet.vaccine = vaccine
+        adoptPet.sterilization = sterilization
+        adoptPet.rabies = rabies
+        adoptPet.toilet = toilet
+        adoptPet.childFriendly = childFriendly
+        adoptPet.petFriendly = petFriendly
+
+        await adoptPet.save()
+        res.status(201).json({
+            message: `Updated ${petName}`
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json(err)
+    }
+}
+
 module.exports = {
     createNewAdopt,
     getAllAdopt,
     getAdoptByUserId,
     updateStatus,
-    deleteOne
+    deleteOne,
+    updateAdopt
 }

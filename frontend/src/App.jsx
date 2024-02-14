@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./layouts/common/login/Login";
 import Register from "./layouts/common/register/Register";
 import Dashboard from "./layouts/dashboard/Dashboard";
-import { ToastContainer } from "react-toastify";
 
 import BasicTable from "./layouts/dashboard/UserDashboard/UserTable";
 import ServiceTable from "./layouts/dashboard/service/ServiceTables";
@@ -86,7 +85,7 @@ function App() {
             
             <Route path="/sign-up" element={<Register />} />
             <Route path="/sign-in" element={<Login />} />
-            <Route path="/" element={<Header />}>
+            <Route path="/" element={<LandingPage />}>
               <Route index element={<LandingPage />} />
               <Route path="service-homepage" element={<ServiceList />} />
               <Route path="product-homepage" element={<ProductList />} />

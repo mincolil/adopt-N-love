@@ -54,7 +54,11 @@ function App() {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <BrowserRouter>
           <Routes>
-            <Route element={<RequireAuth allowedRoles={[ROLES.ADMIN, ROLES.STAFF]}/>}>
+            <Route
+              element={
+                <RequireAuth allowedRoles={[ROLES.ADMIN, ROLES.STAFF]} />
+              }
+            >
               <Route path="/dashboard" element={<Dashboard />}>
                 <Route
                   path="/dashboard/dashboard-list"
@@ -82,36 +86,34 @@ function App() {
                 <Route path="/dashboard/blog-list" element={<BlogTable />} />
               </Route>
             </Route>
-            
+
             <Route path="/sign-up" element={<Register />} />
             <Route path="/sign-in" element={<Login />} />
-            <Route path="/" element={<LandingPage />}>
-              <Route index element={<LandingPage />} />
-              <Route path="service-homepage" element={<ServiceList />} />
-              <Route path="product-homepage" element={<ProductList />} />
-              <Route
-                path="product-homepage/:productId"
-                element={<ProductDetail />}
-              />
-              <Route
-                path="service-homepage/:serviceId"
-                element={<ServiceDetail />}
-              />
-              <Route path="blog-homepage" element={<BlogPage />} />
-              <Route path="blog-homepage/:blogId" element={<BlogDetail />} />
-              <Route path="cart-service" element={<CartService />} />
-              <Route path="cart-product" element={<CartProduct />} />
-              <Route path="user-profile" element={<UserPRofile />} />
-              <Route path="change-password" element={<ChangePassword />} />
-              <Route path="pet-user" element={<PetUser />} />
-              <Route path="verify" element={<VerifyCode />} />
-              <Route path="product-purchase" element={<ProductPurchase />} />
-              <Route path="service-purchase" element={<ServicePurchase />} />
-              <Route path="product-checkout" element={<ProductCheckout />} />
-              <Route path="reset-password" element={<ResetPassword />} />
-              <Route path="introduce-homepage" element={<Introduce />} />
-              <Route path="service-checkout" element={<ServiceCheckout />} />
-            </Route>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="service-homepage" element={<ServiceList />} />
+            <Route path="product-homepage" element={<ProductList />} />
+            <Route
+              path="product-homepage/:productId"
+              element={<ProductDetail />}
+            />
+            <Route
+              path="service-homepage/:serviceId"
+              element={<ServiceDetail />}
+            />
+            <Route path="blog-homepage" element={<BlogPage />} />
+            <Route path="blog-homepage/:blogId" element={<BlogDetail />} />
+            <Route path="cart-service" element={<CartService />} />
+            <Route path="cart-product" element={<CartProduct />} />
+            <Route path="user-profile" element={<UserPRofile />} />
+            <Route path="change-password" element={<ChangePassword />} />
+            <Route path="pet-user" element={<PetUser />} />
+            <Route path="verify" element={<VerifyCode />} />
+            <Route path="product-purchase" element={<ProductPurchase />} />
+            <Route path="service-purchase" element={<ServicePurchase />} />
+            <Route path="product-checkout" element={<ProductCheckout />} />
+            <Route path="reset-password" element={<ResetPassword />} />
+            <Route path="introduce-homepage" element={<Introduce />} />
+            <Route path="service-checkout" element={<ServiceCheckout />} />
           </Routes>
         </BrowserRouter>
       </LocalizationProvider>

@@ -86,7 +86,13 @@ const Header = () => {
                   <MenuItem onClick={handleClose}>Blog 2</MenuItem>
                   <MenuItem onClick={handleClose}>Blog 3</MenuItem>
                 </Menu>
-                <DsButton color="inherit">Pages</DsButton>
+                <DsButton
+                  color="inherit"
+                  href="product-homepage"
+                  sx={{ fontFamily: "'Poppins', sans-serif !important" }}
+                >
+                  Product
+                </DsButton>
                 <DsButton color="inherit">Services</DsButton>
                 <DsButton color="inherit">Contact</DsButton>
               </Box>

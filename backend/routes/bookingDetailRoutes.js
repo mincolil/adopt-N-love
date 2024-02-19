@@ -3,7 +3,7 @@ const router = express.Router()
 const bookingDetailController = require('../controllers/bookingDetailController')
 
 router.get('/:bookingId', bookingDetailController.getBookingDetailByBookingId)
-    .post('/:bookingId', bookingDetailController.createBookingDetail)
+    .post('/:bookingId', bookingDetailController.createBookingDetail) //test
     .delete('/:id', bookingDetailController.deleteOrderDetail)
     .get('/history/:petId', bookingDetailController.getBookingDetailByPetId)
 

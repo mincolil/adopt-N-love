@@ -89,7 +89,7 @@ const Header = () => {
                 <DsButton
                   color="inherit"
                   href="product-homepage"
-                  sx={{ fontFamily: "'Poppins', sans-serif !important" }}
+                  sx={{ fontFamily: "'Poppins', sans-serif !important", fontSize: "16px" }}
                 >
                   Product
                 </DsButton>

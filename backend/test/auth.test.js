@@ -82,11 +82,11 @@ describe("POST /login", () => {
         it("expect status code = 200", async () => {
             const response = await request(app).post("/login")
                 .send({
-                    email: "tangocduy13@gmail.com",
-                    password: "Mypass1@"
+                    email: "duytangocc@gmail.com",
+                    password: "Qqq123123@"
                 })
             expect(response.status).toEqual(200);
-            expect(response.body.message).toEqual("Xin chào Tạ Ngọc Duy");
+            expect(response.body.message).toEqual("Xin chào test");
         })
     })
 })
@@ -208,15 +208,15 @@ describe("POST /register", () => {
         it("expect status code = 201", async () => {
             const response = await request(app).post("/register")
                 .send({
-                    "fullname": "Tạ Ngọc Duy",
-                    "email": "duytangoc@gmail.com",
+                    "fullname": "Tạ wefwefwwef",
+                    "email": "chilanoidauhehe@gmail.com",
                     "password": "Qqq123123@",
                     "passwordConfirm": "Qqq123123@",
                     "role": "customer"
                 })
-            console.log(response.body)
-            expect(response.status).toEqual(201);
+            console.log(response.body);
             expect(response.body.message).toEqual("Đăng ký thành công");
+            expect(response.status).toEqual(201);
         })
     })
 })

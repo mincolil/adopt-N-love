@@ -4,20 +4,16 @@ import Hidden from "@mui/material/Hidden";
 import { Link } from "react-router-dom";
 import { DsAppBar, DsButton } from "./styled";
 import {
-  Toolbar,
   Typography,
-  Button,
   Menu,
   MenuItem,
   IconButton,
   Box,
   Grid,
   Container,
-  Slide,
 } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Fade from "@mui/material/Fade";
-import Collapse from "@mui/material/Collapse";
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);

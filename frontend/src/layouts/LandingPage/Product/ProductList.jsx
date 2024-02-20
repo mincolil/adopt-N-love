@@ -9,10 +9,6 @@ import {
   ListItem,
   Checkbox,
   FormControlLabel,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
   Card,
   CardActionArea,
   CardContent,
@@ -21,8 +17,16 @@ import {
   IconButton,
   Pagination,
   Stack,
+  Slider,
+  Paper,
+  InputBase,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import SearchIcon from "@mui/icons-material/Search";
 import Grid from "@mui/material/Unstable_Grid2";
 import "./ProductList.css";
 import styled from "styled-components";
@@ -93,7 +97,10 @@ export default function ProductList() {
     setCheckedItems({ ...checkedItems, [name]: checked });
   };
 
+  const [price, setPrice] = useState([0, 200]);
   const [products, setProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = React.useState("price-asc");
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 12;
 
@@ -106,6 +113,18 @@ export default function ProductList() {
 
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
+  };
+
+  const handlePriceChange = (event, newPrice) => {
+    setPrice(newPrice);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSortChange = (event) => {
+    setSortBy(event.target.value);
   };
 
   useEffect(() => {
@@ -123,7 +142,9 @@ export default function ProductList() {
   return (
     <>
       <Header />
-      <Container sx={{ position: "relative", top: "120px", paddingBottom: "200px" }}>
+      <Container
+        sx={{ position: "relative", top: "120px", paddingBottom: "200px" }}
+      >
         <Grid container spacing={1}>
           <Grid item sm={12} md={3} lg={3} className="sidebar">
             <Box className="product_filter">
@@ -152,61 +173,92 @@ export default function ProductList() {
                   ))}
                 </List>
               </Box>
-              <Box className="price"></Box>
+              <Box className="price">
+                <Typography variant="h3" className="title">
+                  Price
+                </Typography>
+                <Box className="price-slider-wrapper">
+                  <Slider
+                    className="slider"
+                    size="medium"
+                    value={price}
+                    onChange={handlePriceChange}
+                    valueLabelDisplay="off"
+                    aria-labelledby="range-slider"
+                    getAriaValueText={(value) => `${value}`}
+                    min={0}
+                    max={1000}
+                  />
+                  <Box className="price-slider-amount">
+                    <Typography
+                      variant="body1"
+                      component="span"
+                      className="from"
+                    >
+                      ${price[0]}
+                    </Typography>
+                    <Typography variant="body1" component="span" className="to">
+                      ${price[1]}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
               <Box className="brand"></Box>
               <Box className="popular_tag"></Box>
             </Box>
           </Grid>
           <Grid item sm={12} md={9} lg={9} className="content-area">
             <Box className="site-main">
-              <Typography variant="h3">Products</Typography>
-              <Box className="shop-top-control">
-                <FormControl
-                  variant="standard"
-                  className="select-item select-form"
-                >
-                  <InputLabel id="select-items-label">Sort</InputLabel>
-                  <Select
-                    labelId="select-items-label"
-                    id="select-items"
-                    label="Sort"
-                    defaultValue={1}
-                    style={{ display: "none" }}
+              <Typography variant="h3">Sản phẩm</Typography>
+              <Grid container className="shop-top-control">
+                <Grid item xl={9} lg={9}>
+                  <Paper
+                    component="form"
+                    sx={{
+                      p: "1px 4px",
+                      display: "flex",
+                      alignItems: "center",
+                      width: "90%",
+                    }}
                   >
-                    <MenuItem value={1}>12 Products/Page</MenuItem>
-                    <MenuItem value={2}>9 Products/Page</MenuItem>
-                    <MenuItem value={3}>10 Products/Page</MenuItem>
-                    <MenuItem value={4}>8 Products/Page</MenuItem>
-                    <MenuItem value={5}>6 Products/Page</MenuItem>
-                  </Select>
-                </FormControl>
-
-                <FormControl
-                  variant="standard"
-                  className="filter-choice select-form"
-                >
-                  <InputLabel id="sort-by-label">Sort by</InputLabel>
-                  <Select
-                    labelId="sort-by-label"
-                    id="sort-by"
-                    label="Sort by"
-                    defaultValue={1}
-                    style={{ display: "none" }}
-                  >
-                    <MenuItem value={1}>Price: Low to High</MenuItem>
-                    <MenuItem value={2}>Sort by popularity</MenuItem>
-                    <MenuItem value={3}>Sort by average rating</MenuItem>
-                    <MenuItem value={4}>Sort by newness</MenuItem>
-                    <MenuItem value={5}>Sort by price: low to high</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
+                    <InputBase
+                      sx={{ ml: 1, flex: 1 }}
+                      placeholder="Tìm sản phẩm ... "
+                      value={searchTerm}
+                      onChange={handleSearchChange}
+                    />
+                    <IconButton sx={{ p: "10px" }} aria-label="search">
+                      <SearchIcon />
+                    </IconButton>
+                  </Paper>
+                </Grid>
+                <Grid item xl={3} lg={3}>
+                  <FormControl fullWidth size="medium">
+                    <Select
+                      className="sort-by-select"
+                      value={sortBy}
+                      onChange={handleSortChange}
+                      fullWidth
+                    >
+                      <MenuItem className="menu-item" value={"price-asc"}>Giá: Thấp đến Cao</MenuItem>
+                      <MenuItem className="menu-item" value={"price-desc"}>
+                        Giá: Cao đến Thấp
+                      </MenuItem>
+                      <MenuItem className="menu-item" value={"rating"}>Đánh giá</MenuItem>
+                      <MenuItem className="menu-item" value={"newest"}>Mới nhất</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
               <Grid container spacing={2}>
                 {currentProducts.map((product, index) => (
                   <ProductItem key={index} product={product} />
                 ))}
               </Grid>
-              <Stack spacing={2} sx={{ paddingTop: "20px", alignItems: "center" }}>
+              <Stack
+                spacing={2}
+                sx={{ paddingTop: "20px", alignItems: "center" }}
+              >
                 <Pagination
                   count={Math.ceil(products.length / productsPerPage)}
                   page={currentPage}

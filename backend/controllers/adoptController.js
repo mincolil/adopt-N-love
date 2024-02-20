@@ -155,11 +155,28 @@ const updateAdopt = async (req, res) => {
     }
 }
 
+const getAdoptById = async (req, res) => {
+    try {
+        const { id } = req.params
+        const result = await AdoptPet.findById(id)
+        if (!result) return res.json({
+            error: "No adopt pet found"
+        })
+        res.status(200).json(result)
+    } catch (error) {
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
+    }
+}
+
 module.exports = {
     createNewAdopt,
     getAllAdopt,
     getAdoptByUserId,
     updateStatus,
     deleteOne,
-    updateAdopt
+    updateAdopt,
+    getAdoptById
 }

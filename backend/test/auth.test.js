@@ -208,8 +208,8 @@ describe("POST /register", () => {
         it("expect status code = 201", async () => {
             const response = await request(app).post("/register")
                 .send({
-                    "fullname": "Tạ wefwefwwef",
-                    "email": "chilanoidauhehe@gmail.com",
+                    "fullname": "Tạsadfsedff",
+                    "email": "oihoantoan@gmail.com",
                     "password": "Qqq123123@",
                     "passwordConfirm": "Qqq123123@",
                     "role": "customer"

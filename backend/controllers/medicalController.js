@@ -46,7 +46,44 @@ const getAllMedical = async (req, res) => {
     }
 }
 
+const getMedicalByUserId = async (req, res) => {
+    //get medical report by userId
+    try {
+        const { userId } = req.body;
+        const result = await MedicalReport.find({ userId: userId });
+        if (!result) return res.json({
+            error: "No medical report found"
+        });
+        res.status(200).json(result);
+    } catch (error) {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    }
+}
+
+const getMedicalDetail = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await MedicalReport.findById(id);
+        if (!result) return res.json({
+            error: "No medical report found"
+        });
+        res.status(200).json(result);
+    }
+    catch (error) {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    }
+}
+
+
 module.exports = {
     createNewMedical,
-    getAllMedical
+    getAllMedical,
+    getMedicalByUserId,
+    getMedicalDetail
 }

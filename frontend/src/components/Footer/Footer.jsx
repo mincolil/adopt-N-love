@@ -16,6 +16,7 @@ import PinterestIcon from "@mui/icons-material/Pinterest";
 import GoogleIcon from "@mui/icons-material/Google";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import "./Footer.css";
+import Logo from "../../images/logo.png";
 
 const Footer = () => {
   return (
@@ -44,7 +45,7 @@ const Footer = () => {
                     >
                       <ListItemText
                         className="txtAddress"
-                        primary="nmhieu21@gmail.Com"
+                        primary="nmhieu21@gmail.com"
                       />
                     </ListItemButton>
                   </ListItem>
@@ -154,8 +155,8 @@ const Footer = () => {
                 <Box className="footer_logo" sx={{ marginBottom: "35px" }}>
                   <Link href="#">
                     <img
-                      src="https://preview.colorlib.com/theme/anipat/img/logo.png.webp"
-                      alt=""
+                      src={Logo}
+                      alt="Logo"
                     />
                   </Link>
                 </Box>

@@ -6,6 +6,15 @@ import { Typography, Container, Button, Box, Avatar } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import Carousel from "react-material-ui-carousel";
 import styled from "styled-components";
+import Banner from "../../images/banner.png";
+import DogBanner from "../../images/dog_banner.png";
+import ServiceIcon1 from "../../images/service_icon_1.png";
+import ServiceIcon2 from "../../images/service_icon_2.png";
+import ServiceIcon3 from "../../images/service_icon_3.png";
+import Cat from "../../images/cat.png";
+import AdaptIcon1 from "../../images/adapt_icon_1.png";
+import AdaptIcon2 from "../../images/adapt_icon_2.png";
+import Avatar1 from "../../images/avatar1.png";
 
 const DsButton = styled(Button)`
   text-transform: none !important;
@@ -64,8 +73,7 @@ function Home() {
         className="banner"
         container
         sx={{
-          backgroundImage:
-            'url("https://preview.colorlib.com/theme/anipat/img/banner/banner.png.webp")',
+          backgroundImage: `url(${Banner})`,
           backgroundSize: "cover",
           backgroundRepeat: "round",
           height: "600px",
@@ -110,18 +118,14 @@ function Home() {
                 fontSize: "1rem",
               }}
             >
-              Contact us
+              Liên hệ
             </Button>
           </Grid>
         </Container>
         <Box
           sx={{ position: "absolute", zIndex: "1", right: "0", bottom: "-15%" }}
         >
-          <img
-            src="https://preview.colorlib.com/theme/anipat/img/banner/dog.png.webp"
-            alt=""
-            style={{ maxWidth: "80%" }}
-          />
+          <img src={DogBanner} alt="" style={{ maxWidth: "80%" }} />
         </Box>
       </Grid>
       <Container className="service">
@@ -141,7 +145,7 @@ function Home() {
             <Box className="service_thumb">
               <Box className="service_icon">
                 <img
-                  src="https://preview.colorlib.com/theme/anipat/img/service/service_icon_1.png.webp"
+                  src={ServiceIcon1}
                   alt=""
                 />
               </Box>
@@ -158,7 +162,7 @@ function Home() {
             <Box className="service_thumb">
               <Box className="service_icon">
                 <img
-                  src="https://preview.colorlib.com/theme/anipat/img/service/service_icon_2.png.webp"
+                  src={ServiceIcon2}
                   alt=""
                 />
               </Box>
@@ -175,7 +179,7 @@ function Home() {
             <Box className="service_thumb">
               <Box className="service_icon">
                 <img
-                  src="https://preview.colorlib.com/theme/anipat/img/service/service_icon_3.png.webp"
+                  src={ServiceIcon3}
                   alt=""
                 />
               </Box>
@@ -196,7 +200,7 @@ function Home() {
             <Grid item lg={5} md={5}>
               <Box className="pet_thumb">
                 <img
-                  src="https://preview.colorlib.com/theme/anipat/img/about/pet_care.png.webp"
+                  src={Cat}
                   alt=""
                 />
               </Box>
@@ -256,7 +260,7 @@ function Home() {
                   <Grid item lg={6} md={6}>
                     <Box className="single_adapt text-center">
                       <img
-                        src="https://preview.colorlib.com/theme/anipat/img/adapt_icon/1.png.webp"
+                        src={AdaptIcon1}
                         alt=""
                       />
                       <Box className="adapt_content">
@@ -268,7 +272,7 @@ function Home() {
                   <Grid item lg={6} md={6}>
                     <Box className="single_adapt text-center">
                       <img
-                        src="https://preview.colorlib.com/theme/anipat/img/adapt_icon/1.png.webp"
+                        src={AdaptIcon1}
                         alt=""
                       />
                       <Box className="adapt_content">
@@ -278,7 +282,7 @@ function Home() {
                     </Box>
                     <Box className="single_adapt text-center">
                       <img
-                        src="https://preview.colorlib.com/theme/anipat/img/adapt_icon/2.png.webp"
+                        src={AdaptIcon2}
                         alt=""
                       />
                       <Box className="adapt_content">
@@ -301,7 +305,7 @@ function Home() {
                 {testimonials.map((testimonial, index) => (
                   <Box key={index} className="single_testmonial">
                     <Avatar
-                      src={testimonial.img}
+                      src={Avatar1}
                       alt=""
                       sx={{
                         marginRight: "25px",
@@ -332,7 +336,7 @@ function Home() {
           </Grid>
         </Container>
       </Box>
-      <Footer/>
+      <Footer />
     </>
   );
 }

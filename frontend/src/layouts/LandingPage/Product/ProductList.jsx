@@ -30,6 +30,10 @@ import SearchIcon from "@mui/icons-material/Search";
 import Grid from "@mui/material/Unstable_Grid2";
 import "./ProductList.css";
 import styled from "styled-components";
+import axios from "axios";
+import { toast } from "react-toastify";
+
+const BASE_URL = "http://localhost:3500";
 
 const DsCheckbox = styled(Checkbox)`
   color: #eeeeee !important;
@@ -39,7 +43,7 @@ const DsCheckbox = styled(Checkbox)`
 `;
 
 function ProductItem({ product }) {
-  const { title, price } = product;
+  const { id, productName, quantity, price, productImage } = product;
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
       <Card className="product-card">
@@ -47,8 +51,8 @@ function ProductItem({ product }) {
           <CardMedia
             component="img"
             height="200"
-            image="https://cdn.dummyjson.com/product-images/1/1.jpg"
-            alt={title}
+            image={productImage}
+            alt={productName}
           />
           <CardContent sx={{ textAlign: "center" }}>
             <Typography
@@ -57,14 +61,14 @@ function ProductItem({ product }) {
               component="div"
               className="product-title"
             >
-              {title}
+              {productName}
             </Typography>
             <Typography
               variant="body2"
               color="text.secondary"
               className="product-price"
             >
-              ${price}
+              {price}VND{" "}
             </Typography>
           </CardContent>
         </CardActionArea>
@@ -128,16 +132,18 @@ export default function ProductList() {
   };
 
   useEffect(() => {
-    fetch("https://dummyjson.com/products")
-      .then((response) => response.json())
-      .then((data) => {
-        const productList = data.products;
+    loadAllProduct();
+  }, []);
+
+  const loadAllProduct = () => {
+    axios
+      .get(`${BASE_URL}/product`)
+      .then((res) => {
+        const productList = res.data.docs;
         setProducts(productList);
       })
-      .catch((error) => {
-        console.error("Đã xảy ra lỗi khi gọi API:", error);
-      });
-  }, []);
+      .catch((error) => console.log(error));
+  };
 
   return (
     <>
@@ -240,12 +246,18 @@ export default function ProductList() {
                       onChange={handleSortChange}
                       fullWidth
                     >
-                      <MenuItem className="menu-item" value={"price-asc"}>Giá: Thấp đến Cao</MenuItem>
+                      <MenuItem className="menu-item" value={"price-asc"}>
+                        Giá: Thấp đến Cao
+                      </MenuItem>
                       <MenuItem className="menu-item" value={"price-desc"}>
                         Giá: Cao đến Thấp
                       </MenuItem>
-                      <MenuItem className="menu-item" value={"rating"}>Đánh giá</MenuItem>
-                      <MenuItem className="menu-item" value={"newest"}>Mới nhất</MenuItem>
+                      <MenuItem className="menu-item" value={"rating"}>
+                        Đánh giá
+                      </MenuItem>
+                      <MenuItem className="menu-item" value={"newest"}>
+                        Mới nhất
+                      </MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>

@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Fade from "@mui/material/Fade";
+import Logo from "../../images/logo.png";
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -42,7 +43,7 @@ const Header = () => {
             <Typography variant="h6">
               <Link to="/">
                 <img
-                  src="https://preview.colorlib.com/theme/anipat/img/logo.png.webp"
+                  src={Logo}
                   alt="Logo"
                   style={{ maxWidth: "100%", cursor: "pointer" }}
                 />
@@ -61,10 +62,10 @@ const Header = () => {
                   },
                 }}
               >
-                <DsButton color="inherit">Home</DsButton>
-                <DsButton color="inherit">About</DsButton>
+                <DsButton color="inherit">Trang chủ</DsButton>
+                <DsButton color="inherit">Thông tin</DsButton>
                 <DsButton color="inherit" onClick={handleClick}>
-                  Blog
+                  Diễn đàn
                   <ArrowDropDownIcon />
                 </DsButton>
                 <Menu
@@ -87,10 +88,10 @@ const Header = () => {
                   href="product-homepage"
                   sx={{ fontFamily: "'Poppins', sans-serif !important", fontSize: "16px" }}
                 >
-                  Product
+                  Sản phẩm
                 </DsButton>
-                <DsButton color="inherit">Services</DsButton>
-                <DsButton color="inherit">Contact</DsButton>
+                <DsButton color="inherit">Dịch vụ</DsButton>
+                <DsButton color="inherit">Liên hệ</DsButton>
               </Box>
             </Grid>
           </Hidden>

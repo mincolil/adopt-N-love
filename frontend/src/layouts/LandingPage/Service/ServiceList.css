@@ -1,0 +1,115 @@
+.title {
+  font-size: 14px !important;
+  font-family: "Poppins", sans-serif !important;
+  text-transform: uppercase;
+  font-weight: 600 !important;
+  padding-bottom: 10px;
+  margin-bottom: 0 !important;
+  position: relative;
+  letter-spacing: 0.1em;
+  z-index: 1;
+  padding-left: 35px;
+}
+
+.title::before {
+  content: "";
+  width: 25px;
+  border-top: 2px solid #ab8e66;
+  position: absolute;
+  display: inline-block;
+  left: 0;
+  top: 8px;
+}
+
+.list-categories {
+  padding: 0 !important;
+  padding-bottom: 30px !important;
+}
+
+.list-categories-item {
+  list-style: none;
+  line-height: 28px;
+  padding: 0 !important;
+}
+
+.label-text {
+  cursor: pointer;
+  font-size: 15px;
+  color: #555;
+  margin: 0;
+  padding-left: 25px;
+  position: relative;
+  font-weight: normal;
+}
+
+.site-main h3 {
+  font-size: 24px;
+  letter-spacing: 0;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+}
+
+.shop-top-control {
+  margin-bottom: 40px !important;
+}
+
+.sort-by-select {
+  font-family: "Poppins", sans-serif !important;
+  font-size: 14px !important;
+}
+
+.sort-by-select div {
+  padding: 13px 14px;
+}
+
+.sort-by-select fieldset {
+  border-color: rgba(0, 0, 0, 0.23) !important;
+}
+
+.menu-item {
+  font-family: "Poppins", sans-serif !important;
+  font-size: 14px !important;
+}
+
+.product-card {
+  height: 100%;
+  align-content: space-between;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.product-title {
+  font-family: "Poppins", sans-serif !important;
+  font-size: 18px !important;
+  font-weight: 500 !important;
+  margin: 0;
+  margin-bottom: 4px;
+  color: #ab8e66;
+}
+
+.slider {
+  color: #ab8e66 !important;
+  margin-left: 8px !important;
+  width: 90% !important;
+}
+
+.price-slider-amount {
+  margin-top: 18px;
+  font-size: 13px;
+  color: #666666;
+  overflow: hidden;
+}
+
+.price-slider-amount span {
+  display: inline-block;
+  font-size: 15px;
+  color: #0a0a0a;
+  border: 1px solid #eeeeee;
+  padding: 5px 10px;
+  font-weight: 600;
+  border-radius: 0;
+  margin-right: 20px !important;
+}

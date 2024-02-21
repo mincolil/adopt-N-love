@@ -68,7 +68,7 @@ function ProductItem({ product }) {
               color="text.secondary"
               className="product-price"
             >
-              {price}VND{" "}
+              {price} VND{" "}
             </Typography>
           </CardContent>
         </CardActionArea>

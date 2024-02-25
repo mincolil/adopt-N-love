@@ -1,569 +1,290 @@
-import * as React from "react";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import CssBaseline from "@mui/material/CssBaseline";
-import Grid from "@mui/material/Grid";
-import Stack from "@mui/material/Stack";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import Pagination from "@mui/material/Pagination";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-
-import { useState, useEffect } from "react";
-// Axios
+import React, { useState, useEffect } from "react";
+import Header from "../../../components/Header/Header";
+import Footer from "../../../components/Footer/Footer";
+import {
+  Typography,
+  Container,
+  Box,
+  List,
+  ListItem,
+  Checkbox,
+  FormControlLabel,
+  Card,
+  CardActionArea,
+  CardContent,
+  CardMedia,
+  CardActions,
+  IconButton,
+  Pagination,
+  Stack,
+  Slider,
+  Paper,
+  InputBase,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import SearchIcon from "@mui/icons-material/Search";
+import Grid from "@mui/material/Unstable_Grid2";
+import "./ProductList.css";
+import styled from "styled-components";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-//@material-ui/core
-import { styled } from "@mui/material/styles";
-import Footer from "../../../components/Footer/Footer";
-import MainPost from "../../../components/MainPost/MainPost";
-import useAuth from "../../../hooks/useAuth";
-import { NavLink } from "react-router-dom";
-import Chip from "@mui/material/Chip";
-import HomeIcon from "@mui/icons-material/Home";
-import { emphasize } from "@mui/material/styles";
-import Breadcrumbs from "@mui/material/Breadcrumbs";
-import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import { CardActionArea, IconButton, TextField, Tooltip } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import dayjs from "dayjs";
-import DropDownService from "../../../components/DropDown/DropDownService";
-import ProductNameCus from "../../../components/Typography/ProductNameCus";
-
-const StyledBreadcrumb = styled(Chip)(({ theme }) => {
-  const backgroundColor =
-    theme.palette.mode === "light"
-      ? theme.palette.grey[100]
-      : theme.palette.grey[800];
-  return {
-    backgroundColor,
-    height: theme.spacing(3),
-    color: theme.palette.text.primary,
-    fontWeight: theme.typography.fontWeightRegular,
-    "&:hover, &:focus": {
-      backgroundColor: emphasize(backgroundColor, 0.06),
-    },
-    "&:active": {
-      boxShadow: theme.shadows[1],
-      backgroundColor: emphasize(backgroundColor, 0.12),
-    },
-  };
-});
-
-// const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
-// TODO remove, this demo shouldn't need to reset the theme.
-const defaultTheme = createTheme();
-
 const BASE_URL = "http://localhost:3500";
 
-const mainPost = {
-  title: "Sản phẩm dành cho thú cưng",
-  description: "Cung cấp đầy đủ các loại sản phẩm hàng ngày dành cho thú cưng",
-  image:
-    "https://vuaphukienthucung.com/public/media/images/thiet-ke-hinh-anh-phu-kien-thu-cung-01.jpg",
-  imageText: "Ảnh sản phẩm",
-};
+const DsCheckbox = styled(Checkbox)`
+  color: #eeeeee !important;
+  &.Mui-checked {
+    color: #000 !important;
+  }
+`;
 
-const numberToVND = (number) => {
-  return number.toLocaleString("vi-VN", {
-    style: "currency",
-    currency: "VND",
-  });
-};
-
-const CustomContainer = styled(Container)({
-  background:
-    "linear-gradient(to bottom, #F4BEB2, #F4BEB2, #ECDAD6, #E5E6E7, #73A1CC)",
-});
+function ProductItem({ product }) {
+  const { id, productName, quantity, price, productImage } = product;
+  return (
+    <Grid item xs={12} sm={6} md={4} lg={3}>
+      <Card className="product-card">
+        <CardActionArea>
+          <CardMedia
+            component="img"
+            height="200"
+            image={productImage}
+            alt={productName}
+          />
+          <CardContent sx={{ textAlign: "center" }}>
+            <Typography
+              gutterBottom
+              variant="h5"
+              component="div"
+              className="product-title"
+            >
+              {productName}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              className="product-price"
+            >
+              {price} VND{" "}
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+        <CardActions sx={{ justifyContent: "center" }}>
+          <IconButton
+            size="large"
+            color="primary"
+            aria-label="add to shopping cart"
+          >
+            <AddShoppingCartIcon />
+          </IconButton>
+        </CardActions>
+      </Card>
+    </Grid>
+  );
+}
 
 export default function ProductList() {
-  const [data, setData] = useState([]);
+  const [checkedItems, setCheckedItems] = useState({
+    "New Arrival": false,
+    Dining: false,
+    Desks: false,
+    Accents: false,
+    Accessories: false,
+    Tables: false,
+  });
 
-  const [totalProducts, setTotalProducts] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+  const handleCheckboxChange = (event) => {
+    const { name, checked } = event.target;
+    setCheckedItems({ ...checkedItems, [name]: checked });
+  };
+
+  const [price, setPrice] = useState([0, 200]);
+  const [products, setProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = React.useState("price-asc");
   const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 12;
 
-  const context = useAuth();
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = products.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
 
-  // --------------------- HOVER -----------------------------
-  const [isHovered, setIsHovered] = useState(null);
-  const [isHoveredName, setIsHoveredName] = useState(null);
-
-  const handleMouseOver = (index) => {
-    setIsHovered(index);
-  };
-
-  const handleMouseOut = () => {
-    setIsHovered(null);
-  };
-
-  const handleMouseOverName = (index) => {
-    setIsHoveredName(index);
-  };
-
-  const handleMouseOutName = () => {
-    setIsHoveredName(null);
-  };
-
-  // ----------------------------------- API GET ALL PRODUCT --------------------------------
-  useEffect(() => {
-    loadAllProduct(currentPage);
-  }, []);
-
-  const loadAllProduct = async (page) => {
-    try {
-      const loadData = await axios.get(
-        `${BASE_URL}/product?page=${page}&limit=9`
-      );
-      if (loadData.error) {
-        toast.error(loadData.error);
-      } else {
-        setTotalPages(loadData.data.pages);
-        // console.log("Check totalPage", totalPages);
-        setData(loadData.data.docs);
-        setTotalProducts(loadData.data.limit);
-        // console.log(loadData.data.docs);
-        setCurrentPage(loadData.data.page);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  // --------------------- Click paging -----------------------------
-  const [categoryId, setCategoryId] = useState("");
-  const handlePageClick = (event, value) => {
+  const handlePageChange = (event, value) => {
     setCurrentPage(value);
-    if (categoryId) {
-      // console.log(categoryId);
-      hanldeClickCategory(value, categoryId);
-    } else if (keyword.trim()) {
-      searchProductByName(value);
-    } else {
-      // console.log(categoryId);
-      loadAllProduct(value);
-    }
-  };
-  // ----------------------------------------------------------------
-
-  const handleAddToCart = async (id) => {
-    if (context.auth.token === undefined) {
-      toast.warning("Bạn chưa đăng nhập, vui lòng đăng nhập !");
-    } else {
-      try {
-        const addProductToCart = await axios
-          .post(
-            `${BASE_URL}/cartProduct/add-to-cart`,
-            {
-              productId: id,
-              quantity: 1,
-            },
-            {
-              headers: { Authorization: context.auth.token },
-              withCredentials: true,
-            }
-          )
-          .then((data) => {
-            toast.success("Thêm sản phẩm vào giỏ hàng thành công");
-            context.handleLoadCartProduct();
-            // console.log(context.auth);
-          });
-      } catch (err) {
-        console.log(err);
-      }
-    }
   };
 
-  // --------------------- GET ALL CATEGORY PRODUCT -----------------------------
-  const [category, setCategory] = useState([]);
-  async function loadAllCategoryProduct() {
-    try {
-      const loadDataCategoryProduct = await axios.get(
-        `http://localhost:3500/category?categoryName=Sản phẩm`
-      );
-      if (loadDataCategoryProduct.error) {
-        toast.error(loadDataCategoryProduct.error);
-      } else {
-        setCategory(loadDataCategoryProduct.data.docs);
-        // console.log(loadDataCategoryProduct.data);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
+  const handlePriceChange = (event, newPrice) => {
+    setPrice(newPrice);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSortChange = (event) => {
+    setSortBy(event.target.value);
+  };
 
   useEffect(() => {
-    loadAllCategoryProduct();
+    loadAllProduct();
   }, []);
 
-  // --------------------- GET ALL PRODUCT BY CATEGORY ID PRODUCT -----------------------------
-  async function hanldeClickCategory(page, cateId) {
-    // console.log("Check data cate ID", cateId);
-    setCategoryId(cateId);
-    if (cateId == undefined || cateId == "") {
-      loadAllProduct(currentPage);
-    } else {
-      try {
-        const loadData = await axios.get(
-          `http://localhost:3500/product?page=${page}&categoryId=${cateId}&limit=9`
-        );
-        if (loadData.error) {
-          toast.error(loadData.error);
-        } else {
-          // console.log("Check loaddata", loadData.data);
-          setTotalPages(loadData.data.pages);
-          // console.log("Check totalPage", totalPages);
-          setData(loadData.data.docs);
-          setTotalProducts(loadData.data.limit);
-          setCurrentPage(loadData.data.page);
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  }
-
-  useEffect(() => {
-    hanldeClickCategory();
-  }, []);
-
-  // --------------------- Hanlde Search -----------------------------
-  const [keyword, setKeyword] = useState("");
-
-  const handleKeywordChange = (e) => {
-    setKeyword(e.target.value);
-  };
-
-  const handleSearchClick = async () => {
-    if (keyword.trim() === "") {
-      toast.warning("Hãy nhập kết quả bạn cần tìm");
-      loadAllProduct(currentPage);
-    } else {
-      searchProductByName();
-    }
-  };
-
-  // ----------------------------------- GET ALL PRODUCTS BY PRODUCT NAME --------------------------------
-  const searchProductByName = async (page) => {
-    try {
-      const loadData = await axios.get(
-        `${BASE_URL}/product?product=${keyword.trim()}&page=${page}&limit=9`
-      );
-      if (loadData.data.error) {
-        toast.warning(
-          "Kết quả " +
-            "[" +
-            keyword +
-            "]" +
-            " bạn vừa tìm không có! Vui lòng nhập lại. "
-        );
-        loadAllProduct(currentPage);
-      } else {
-        setData(loadData.data.docs);
-        setTotalProducts(loadData.data.limit);
-        setTotalPages(loadData.data.pages);
-        // console.log(loadData.data);
-        setCurrentPage(loadData.data.page);
-      }
-    } catch (err) {
-      console.log(err);
-    }
+  const loadAllProduct = () => {
+    axios
+      .get(`${BASE_URL}/product`)
+      .then((res) => {
+        const productList = res.data.docs;
+        setProducts(productList);
+      })
+      .catch((error) => console.log(error));
   };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <CssBaseline />
-
-      <CustomContainer component="main" maxWidth="full" sx={{ pt: 9 }}>
-        <MainPost
-          sx={{
-            bgcolor: "background.paper",
-            p: 3,
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            borderEndStartRadius: "5px",
-            borderEndEndRadius: "5px",
-          }}
-          post={mainPost}
-        />
-        <Container
-          maxWidth="full"
-          sx={{
-            bgcolor: "background.paper",
-            p: 2,
-            display: "flex",
-            justifyContent: "space-between",
-            borderEndStartRadius: "5px",
-            borderEndEndRadius: "5px",
-            alignItems: "center",
-          }}
-        >
-          <Box>
-            <Breadcrumbs maxItems={2} aria-label="breadcrumb">
-              <StyledBreadcrumb
-                component={NavLink}
-                to="/"
-                label="Trang chủ"
-                icon={<HomeIcon fontSize="small" />}
-              />
-              {/* <StyledBreadcrumb component="a" href="#" label="Catalog" /> */}
-              <StyledBreadcrumb label="Sản phẩm" />
-            </Breadcrumbs>
-          </Box>
-
-          <Box>
-            <TextField
-              fullWidth
-              label="Tìm kiếm"
-              margin="normal"
-              size="small"
-              value={keyword}
-              onChange={handleKeywordChange}
-              // sx={{ position: "fixed" }}
-              InputProps={{
-                endAdornment: (
-                  <IconButton onClick={handleSearchClick}>
-                    <SearchIcon />
-                  </IconButton>
-                ),
-              }}
-            />
-          </Box>
-
-          <Box>
-            <DropDownService
-              category={category}
-              cateName="Loại sản phẩm"
-              handUpdateEditTable={hanldeClickCategory}
-              page={1}
-            />
-          </Box>
-        </Container>
-
-        <Container sx={{ py: 8 }}>
-          {/* End hero unit */}
-          <Grid container spacing={4}>
-            {data &&
-              data.map((value, index) => {
-                return (
-                  <Grid hover item key={index} xs={12} sm={6} md={4}>
-                    <CardActionArea>
-                      <Card
+    <>
+      <Header />
+      <Container
+        sx={{ position: "relative", top: "120px", paddingBottom: "200px" }}
+      >
+        <Grid container spacing={1}>
+          <Grid item sm={12} md={3} lg={3} className="sidebar">
+            <Box className="product_filter">
+              <Box className="category">
+                <Typography variant="h3" className="title">
+                  Categories
+                </Typography>
+                <List className="list-categories">
+                  {Object.keys(checkedItems).map((label) => (
+                    <ListItem key={label} className="list-categories-item">
+                      <FormControlLabel
+                        control={
+                          <DsCheckbox
+                            size="small"
+                            checked={checkedItems[label]}
+                            onChange={handleCheckboxChange}
+                            name={label}
+                          />
+                        }
+                        label={label}
                         sx={{
-                          height: "100%",
-                          display: "flex",
-                          flexDirection: "column",
-                          position: "relative",
+                          fontSize: "12px",
                         }}
-                      >
-                        <Card
-                          key={index}
-                          onMouseOver={() => handleMouseOver(index)}
-                          onMouseOut={handleMouseOut}
-                          style={{ display: "inline-block", margin: "10px" }}
-                        >
-                          <CardMedia
-                            component={NavLink}
-                            to={`/product-homepage/${value._id}`}
-                            src={
-                              value.productImage !== undefined
-                                ? `${value.productImage}`
-                                : "https://previews.123rf.com/images/bybochka/bybochka1510/bybochka151000200/46365274-pet-care-flat-icon-set-pet-care-banner-background-poster-concept-flat-design-vector-illustration.jpg?fj=1"
-                            }
-                            sx={{
-                              border: "none",
-                              backgroundImage: `url(${
-                                isHovered === index
-                                  ? `${value.productImage}`
-                                  : `${value.productImage}`
-                              })`,
-                              backgroundSize: "cover",
-                              height: "200px",
-                              filter:
-                                isHovered === index
-                                  ? "brightness(50%)"
-                                  : "brightness(100%)",
-                              transition: "filter 0.3s ease-in-out",
-                            }}
-                          >
-                            {value.discount !== 0 &&
-                            dayjs().isBetween(
-                              dayjs(value.saleStartTime),
-                              dayjs(value.saleEndTime)
-                            ) ? (
-                              <Card
-                                style={{
-                                  position: "absolute",
-                                  top: "0px",
-                                  right: "0px",
-                                  fontSize: "18px",
-                                  alignItems: "center",
-                                }}
-                              >
-                                <Typography
-                                  variant="h6"
-                                  component="h2"
-                                  sx={{
-                                    color: "#fff",
-                                    backgroundColor: "#ee4d2d",
-                                    fontSize: "1rem",
-                                    borderRadius: "2px",
-                                    padding: "2px 4px",
-                                    fontWeight: "800",
-                                    whiteSpace: "nowrap",
-                                    textTransform: "uppercase",
-                                  }}
-                                >
-                                  {value.discount}%
-                                </Typography>
-                              </Card>
-                            ) : (
-                              ""
-                            )}
-                            {isHovered === index && (
-                              <IconButton
-                                title="Xem chi tiết"
-                                component={NavLink}
-                                to={`/product-homepage/${value._id}`}
-                                sx={{
-                                  position: "absolute",
-                                  top: "50%",
-                                  left: "50%",
-                                  transform: "translate(-50%, -50%)",
-                                  backgroundColor: "rgba(255, 255, 255, 0.7)",
-                                  backgroundColor: "pink",
-                                }}
-                              >
-                                <SearchIcon />
-                              </IconButton>
-                            )}
-                          </CardMedia>
-                        </Card>
-
-                        <CardContent sx={{ flexGrow: 1 }}>
-                          <Typography variant="h5" component="h1">
-                            <NavLink
-                              to={`/product-homepage/${value._id}`}
-                              style={{
-                                textDecoration: "none",
-                                color:
-                                  isHoveredName === index ? "pink" : "inherit",
-                              }}
-                              title={value.productName}
-                              onMouseOver={() => handleMouseOverName(index)}
-                              onMouseOut={handleMouseOutName}
-                            >
-                              <ProductNameCus value={value} />
-                            </NavLink>
-                          </Typography>
-
-                          <Box
-                            display="flex"
-                            flexGrow={1}
-                            sx={{ justifyContent: "space-between" }}
-                          >
-                            {value.discount !== 0 &&
-                            dayjs().isBetween(
-                              dayjs(value.saleStartTime),
-                              dayjs(value.saleEndTime)
-                            ) ? (
-                              <Box
-                                display="flex"
-                                flexGrow={1}
-                                sx={{
-                                  justifyContent: "flex-start",
-                                  alignItems: "center",
-                                }}
-                              >
-                                <Typography
-                                  gutterBottom
-                                  variant="h6"
-                                  component="h2"
-                                  sx={{
-                                    textDecoration: "line-through",
-                                    marginRight: "8px",
-                                    color: "gray",
-                                  }}
-                                >
-                                  {numberToVND(value.price)}
-                                </Typography>
-                                <Typography
-                                  gutterBottom
-                                  variant="h6"
-                                  component="h2"
-                                  sx={{ color: "red" }}
-                                >
-                                  {numberToVND(
-                                    value.price -
-                                      (value.price * value.discount) / 100
-                                  )}
-                                </Typography>
-                              </Box>
-                            ) : (
-                              <Typography
-                                gutterBottom
-                                variant="h6"
-                                component="h2"
-                                sx={{ color: "red" }}
-                              >
-                                {numberToVND(value.price)}
-                              </Typography>
-                            )}
-                            {value.quantity !== 0 ? (
-                              <Tooltip
-                                title="Thêm vào giỏ hàng"
-                                onClick={() => handleAddToCart(value._id)}
-                                sx={{ backgroundColor: "pink" }}
-                              >
-                                <IconButton>
-                                  <AddShoppingCartIcon />
-                                </IconButton>
-                              </Tooltip>
-                            ) : (
-                              <Typography>HẾT HÀNG</Typography>
-                            )}
-                          </Box>
-                          <Typography>
-                            SỐ LƯỢNG CÒN: {value.quantity}
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                    </CardActionArea>
-                  </Grid>
-                );
-              })}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              </Box>
+              <Box className="price">
+                <Typography variant="h3" className="title">
+                  Price
+                </Typography>
+                <Box className="price-slider-wrapper">
+                  <Slider
+                    className="slider"
+                    size="medium"
+                    value={price}
+                    onChange={handlePriceChange}
+                    valueLabelDisplay="off"
+                    aria-labelledby="range-slider"
+                    getAriaValueText={(value) => `${value}`}
+                    min={0}
+                    max={1000}
+                  />
+                  <Box className="price-slider-amount">
+                    <Typography
+                      variant="body1"
+                      component="span"
+                      className="from"
+                    >
+                      ${price[0]}
+                    </Typography>
+                    <Typography variant="body1" component="span" className="to">
+                      ${price[1]}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
+              <Box className="brand"></Box>
+              <Box className="popular_tag"></Box>
+            </Box>
           </Grid>
-
-          {/* Paging */}
-          <Container
-            maxWidth="full"
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              m: 2,
-            }}
-          >
-            <Stack spacing={2}>
-              <Pagination
-                count={totalPages}
-                onChange={handlePageClick}
-                page={currentPage}
-                color="primary"
-              />
-            </Stack>
-          </Container>
-        </Container>
-      </CustomContainer>
-
-      {/* End footer */}
+          <Grid item sm={12} md={9} lg={9} className="content-area">
+            <Box className="site-main">
+              <Typography variant="h3">Sản phẩm</Typography>
+              <Grid container className="shop-top-control">
+                <Grid item xl={9} lg={9}>
+                  <Paper
+                    component="form"
+                    sx={{
+                      p: "1px 4px",
+                      display: "flex",
+                      alignItems: "center",
+                      width: "90%",
+                    }}
+                  >
+                    <InputBase
+                      sx={{ ml: 1, flex: 1 }}
+                      placeholder="Tìm sản phẩm ... "
+                      value={searchTerm}
+                      onChange={handleSearchChange}
+                    />
+                    <IconButton sx={{ p: "10px" }} aria-label="search">
+                      <SearchIcon />
+                    </IconButton>
+                  </Paper>
+                </Grid>
+                <Grid item xl={3} lg={3}>
+                  <FormControl fullWidth size="medium">
+                    <Select
+                      className="sort-by-select"
+                      value={sortBy}
+                      onChange={handleSortChange}
+                      fullWidth
+                    >
+                      <MenuItem className="menu-item" value={"price-asc"}>
+                        Giá: Thấp đến Cao
+                      </MenuItem>
+                      <MenuItem className="menu-item" value={"price-desc"}>
+                        Giá: Cao đến Thấp
+                      </MenuItem>
+                      <MenuItem className="menu-item" value={"rating"}>
+                        Đánh giá
+                      </MenuItem>
+                      <MenuItem className="menu-item" value={"newest"}>
+                        Mới nhất
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
+              <Grid container spacing={2}>
+                {currentProducts.map((product, index) => (
+                  <ProductItem key={index} product={product} />
+                ))}
+              </Grid>
+              <Stack
+                spacing={2}
+                sx={{ paddingTop: "20px", alignItems: "center" }}
+              >
+                <Pagination
+                  count={Math.ceil(products.length / productsPerPage)}
+                  page={currentPage}
+                  onChange={handlePageChange}
+                  size="large"
+                  showFirstButton
+                  showLastButton
+                />
+              </Stack>
+            </Box>
+          </Grid>
+        </Grid>
+      </Container>
       <Footer />
-    </ThemeProvider>
+    </>
   );
 }

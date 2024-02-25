@@ -130,6 +130,7 @@ const Register = () => {
               sx={{ mt: 1 }}
             >
               <TextField
+                color="warning"
                 margin="normal"
                 required
                 fullWidth
@@ -143,6 +144,7 @@ const Register = () => {
                 onChange={(e) => setData({ ...data, fullname: e.target.value })}
               />
               <TextField
+                color="warning"
                 margin="normal"
                 required
                 fullWidth
@@ -155,6 +157,7 @@ const Register = () => {
                 onChange={(e) => setData({ ...data, email: e.target.value })}
               />
               <TextField
+                color="warning"
                 margin="normal"
                 required
                 fullWidth
@@ -167,6 +170,7 @@ const Register = () => {
                 onChange={(e) => setData({ ...data, password: e.target.value })}
               />
               <TextField
+                color="warning"
                 margin="normal"
                 required
                 fullWidth
@@ -181,6 +185,7 @@ const Register = () => {
                 }
               />
               <Button
+                color="warning"
                 type="submit"
                 fullWidth
                 variant="contained"

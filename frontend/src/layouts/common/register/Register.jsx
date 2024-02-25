@@ -1,4 +1,8 @@
 import * as React from "react";
+import Banner from "../../../images/banner.png";
+import DogBanner from "../../../images/dog_banner.png";
+import Background from "../../../images/background.png";
+import Cat from "../../../images/cat.png";
 //MUI
 import {
   Avatar,
@@ -82,7 +86,7 @@ const Register = () => {
           md={7}
           sx={{
             backgroundImage:
-              "url(https://img.freepik.com/premium-vector/veterinary-clinic-doctor-examining-vaccination-health-care-pets-like-dogs-cats-flat-cartoon-background-vector-illustration-poster-banner_2175-3383.jpg?w=2000)",
+              `url(${Background})`,
             backgroundRepeat: "no-repeat",
             backgroundColor: (t) =>
               t.palette.mode === "light"
@@ -102,11 +106,19 @@ const Register = () => {
               alignItems: "center",
             }}
           >
-            <Link href="/">
-              <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-                <PetsIcon />
-              </Avatar>
-            </Link>
+            <Link href="/" ><Box
+              sx={{ xs: 1, zIndex: "1" }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <img src={Cat} alt="" style={{ maxWidth: "30%" }} />
+              </Box>
+            </Box></Link>
 
             <Typography component="h1" variant="h5">
               Tạo tài khoản

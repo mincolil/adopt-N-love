@@ -15,6 +15,12 @@ import {
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Fade from "@mui/material/Fade";
 import Logo from "../../images/logo.png";
+import AccountMenu from "../AccountMeun/AccountMeun";
+import { useState } from "react";
+import { useEffect } from "react";
+import { NavLink } from "react-router-dom";
+import { styled } from "@mui/material/styles";
+import useAuth from "../../hooks/useAuth";
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -34,6 +40,17 @@ const Header = () => {
     timeout: { enter: 225, exit: 195 },
   };
 
+  const [isLoggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setLoggedIn(!!token);
+  }, []);
+
+  const context = useAuth();
+  const [productNumber, setProductNumber] = useState(0);
+  const [serviceNumber, setServiceNumber] = useState(0);
+
   return (
     <DsAppBar position="fixed" style={{ backgroundColor: "#ffffff" }}>
       <Container>
@@ -52,7 +69,7 @@ const Header = () => {
           </Grid>
           {/* Navigation Buttons */}
           <Hidden smDown>
-            <Grid item xl={6}>
+            <Grid item xl={8}>
               <Box
                 sx={{
                   color: "#000",
@@ -63,7 +80,7 @@ const Header = () => {
                 }}
               >
                 <DsButton color="inherit">Trang chủ</DsButton>
-                <DsButton color="inherit">Thông tin</DsButton>
+                <DsButton color="inherit">Blog</DsButton>
                 <DsButton color="inherit" onClick={handleClick}>
                   Diễn đàn
                   <ArrowDropDownIcon />
@@ -103,7 +120,37 @@ const Header = () => {
                 >
                   Dịch vụ
                 </DsButton>
-                <DsButton color="inherit">Liên hệ</DsButton>
+                {!isLoggedIn &&
+                  <NavLink to="/sign-in">
+                    <DsButton
+                      color="warning"
+                      href="service-homepage"
+                      sx={{
+                        fontFamily: "'Poppins', sans-serif !important",
+                        fontSize: "16px",
+                        color: "#000000",
+                      }}
+                    >
+                      Đăng nhập
+                    </DsButton>
+                  </NavLink>
+                }
+                {!isLoggedIn &&
+                  <NavLink to="/sign-up">
+                    <DsButton
+                      color="warning"
+                      href="service-homepage"
+                      sx={{
+                        fontFamily: "'Poppins', sans-serif !important",
+                        fontSize: "16px",
+                        color: "#000000"
+                      }}
+                    >
+                      Đăng ký
+                    </DsButton>
+                  </NavLink>
+                }
+                {isLoggedIn && <DsButton><AccountMenu /></DsButton>}
               </Box>
             </Grid>
           </Hidden>

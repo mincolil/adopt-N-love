@@ -21,7 +21,6 @@ import {
   Paper,
   InputBase,
   FormControl,
-  InputLabel,
   Select,
   MenuItem,
 } from "@mui/material";
@@ -216,7 +215,7 @@ export default function ServiceList() {
           </Grid>
           <Grid item sm={12} md={9} lg={9} className="content-area">
             <Box className="site-main">
-              <Typography variant="h3">Sản phẩm</Typography>
+              <Typography variant="h3">Dịch vụ</Typography>
               <Grid container className="shop-top-control">
                 <Grid item xl={9} lg={9}>
                   <Paper
@@ -230,7 +229,7 @@ export default function ServiceList() {
                   >
                     <InputBase
                       sx={{ ml: 1, flex: 1 }}
-                      placeholder="Tìm sản phẩm ... "
+                      placeholder="Tìm dịch vụ ... "
                       value={searchTerm}
                       onChange={handleSearchChange}
                     />

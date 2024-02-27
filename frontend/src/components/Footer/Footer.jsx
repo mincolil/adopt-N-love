@@ -27,7 +27,7 @@ const Footer = () => {
             <Grid item xl={3} md={3} lg={3}>
               <Box className="footer_widget">
                 <Typography variant="h3" className="footer_title">
-                  Contact Us
+                  Liên hệ
                 </Typography>
                 <List className="address_line">
                   <ListItem sx={{ paddingLeft: "0" }}>
@@ -61,7 +61,7 @@ const Footer = () => {
             <Grid item xl={3} md={3} lg={3}>
               <Box className="footer_widget">
                 <Typography variant="h3" className="footer_title">
-                  Our Services
+                  Dịch vụ
                 </Typography>
                 <List className="links">
                   <ListItem sx={{ paddingLeft: "0" }}>

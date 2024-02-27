@@ -24,10 +24,11 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import SearchIcon from "@mui/icons-material/Search";
 import Grid from "@mui/material/Unstable_Grid2";
-import "./ProductList.css";
+import "./styled/ProductList.css";
 import styled from "styled-components";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -42,11 +43,14 @@ const DsCheckbox = styled(Checkbox)`
 `;
 
 function ProductItem({ product }) {
-  const { id, productName, quantity, price, productImage } = product;
+  const { _id, productName, quantity, price, productImage } = product;
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
       <Card className="product-card">
-        <CardActionArea>
+        <CardActionArea
+          component={RouterLink}
+          to={`/product-homepage/${_id}`}
+        >
           <CardMedia
             component="img"
             height="200"
@@ -87,12 +91,10 @@ function ProductItem({ product }) {
 
 export default function ProductList() {
   const [checkedItems, setCheckedItems] = useState({
-    "New Arrival": false,
-    Dining: false,
-    Desks: false,
-    Accents: false,
-    Accessories: false,
-    Tables: false,
+    "Vệ sinh và chăm sóc": false,
+    "Thuốc": false,
+    "Phụ kiện": false,
+    "Thực phẩm dinh dưỡng": false
   });
 
   const handleCheckboxChange = (event) => {
@@ -101,6 +103,7 @@ export default function ProductList() {
   };
 
   const [data, setData] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [totalProducts, setTotalProducts] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -124,12 +127,13 @@ export default function ProductList() {
 
   useEffect(() => {
     loadAllProduct(currentPage);
+    // loadAllCategory();
   }, []);
 
   const loadAllProduct = async (page) => {
     try {
       const loadData = await axios.get(
-        `${BASE_URL}/product?page=${page}&limit=9`
+        `${BASE_URL}/product?page=${page}&limit=12`
       );
       if (loadData.error) {
         toast.error(loadData.error);
@@ -145,6 +149,26 @@ export default function ProductList() {
       console.log(err);
     }
   };
+
+  // const loadAllCategory = async (page) => {
+  //   try {
+  //     const loadCategory = await axios.get(
+  //       `${BASE_URL}/category`
+  //     );
+  //     if (loadData.error) {
+  //       toast.error(loadData.error);
+  //     } else {
+  //       setTotalPages(loadData.data.pages);
+  //       // console.log("Check totalPage", totalPages);
+  //       setData(loadData.data.docs);
+  //       setTotalProducts(loadData.data.limit);
+  //       // console.log(loadData.data.docs);
+  //       setCurrentPage(loadData.data.page);
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
   // --------------------- Click paging -----------------------------
   const [categoryId, setCategoryId] = useState("");
@@ -246,7 +270,7 @@ export default function ProductList() {
             <Box className="product_filter">
               <Box className="category">
                 <Typography variant="h3" className="title">
-                  Categories
+                  Danh mục
                 </Typography>
                 <List className="list-categories">
                   {Object.keys(checkedItems).map((label) => (
@@ -271,7 +295,7 @@ export default function ProductList() {
               </Box>
               <Box className="price">
                 <Typography variant="h3" className="title">
-                  Price
+                  Giá
                 </Typography>
                 <Box className="price-slider-wrapper">
                   <Slider

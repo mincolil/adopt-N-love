@@ -1,0 +1,35 @@
+.main-content-cart {
+  position: relative;
+  top: 150px;
+}
+
+.custom_blog_title {
+  font-size: 20px !important;
+  letter-spacing: 0;
+  font-weight: 600 !important;
+  color: #222 !important;
+  margin-bottom: 40px !important;
+  text-transform: uppercase !important;
+  font-family: "Poppins", sans-serif !important;
+}
+
+.cart_item {
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.product-thumbnail {
+  width: 140px !important;
+}
+
+.product-thumbnail img {
+  width: inherit;
+  height: auto;
+}
+
+.product-name p {
+  font-weight: 500 !important;
+  font-size: 16px !important;
+  font-family: "Poppins", sans-serif !important;
+  color: #ab8e66 !important;
+  text-transform: capitalize;
+}

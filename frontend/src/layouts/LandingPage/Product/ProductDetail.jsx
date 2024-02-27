@@ -9,7 +9,17 @@ import {
   Box,
   IconButton,
   Breadcrumbs,
-  Chip,
+  Tabs,
+  Tab,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  TextField,
+  Rating,
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import Grid from "@mui/material/Unstable_Grid2";
@@ -18,8 +28,30 @@ import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
 import axios from "axios";
 import { toast } from "react-toastify";
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+
 
 const BASE_URL = "http://localhost:3500";
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+      <div
+          role="tabpanel"
+          hidden={value !== index}
+          id={`product-tabpanel-${index}`}
+          aria-labelledby={`product-tab-${index}`}
+          {...other}
+      >
+          {value === index && (
+              <Box sx={{ p: 3 }}>
+                  <Typography>{children}</Typography>
+              </Box>
+          )}
+      </div>
+  );
+}
 
 const ProductDetail = () => {
   const { productId } = useParams();
@@ -27,6 +59,11 @@ const ProductDetail = () => {
   const [quantitySell, setQuantitySell] = useState(1);
   const [expanded, setExpanded] = useState("panel1");
   const context = useAuth();
+  const [tab, setTab] = useState(0);
+
+  const handleChangeTab = (event, newTab) => {
+    setTab(newTab);
+  };
 
   // ----------------------------------- API GET PRODUCT BY ID --------------------------------
   useEffect(() => {
@@ -51,7 +88,11 @@ const ProductDetail = () => {
     <>
       <Header />
       <Container>
-        <Breadcrumbs aria-label="breadcrumb" sx={{position: "relative", top: "120px"}}>
+        <Breadcrumbs
+          aria-label="breadcrumb"
+          sx={{ position: "relative", top: "120px" }}
+          separator={<KeyboardDoubleArrowRightIcon fontSize="small" />}
+        >
           <Link
             underline="hover"
             sx={{ display: "flex", alignItems: "center" }}
@@ -144,6 +185,76 @@ const ProductDetail = () => {
               </Box>
             </Grid>
           </Grid>
+        </Box>
+        <Box className="tab-details-product">
+          <Tabs value={tab} onChange={handleChangeTab} aria-label="product tabs" sx={{justifyContent:"center"}}>
+            <Tab label="Mô tả"/>
+            <Tab label="Đánh giá" />
+          </Tabs>
+          <TabPanel value={tab} index={0}>
+            <Typography paragraph>
+              {product && product.description}
+            </Typography>
+          </TabPanel>
+          <TabPanel value={tab} index={1}>
+            <Typography variant="h6" gutterBottom>
+              1 review for <span>Glorious Eau</span>
+            </Typography>
+            <Box className="comment">
+              <Box className="comment-container">
+                <Typography variant="subtitle1">
+                  <strong>Nguyen Minh Hieu</strong> - <span>June 7, 2023</span>
+                </Typography>
+                <Typography paragraph>
+                  Simple and effective design. One of my favorites.
+                </Typography>
+              </Box>
+            </Box>
+            <Box className="review_form_wrapper">
+              <Box className="review_form">
+                <Typography variant="h6" gutterBottom>
+                  Add a review
+                </Typography>
+                <form className="comment-form-review">
+                  <Typography className="comment-notes" gutterBottom>
+                    Your email address will not be published. Required fields
+                    are marked <span className="required">*</span>
+                  </Typography>
+                  <Box className="comment-form-rating">
+                    <Typography>Your rating</Typography>
+                    <Rating name="simple-controlled" />
+                  </Box>
+                  <TextField
+                    id="review"
+                    name="review"
+                    label="Your review"
+                    multiline
+                    rows={4}
+                    fullWidth
+                    required
+                  />
+                  <TextField
+                    id="name"
+                    name="name"
+                    label="Name"
+                    fullWidth
+                    required
+                  />
+                  <TextField
+                    id="email"
+                    name="email"
+                    label="Email"
+                    type="email"
+                    fullWidth
+                    required
+                  />
+                  <Button type="submit" variant="contained" color="primary">
+                    Submit
+                  </Button>
+                </form>
+              </Box>
+            </Box>
+          </TabPanel>
         </Box>
       </Container>
       <Footer />

@@ -21,14 +21,14 @@ import {
   Paper,
   InputBase,
   FormControl,
-  InputLabel,
   Select,
   MenuItem,
 } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import SearchIcon from "@mui/icons-material/Search";
 import Grid from "@mui/material/Unstable_Grid2";
-import "./ProductList.css";
+import "./styled/ProductList.css";
 import styled from "styled-components";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -43,11 +43,14 @@ const DsCheckbox = styled(Checkbox)`
 `;
 
 function ProductItem({ product }) {
-  const { id, productName, quantity, price, productImage } = product;
+  const { _id, productName, quantity, price, productImage } = product;
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
       <Card className="product-card">
-        <CardActionArea>
+        <CardActionArea
+          component={RouterLink}
+          to={`/product-homepage/${_id}`}
+        >
           <CardMedia
             component="img"
             height="200"
@@ -88,12 +91,10 @@ function ProductItem({ product }) {
 
 export default function ProductList() {
   const [checkedItems, setCheckedItems] = useState({
-    "New Arrival": false,
-    Dining: false,
-    Desks: false,
-    Accents: false,
-    Accessories: false,
-    Tables: false,
+    "Vệ sinh và chăm sóc": false,
+    "Thuốc": false,
+    "Phụ kiện": false,
+    "Thực phẩm dinh dưỡng": false
   });
 
   const handleCheckboxChange = (event) => {
@@ -101,23 +102,14 @@ export default function ProductList() {
     setCheckedItems({ ...checkedItems, [name]: checked });
   };
 
+  const [data, setData] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [price, setPrice] = useState([0, 200]);
-  const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = React.useState("price-asc");
-  const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 12;
-
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = products.slice(
-    indexOfFirstProduct,
-    indexOfLastProduct
-  );
-
-  const handlePageChange = (event, value) => {
-    setCurrentPage(value);
-  };
 
   const handlePriceChange = (event, newPrice) => {
     setPrice(newPrice);
@@ -131,18 +123,140 @@ export default function ProductList() {
     setSortBy(event.target.value);
   };
 
+  // ----------------------------------- API GET ALL PRODUCT --------------------------------
+
   useEffect(() => {
-    loadAllProduct();
+    loadAllProduct(currentPage);
+    // loadAllCategory();
   }, []);
 
-  const loadAllProduct = () => {
-    axios
-      .get(`${BASE_URL}/product`)
-      .then((res) => {
-        const productList = res.data.docs;
-        setProducts(productList);
-      })
-      .catch((error) => console.log(error));
+  const loadAllProduct = async (page) => {
+    try {
+      const loadData = await axios.get(
+        `${BASE_URL}/product?page=${page}&limit=12`
+      );
+      if (loadData.error) {
+        toast.error(loadData.error);
+      } else {
+        setTotalPages(loadData.data.pages);
+        // console.log("Check totalPage", totalPages);
+        setData(loadData.data.docs);
+        setTotalProducts(loadData.data.limit);
+        // console.log(loadData.data.docs);
+        setCurrentPage(loadData.data.page);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // const loadAllCategory = async (page) => {
+  //   try {
+  //     const loadCategory = await axios.get(
+  //       `${BASE_URL}/category`
+  //     );
+  //     if (loadData.error) {
+  //       toast.error(loadData.error);
+  //     } else {
+  //       setTotalPages(loadData.data.pages);
+  //       // console.log("Check totalPage", totalPages);
+  //       setData(loadData.data.docs);
+  //       setTotalProducts(loadData.data.limit);
+  //       // console.log(loadData.data.docs);
+  //       setCurrentPage(loadData.data.page);
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
+
+  // --------------------- Click paging -----------------------------
+  const [categoryId, setCategoryId] = useState("");
+  const handlePageClick = (event, value) => {
+    setCurrentPage(value);
+    if (categoryId) {
+      // console.log(categoryId);
+      hanldeClickCategory(value, categoryId);
+    } else if (keyword.trim()) {
+      searchProductByName(value);
+    } else {
+      // console.log(categoryId);
+      loadAllProduct(value);
+    }
+  };
+
+  // --------------------- GET ALL PRODUCT BY CATEGORY ID PRODUCT -----------------------------
+  async function hanldeClickCategory(page, cateId) {
+    // console.log("Check data cate ID", cateId);
+    setCategoryId(cateId);
+    if (cateId === undefined || cateId === "") {
+      loadAllProduct(currentPage);
+    } else {
+      try {
+        const loadData = await axios.get(
+          `http://localhost:3500/product?page=${page}&categoryId=${cateId}&limit=9`
+        );
+        if (loadData.error) {
+          toast.error(loadData.error);
+        } else {
+          // console.log("Check loaddata", loadData.data);
+          setTotalPages(loadData.data.pages);
+          // console.log("Check totalPage", totalPages);
+          setData(loadData.data.docs);
+          setTotalProducts(loadData.data.limit);
+          setCurrentPage(loadData.data.page);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }
+
+  useEffect(() => {
+    hanldeClickCategory();
+  }, []);
+
+  // --------------------- Hanlde Search -----------------------------
+  const [keyword, setKeyword] = useState("");
+
+  const handleKeywordChange = (e) => {
+    setKeyword(e.target.value);
+  };
+
+  const handleSearchClick = async () => {
+    if (keyword.trim() === "") {
+      toast.warning("Hãy nhập kết quả bạn cần tìm");
+      loadAllProduct(currentPage);
+    } else {
+      searchProductByName();
+    }
+  };
+
+  // ----------------------------------- GET ALL PRODUCTS BY PRODUCT NAME --------------------------------
+  const searchProductByName = async (page) => {
+    try {
+      const loadData = await axios.get(
+        `${BASE_URL}/product?product=${keyword.trim()}&page=${page}&limit=9`
+      );
+      if (loadData.data.error) {
+        toast.warning(
+          "Kết quả " +
+            "[" +
+            keyword +
+            "]" +
+            " bạn vừa tìm không có! Vui lòng nhập lại. "
+        );
+        loadAllProduct(currentPage);
+      } else {
+        setData(loadData.data.docs);
+        setTotalProducts(loadData.data.limit);
+        setTotalPages(loadData.data.pages);
+        // console.log(loadData.data);
+        setCurrentPage(loadData.data.page);
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -156,7 +270,7 @@ export default function ProductList() {
             <Box className="product_filter">
               <Box className="category">
                 <Typography variant="h3" className="title">
-                  Categories
+                  Danh mục
                 </Typography>
                 <List className="list-categories">
                   {Object.keys(checkedItems).map((label) => (
@@ -181,7 +295,7 @@ export default function ProductList() {
               </Box>
               <Box className="price">
                 <Typography variant="h3" className="title">
-                  Price
+                  Giá
                 </Typography>
                 <Box className="price-slider-wrapper">
                   <Slider
@@ -263,7 +377,7 @@ export default function ProductList() {
                 </Grid>
               </Grid>
               <Grid container spacing={2}>
-                {currentProducts.map((product, index) => (
+                {data.map((product, index) => (
                   <ProductItem key={index} product={product} />
                 ))}
               </Grid>
@@ -272,9 +386,9 @@ export default function ProductList() {
                 sx={{ paddingTop: "20px", alignItems: "center" }}
               >
                 <Pagination
-                  count={Math.ceil(products.length / productsPerPage)}
+                  count={totalPages}
+                  onChange={handlePageClick}
                   page={currentPage}
-                  onChange={handlePageChange}
                   size="large"
                   showFirstButton
                   showLastButton

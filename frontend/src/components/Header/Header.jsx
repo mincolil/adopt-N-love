@@ -100,26 +100,31 @@ const Header = () => {
                   <MenuItem onClick={handleClose}>Blog 2</MenuItem>
                   <MenuItem onClick={handleClose}>Blog 3</MenuItem>
                 </Menu>
-                <DsButton
-                  color="inherit"
-                  href="product-homepage"
-                  sx={{
-                    fontFamily: "'Poppins', sans-serif !important",
-                    fontSize: "16px",
-                  }}
-                >
-                  Sản phẩm
-                </DsButton>
-                <DsButton
-                  color="inherit"
-                  href="service-homepage"
-                  sx={{
-                    fontFamily: "'Poppins', sans-serif !important",
-                    fontSize: "16px",
-                  }}
-                >
-                  Dịch vụ
-                </DsButton>
+                <NavLink to="/product-homepage">
+                  <DsButton
+                    color="inherit"
+
+                    sx={{
+                      fontFamily: "'Poppins', sans-serif !important",
+                      fontSize: "16px",
+                      color: "#000000"
+                    }}
+                  >
+                    Sản phẩm
+                  </DsButton>
+                </NavLink>
+                <NavLink to="/service-homepage">
+                  <DsButton
+                    color="inherit"
+                    sx={{
+                      fontFamily: "'Poppins', sans-serif !important",
+                      fontSize: "16px",
+                      color: "#000000"
+                    }}
+                  >
+                    Dịch vụ
+                  </DsButton>
+                </NavLink>
                 {!isLoggedIn &&
                   <NavLink to="/sign-in">
                     <DsButton

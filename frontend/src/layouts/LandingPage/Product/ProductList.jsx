@@ -165,7 +165,7 @@ export default function ProductList() {
   async function hanldeClickCategory(page, cateId) {
     // console.log("Check data cate ID", cateId);
     setCategoryId(cateId);
-    if (cateId == undefined || cateId == "") {
+    if (cateId === undefined || cateId === "") {
       loadAllProduct(currentPage);
     } else {
       try {

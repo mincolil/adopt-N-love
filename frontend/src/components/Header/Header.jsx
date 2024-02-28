@@ -22,6 +22,12 @@ import Fade from "@mui/material/Fade";
 import Logo from "../../images/logo.png";
 import useAuth from "../../hooks/useAuth";
 import AccountMenu from "../AccountMeun/AccountMeun";
+import { useState } from "react";
+import { useEffect } from "react";
+import { NavLink } from "react-router-dom";
+import { styled } from "@mui/material/styles";
+import useAuth from "../../hooks/useAuth";
+
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -57,6 +63,17 @@ const Header = () => {
     fontSize: "15px",
   };
 
+  const [isLoggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setLoggedIn(!!token);
+  }, []);
+
+  const context = useAuth();
+  const [productNumber, setProductNumber] = useState(0);
+  const [serviceNumber, setServiceNumber] = useState(0);
+
   return (
     <DsAppBar position="fixed" style={{ backgroundColor: "#ffffff" }}>
       <Container>
@@ -75,7 +92,7 @@ const Header = () => {
           </Grid>
           {/* Navigation Buttons */}
           <Hidden smDown>
-            <Grid item xl={6}>
+            <Grid item xl={8}>
               <Box
                 sx={{
                   color: "#000",
@@ -85,6 +102,7 @@ const Header = () => {
                   },
                 }}
               >
+
                 <DsButton
                   color="inherit"
                   href="/"
@@ -95,6 +113,7 @@ const Header = () => {
                 >
                   Trang chủ
                 </DsButton>
+
                 <DsButton color="inherit" onClick={handleClick}>
                   Diễn đàn
                   <ArrowDropDownIcon />
@@ -114,6 +133,7 @@ const Header = () => {
                   <MenuItem onClick={handleClose}>Blog 2</MenuItem>
                   <MenuItem onClick={handleClose}>Blog 3</MenuItem>
                 </Menu>
+
                 <DsButton
                   color="inherit"
                   href="/product-homepage"

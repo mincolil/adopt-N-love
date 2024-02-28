@@ -88,9 +88,9 @@ const getBookingDetailByBookingId = async (req, res) => {
 
 const createBookingDetail = async (req, res) => {
     try {
-        const { serviceId, quantity } = req.body;
+        const { serviceId, petId, quantity } = req.body;
         const bookingId = req.params.bookingId;
-        const newBookingDetail = new BookingDetail({ bookingId, serviceId, quantity });
+        const newBookingDetail = new BookingDetail({ bookingId, serviceId, petId, quantity });
         const result = await newBookingDetail.save();
         if (!result) {
             return res.status(404).json({

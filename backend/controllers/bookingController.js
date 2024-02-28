@@ -1,5 +1,6 @@
 const Booking = require('../models/Booking');
 const BookingDetail = require('../models/BookingDetail');
+const Pet = require('../models/Pet');
 
 const getAllBooking = async (req, res) => {
     try {
@@ -72,10 +73,11 @@ const getAllBookingByUserId = async (req, res) => {
 
 const createBooking = async (req, res) => {
     try {
-        const { userId, petId, totalPrice } = req.body;
+        // const { userId, petId, totalPrice } = req.body;
+        const { userId, totalPrice } = req.body;
         const booking = new Booking();
         booking.userId = userId;
-        booking.petId = petId;
+        // booking.petId = petId;
         booking.totalPrice = totalPrice;
         booking.status = 'Chờ xác nhận';
         const result = await booking.save();
@@ -149,6 +151,19 @@ const updateStatus = async (req, res) => {
             booking.status = bookingStatus;
             const result = await booking.save();
             res.status(200).json(result)
+            //level up pet if status = 'hoàn thành'
+            if (bookingStatus === 'Hoàn thành') {
+                const bookingDetails = await BookingDetail.find({ bookingId });
+                if (bookingDetails != null) {
+                    bookingDetails.forEach(async (bookingDetail) => {
+                        const pet = await Pet.findById(bookingDetail.petId);
+                        if (pet != null) {
+                            pet.rank = pet.rank + 1;
+                            await pet.save();
+                        }
+                    })
+                }
+            }
         }
     } catch (err) {
         console.log(err)

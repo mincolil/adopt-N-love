@@ -16,10 +16,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.get('/', petController.getAll)
-    .post('/', validatePet.validateCreatePet, petController.createPet)
-    .patch('/', validatePet.validateUpdatePet, petController.updatePet)
-    .get('/username', petController.getPetByUsername)
-    .get('/userid', petController.getPetByUserId)
+    .post('/', validatePet.validateCreatePet, petController.createPet) //test
+    .patch('/', validatePet.validateUpdatePet, petController.updatePet) //test
+    .get('/username', petController.getPetByUsername) //test
+    .get('/userid', petController.getPetByUserId) //test
     .put('/updateStatus', petController.updateStatus)
     .post('/upload', upload.single('image'), petController.uploadPetImage)
     .post('/booking', petController.getPetListForServiceBooking)

@@ -36,7 +36,8 @@ const getAll = async (req, res) => {
         // Include products with discountedPrice in the response
         const response = {
             ...result,
-            docs: productsWithDiscountedPrice
+            docs: productsWithDiscountedPrice,
+            query: query
         };
         res.status(200).json(response);
 

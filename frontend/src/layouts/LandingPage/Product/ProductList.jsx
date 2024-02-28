@@ -36,6 +36,7 @@ import "./styled/ProductList.css";
 import styled from "styled-components";
 import axios from "axios";
 import { toast } from "react-toastify";
+import useAuth from "../../../hooks/useAuth";
 
 const BASE_URL = "http://localhost:3500";
 
@@ -46,8 +47,42 @@ const DsCheckbox = styled(Checkbox)`
   }
 `;
 
+
 function ProductItem({ product }) {
   const { _id, productName, quantity, price, productImage } = product;
+  const [quantitySell, setQuantitySell] = useState(1);
+  const context = useAuth();
+
+  const handleAddToCart = async (id) => {
+    if (context.auth.token === undefined) {
+      alert("Bạn chưa đăng nhập, vui lòng đăng nhập !");
+    } else if (
+      window.confirm("Bạn có muốn thêm sản phẩm này không ?") == true
+    ) {
+      try {
+        const addProductToCart = await axios
+          .post(
+            `${BASE_URL}/cartProduct/add-to-cart`,
+            {
+              productId: id,
+              quantity: quantitySell,
+            },
+            {
+              headers: { Authorization: context.auth.token },
+              withCredentials: true,
+            }
+          )
+          .then((data) => {
+            toast.success("Thêm sản phẩm vào giỏ hàng thành công");
+            context.handleLoadCartProduct();
+          });
+      } catch (err) {
+        // console.log(err);
+        toast.error(err.response.data.error);
+      }
+    }
+  };
+
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
       <Card className="product-card">
@@ -81,6 +116,7 @@ function ProductItem({ product }) {
             size="large"
             color="primary"
             aria-label="add to shopping cart"
+            onClick={() => handleAddToCart(product._id)}
           >
             <AddShoppingCartIcon />
           </IconButton>
@@ -109,15 +145,10 @@ export default function ProductList() {
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [price, setPrice] = useState([0, 200]);
-  const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = React.useState("price-asc");
 
   const handlePriceChange = (event, newPrice) => {
     setPrice(newPrice);
-  };
-
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
   };
 
   const handleSortChange = (event) => {
@@ -128,7 +159,6 @@ export default function ProductList() {
 
   useEffect(() => {
     loadAllProduct(currentPage);
-    // loadAllCategory();
   }, []);
 
   const loadAllProduct = async (page) => {
@@ -150,26 +180,6 @@ export default function ProductList() {
       console.log(err);
     }
   };
-
-  // const loadAllCategory = async (page) => {
-  //   try {
-  //     const loadCategory = await axios.get(
-  //       `${BASE_URL}/category`
-  //     );
-  //     if (loadData.error) {
-  //       toast.error(loadData.error);
-  //     } else {
-  //       setTotalPages(loadData.data.pages);
-  //       // console.log("Check totalPage", totalPages);
-  //       setData(loadData.data.docs);
-  //       setTotalProducts(loadData.data.limit);
-  //       // console.log(loadData.data.docs);
-  //       setCurrentPage(loadData.data.page);
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
 
   // --------------------- Click paging -----------------------------
   const [categoryId, setCategoryId] = useState("");
@@ -224,6 +234,13 @@ export default function ProductList() {
     setKeyword(e.target.value);
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleSearchClick();
+    }
+  };
+
   const handleSearchClick = async () => {
     if (keyword.trim() === "") {
       toast.warning("Hãy nhập kết quả bạn cần tìm");
@@ -237,7 +254,7 @@ export default function ProductList() {
   const searchProductByName = async (page) => {
     try {
       const loadData = await axios.get(
-        `${BASE_URL}/product?product=${keyword.trim()}&page=${page}&limit=9`
+        `${BASE_URL}/product?product=${keyword.trim()}&page=${page}&limit=12`
       );
       if (loadData.data.error) {
         toast.warning(
@@ -368,10 +385,11 @@ export default function ProductList() {
                     <InputBase
                       sx={{ ml: 1, flex: 1 }}
                       placeholder="Tìm sản phẩm ... "
-                      value={searchTerm}
-                      onChange={handleSearchChange}
+                      value={keyword}
+                      onChange={handleKeywordChange}
+                      onKeyDown={handleKeyDown}
                     />
-                    <IconButton sx={{ p: "10px" }} aria-label="search">
+                    <IconButton sx={{ p: "10px" }} aria-label="search" onClick={handleSearchClick}>
                       <SearchIcon />
                     </IconButton>
                   </Paper>

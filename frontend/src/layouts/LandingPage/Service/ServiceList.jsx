@@ -23,14 +23,20 @@ import {
   FormControl,
   Select,
   MenuItem,
+  Breadcrumbs,
+  Link,
 } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import SearchIcon from "@mui/icons-material/Search";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import HomeIcon from "@mui/icons-material/Home";
 import Grid from "@mui/material/Unstable_Grid2";
 import "./ServiceList.css";
 import styled from "styled-components";
 import axios from "axios";
 import { toast } from "react-toastify";
+import useAuth from "../../../hooks/useAuth";
+import { Link as RouterLink } from "react-router-dom";
 
 const BASE_URL = "http://localhost:3500";
 
@@ -42,11 +48,11 @@ const DsCheckbox = styled(Checkbox)`
 `;
 
 function ServiceItem({ service }) {
-  const { serviceName, price, serviceImage } = service;
+  const { _id, serviceName, price, serviceImage } = service;
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
       <Card className="product-card">
-        <CardActionArea>
+        <CardActionArea component={RouterLink} to={`/service-homepage/${_id}`}>
           <CardMedia
             component="img"
             height="200"
@@ -86,7 +92,6 @@ function ServiceItem({ service }) {
 }
 
 export default function ServiceList() {
-
   const [checkedItems, setCheckedItems] = useState({
     "Khám và điều trị": false,
     "Thẩm mỹ": false,
@@ -103,19 +108,12 @@ export default function ServiceList() {
   const [services, setServices] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = React.useState("price-asc");
+
+  const [data, setData] = useState([]);
+  const [totalServices, setTotalServices] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 12;
-
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = services.slice(
-    indexOfFirstProduct,
-    indexOfLastProduct
-  );
-
-  const handlePageChange = (event, value) => {
-    setCurrentPage(value);
-  };
+  const context = useAuth();
 
   const handlePriceChange = (event, newPrice) => {
     setPrice(newPrice);
@@ -129,19 +127,121 @@ export default function ServiceList() {
     setSortBy(event.target.value);
   };
 
+  // ----------------------------------- API GET ALL SERVICE --------------------------------
   useEffect(() => {
-    loadAllService();
+    loadAllService(currentPage);
   }, []);
 
-  const loadAllService = () => {
-    axios
-      .get(`${BASE_URL}/service`)
-      .then((res) => {
-        const serviceList = res.data.docs;
-        setServices(serviceList);
-      })
-      .catch((error) => console.log(error));
+  const loadAllService = async (page) => {
+    try {
+      const loadData = await axios.get(
+        `${BASE_URL}/service?page=${page}&limit=12&status=true`
+      );
+      if (loadData.error) {
+        toast.error(loadData.error);
+      } else {
+        // console.log("check data", loadData.data.docs);
+        setTotalPages(loadData.data.pages);
+        // console.log("Check totalPage", totalPages);
+        setData(loadData.data.docs);
+        setTotalServices(loadData.data.limit);
+        // console.log(loadData.data);
+        setCurrentPage(loadData.data.page);
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
+
+   // --------------------- GET ALL SERVICE BY CATEGORY ID SERVICE -----------------------------
+   async function hanldeClickCategory(page, cateId) {
+    // console.log("Check data cate ID", cateId);
+    setCategoryId(cateId);
+    if (cateId === undefined || cateId === "") {
+      loadAllService(currentPage);
+    } else {
+      try {
+        const loadData = await axios.get(
+          `http://localhost:3500/service?page=${page}&categoryId=${cateId}&status=true&limit=9`
+        );
+        if (loadData.error) {
+          toast.error(loadData.error);
+        } else {
+          // console.log("Check loaddata", loadData.data);
+          setTotalPages(loadData.data.pages);
+          // console.log("Check totalPage", totalPages);
+          setData(loadData.data.docs);
+          setTotalServices(loadData.data.limit);
+          setCurrentPage(loadData.data.page);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }
+
+  useEffect(() => {
+    hanldeClickCategory();
+  }, []);
+
+  // --------------------- Hanlde Search -----------------------------
+  const [keyword, setKeyword] = useState("");
+
+  // --------------------- Click paging -----------------------------
+  const [categoryId, setCategoryId] = useState("");
+  const handlePageClick = (event, value) => {
+    setCurrentPage(value);
+    if (categoryId) {
+      // console.log(categoryId);
+      hanldeClickCategory(value, categoryId);
+    } else if (keyword.trim()) {
+      searchServiceByName(value);
+    } else {
+      // console.log(categoryId);
+      loadAllService(value);
+    }
+  };
+
+  const handleKeywordChange = (e) => {
+    setKeyword(e.target.value);
+  };
+
+  const handleSearchClick = async () => {
+    if (keyword.trim() === "") {
+      toast.warning("Hãy nhập kết quả bạn cần tìm");
+      loadAllService(currentPage);
+    } else {
+      searchServiceByName();
+    }
+  };
+
+   // ----------------------------------- GET ALL SERVICE BY SERVICE NAME --------------------------------
+   const searchServiceByName = async (page) => {
+    try {
+      const loadData = await axios.get(
+        `${BASE_URL}/service?service=${keyword.trim()}&page=${page}&limit=9`
+      );
+      if (loadData.data.error) {
+        toast.warning(
+          "Kết quả " +
+            "[" +
+            keyword +
+            "]" +
+            " bạn vừa tìm không có! Vui lòng nhập lại."
+        );
+        loadAllService(currentPage);
+      } else {
+        setData(loadData.data.docs);
+        setTotalServices(loadData.data.limit);
+        setTotalPages(loadData.data.pages);
+        // console.log(loadData.data);
+        setCurrentPage(loadData.data.page);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
 
   return (
     <>
@@ -149,6 +249,29 @@ export default function ServiceList() {
       <Container
         sx={{ position: "relative", top: "120px", paddingBottom: "200px" }}
       >
+        <Breadcrumbs
+          aria-label="breadcrumb"
+          sx={{ marginBottom: "30px" }}
+          separator={<KeyboardDoubleArrowRightIcon fontSize="small" />}
+        >
+          <Link
+            underline="hover"
+            sx={{ display: "flex", alignItems: "center" }}
+            color="inherit"
+            href="/"
+          >
+            <HomeIcon sx={{ mr: 0.5 }} fontSize="medium" />
+            Trang chủ
+          </Link>
+          <Link
+            underline="hover"
+            sx={{ display: "flex", alignItems: "center" }}
+            color="#000000"
+            href="/product-homepage"
+          >
+            Dịch vụ
+          </Link>
+        </Breadcrumbs>
         <Grid container spacing={1}>
           <Grid item sm={12} md={3} lg={3} className="sidebar">
             <Box className="product_filter">
@@ -261,7 +384,7 @@ export default function ServiceList() {
                 </Grid>
               </Grid>
               <Grid container spacing={2}>
-                {currentProducts.map((service, index) => (
+                {data.map((service, index) => (
                   <ServiceItem key={index} service={service} />
                 ))}
               </Grid>
@@ -270,9 +393,9 @@ export default function ServiceList() {
                 sx={{ paddingTop: "20px", alignItems: "center" }}
               >
                 <Pagination
-                  count={Math.ceil(services.length / productsPerPage)}
+                  count={totalPages}
+                  onChange={handlePageClick}
                   page={currentPage}
-                  onChange={handlePageChange}
                   size="large"
                   showFirstButton
                   showLastButton

@@ -11,7 +11,7 @@ import {
   Box,
   Grid,
   Container,
-  Tooltip
+  Tooltip,
 } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import LoginIcon from "@mui/icons-material/Login";
@@ -80,12 +80,21 @@ const Header = () => {
                 sx={{
                   color: "#000",
                   "& > button": {
-                    fontSize: "16px",
+                    fontSize: "17px",
                     fontFamily: "'Poppins', sans-serif !important",
                   },
                 }}
               >
-                <DsButton color="inherit">Trang chủ</DsButton>
+                <DsButton
+                  color="inherit"
+                  href="/"
+                  sx={{
+                    fontFamily: "'Poppins', sans-serif !important",
+                    fontSize: "17px",
+                  }}
+                >
+                  Trang chủ
+                </DsButton>
                 <DsButton color="inherit" onClick={handleClick}>
                   Diễn đàn
                   <ArrowDropDownIcon />
@@ -107,20 +116,20 @@ const Header = () => {
                 </Menu>
                 <DsButton
                   color="inherit"
-                  href="product-homepage"
+                  href="/product-homepage"
                   sx={{
                     fontFamily: "'Poppins', sans-serif !important",
-                    fontSize: "16px",
+                    fontSize: "17px",
                   }}
                 >
                   Sản phẩm
                 </DsButton>
                 <DsButton
                   color="inherit"
-                  href="service-homepage"
+                  href="/service-homepage"
                   sx={{
                     fontFamily: "'Poppins', sans-serif !important",
-                    fontSize: "16px",
+                    fontSize: "17px",
                   }}
                 >
                   Dịch vụ
@@ -163,7 +172,7 @@ const Header = () => {
                   title="Giỏ hàng sản phẩm"
                   style={{ position: "relative" }}
                 >
-                  <NavLink to="cart-product">
+                  <NavLink to="/cart-product">
                     <IconButton size="small" sx={{ ml: 2 }}>
                       <ShoppingCartIcon
                         sx={{ width: 32, height: 32 }}

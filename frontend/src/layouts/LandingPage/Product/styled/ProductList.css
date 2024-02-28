@@ -81,13 +81,14 @@
   justify-content: center;
 }
 
-.product-title {
+.product-card .product-title {
   font-family: "Poppins", sans-serif !important;
   font-size: 18px !important;
   font-weight: 500 !important;
   margin: 0;
   margin-bottom: 4px;
   color: #ab8e66;
+  text-transform: capitalize;
 }
 
 .slider {

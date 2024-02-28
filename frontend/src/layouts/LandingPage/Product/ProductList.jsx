@@ -23,9 +23,13 @@ import {
   FormControl,
   Select,
   MenuItem,
+  Breadcrumbs,
+  Link,
 } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
 import Grid from "@mui/material/Unstable_Grid2";
 import "./styled/ProductList.css";
@@ -47,10 +51,7 @@ function ProductItem({ product }) {
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
       <Card className="product-card">
-        <CardActionArea
-          component={RouterLink}
-          to={`/product-homepage/${_id}`}
-        >
+        <CardActionArea component={RouterLink} to={`/product-homepage/${_id}`}>
           <CardMedia
             component="img"
             height="200"
@@ -92,9 +93,9 @@ function ProductItem({ product }) {
 export default function ProductList() {
   const [checkedItems, setCheckedItems] = useState({
     "Vệ sinh và chăm sóc": false,
-    "Thuốc": false,
+    Thuốc: false,
     "Phụ kiện": false,
-    "Thực phẩm dinh dưỡng": false
+    "Thực phẩm dinh dưỡng": false,
   });
 
   const handleCheckboxChange = (event) => {
@@ -265,6 +266,29 @@ export default function ProductList() {
       <Container
         sx={{ position: "relative", top: "120px", paddingBottom: "200px" }}
       >
+        <Breadcrumbs
+          aria-label="breadcrumb"
+          sx={{ marginBottom: "30px"}}
+          separator={<KeyboardDoubleArrowRightIcon fontSize="small" />}
+        >
+          <Link
+            underline="hover"
+            sx={{ display: "flex", alignItems: "center" }}
+            color="inherit"
+            href="/"
+          >
+            <HomeIcon sx={{ mr: 0.5 }} fontSize="medium" />
+            Trang chủ
+          </Link>
+          <Link
+            underline="hover"
+            sx={{ display: "flex", alignItems: "center" }}
+            color="#000000"
+            href="/product-homepage"
+          >
+            Sản phẩm
+          </Link>
+        </Breadcrumbs>
         <Grid container spacing={1}>
           <Grid item sm={12} md={3} lg={3} className="sidebar">
             <Box className="product_filter">

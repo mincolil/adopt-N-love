@@ -11,13 +11,6 @@ import {
   Breadcrumbs,
   Tabs,
   Tab,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
   TextField,
   Rating,
 } from "@mui/material";
@@ -28,8 +21,7 @@ import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
 import axios from "axios";
 import { toast } from "react-toastify";
-import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 
 const BASE_URL = "http://localhost:3500";
 
@@ -37,19 +29,19 @@ function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
-      <div
-          role="tabpanel"
-          hidden={value !== index}
-          id={`product-tabpanel-${index}`}
-          aria-labelledby={`product-tab-${index}`}
-          {...other}
-      >
-          {value === index && (
-              <Box sx={{ p: 3 }}>
-                  <Typography>{children}</Typography>
-              </Box>
-          )}
-      </div>
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`product-tabpanel-${index}`}
+      aria-labelledby={`product-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
   );
 }
 
@@ -84,13 +76,42 @@ const ProductDetail = () => {
     }
   };
 
+  const handleAddToCart = async (id) => {
+    if (context.auth.token === undefined) {
+      alert("Bạn chưa đăng nhập, vui lòng đăng nhập !");
+    } else if (
+      window.confirm("Bạn có muốn thêm sản phẩm này không ?") == true
+    ) {
+      try {
+        const addProductToCart = await axios
+          .post(
+            `${BASE_URL}/cartProduct/add-to-cart`,
+            {
+              productId: id,
+              quantity: quantitySell,
+            },
+            {
+              headers: { Authorization: context.auth.token },
+              withCredentials: true,
+            }
+          )
+          .then((data) => {
+            toast.success("Thêm sản phẩm vào giỏ hàng thành công");
+            context.handleLoadCartProduct();
+          });
+      } catch (err) {
+        // console.log(err);
+        toast.error(err.response.data.error);
+      }
+    }
+  };
+
   return (
     <>
       <Header />
-      <Container>
+      <Container sx={{position: "relative", top: "120px", marginBottom: "150px"}}>
         <Breadcrumbs
           aria-label="breadcrumb"
-          sx={{ position: "relative", top: "120px" }}
           separator={<KeyboardDoubleArrowRightIcon fontSize="small" />}
         >
           <Link
@@ -179,6 +200,7 @@ const ProductDetail = () => {
                   className="single_add_to_cart_button"
                   variant="contained"
                   color="primary"
+                  onClick={() => handleAddToCart(product._id)}
                 >
                   Thêm vào giỏ hàng
                 </Button>
@@ -187,14 +209,21 @@ const ProductDetail = () => {
           </Grid>
         </Box>
         <Box className="tab-details-product">
-          <Tabs value={tab} onChange={handleChangeTab} aria-label="product tabs" sx={{justifyContent:"center"}}>
-            <Tab label="Mô tả"/>
-            <Tab label="Đánh giá" />
+          <Tabs
+            value={tab}
+            onChange={handleChangeTab}
+            aria-label="product tabs"
+            sx={{
+              "& .MuiTabs-flexContainer": {
+                justifyContent: "center",
+              },
+            }}
+          >
+            <Tab label="Chi tiết sản phẩm" />
+            <Tab label="Đánh giá sản phẩm" />
           </Tabs>
           <TabPanel value={tab} index={0}>
-            <Typography paragraph>
-              {product && product.description}
-            </Typography>
+            <Typography paragraph>{product && product.description}</Typography>
           </TabPanel>
           <TabPanel value={tab} index={1}>
             <Typography variant="h6" gutterBottom>

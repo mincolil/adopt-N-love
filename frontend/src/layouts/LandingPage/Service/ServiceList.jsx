@@ -88,12 +88,10 @@ function ServiceItem({ service }) {
 export default function ServiceList() {
 
   const [checkedItems, setCheckedItems] = useState({
-    "New Arrival": false,
-    Dining: false,
-    Desks: false,
-    Accents: false,
-    Accessories: false,
-    Tables: false,
+    "Khám và điều trị": false,
+    "Thẩm mỹ": false,
+    "Lưu chuồng": false,
+    "Xét nghiệm": false,
   });
 
   const handleCheckboxChange = (event) => {
@@ -156,7 +154,7 @@ export default function ServiceList() {
             <Box className="product_filter">
               <Box className="category">
                 <Typography variant="h3" className="title">
-                  Categories
+                  Danh mục
                 </Typography>
                 <List className="list-categories">
                   {Object.keys(checkedItems).map((label) => (
@@ -181,7 +179,7 @@ export default function ServiceList() {
               </Box>
               <Box className="price">
                 <Typography variant="h3" className="title">
-                  Price
+                  Giá
                 </Typography>
                 <Box className="price-slider-wrapper">
                   <Slider

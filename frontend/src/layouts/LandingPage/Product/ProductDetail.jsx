@@ -9,6 +9,10 @@ import {
   Box,
   IconButton,
   Breadcrumbs,
+  Tabs,
+  Tab,
+  TextField,
+  Rating,
   Chip,
   Backdrop,
   CircularProgress,
@@ -20,6 +24,7 @@ import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
 import axios from "axios";
 import { toast } from "react-toastify";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import MuiAccordion from "@mui/material/Accordion";
 import MuiAccordionSummary from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
@@ -29,6 +34,27 @@ import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
 import Comments from "../../../components/Comments/Comments";
 
 const BASE_URL = "http://localhost:3500";
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`product-tabpanel-${index}`}
+      aria-labelledby={`product-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
 
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -73,6 +99,11 @@ const ProductDetail = () => {
   const [quantitySell, setQuantitySell] = useState(1);
   const [expanded, setExpanded] = useState("panel1");
   const context = useAuth();
+  const [tab, setTab] = useState(0);
+
+  const handleChangeTab = (event, newTab) => {
+    setTab(newTab);
+  };
 
   // ----------------------------------- API GET PRODUCT BY ID --------------------------------
   useEffect(() => {
@@ -92,7 +123,7 @@ const ProductDetail = () => {
       console.log(err);
     }
   };
-
+  
   if (!product) {
     return (
       <Backdrop
@@ -105,13 +136,46 @@ const ProductDetail = () => {
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
+
+  const handleAddToCart = async (id) => {
+    if (context.auth.token === undefined) {
+      alert("Bạn chưa đăng nhập, vui lòng đăng nhập !");
+    } else if (
+      window.confirm("Bạn có muốn thêm sản phẩm này không ?") == true
+    ) {
+      try {
+        const addProductToCart = await axios
+          .post(
+            `${BASE_URL}/cartProduct/add-to-cart`,
+            {
+              productId: id,
+              quantity: quantitySell,
+            },
+            {
+              headers: { Authorization: context.auth.token },
+              withCredentials: true,
+            }
+          )
+          .then((data) => {
+            toast.success("Thêm sản phẩm vào giỏ hàng thành công");
+            context.handleLoadCartProduct();
+          });
+      } catch (err) {
+        // console.log(err);
+        toast.error(err.response.data.error);
+      }
+    }
   };
 
   return (
     <>
       <Header />
-      <Container>
-        <Breadcrumbs aria-label="breadcrumb" sx={{ position: "relative", top: "120px" }}>
+
+      <Container sx={{position: "relative", top: "120px", marginBottom: "150px"}}>
+        <Breadcrumbs
+          aria-label="breadcrumb"
+          separator={<KeyboardDoubleArrowRightIcon fontSize="small" />}
+        >
           <Link
             underline="hover"
             sx={{ display: "flex", alignItems: "center" }}
@@ -198,6 +262,7 @@ const ProductDetail = () => {
                   className="single_add_to_cart_button"
                   variant="contained"
                   color="primary"
+                  onClick={() => handleAddToCart(product._id)}
                 >
                   Thêm vào giỏ hàng
                 </Button>
@@ -205,24 +270,83 @@ const ProductDetail = () => {
             </Grid>
           </Grid>
         </Box>
-
-        <Accordion
-          expanded={expanded === "panel2"}
-          onChange={handleChange("panel2")}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel2bh-content"
-            id="panel2bh-header"
+        <Box className="tab-details-product">
+          <Tabs
+            value={tab}
+            onChange={handleChangeTab}
+            aria-label="product tabs"
+            sx={{
+              "& .MuiTabs-flexContainer": {
+                justifyContent: "center",
+              },
+            }}
           >
-            <Typography sx={{ width: "33%", flexShrink: 0 }}>
-              <strong> Đánh giá sản phẩm</strong>
+            <Tab label="Chi tiết sản phẩm" />
+            <Tab label="Đánh giá sản phẩm" />
+          </Tabs>
+          <TabPanel value={tab} index={0}>
+            <Typography paragraph>{product && product.description}</Typography>
+          </TabPanel>
+          <TabPanel value={tab} index={1}>
+            <Typography variant="h6" gutterBottom>
+              1 review for <span>Glorious Eau</span>
             </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Comments value={product._id} />
-          </AccordionDetails>
-        </Accordion>
+            <Box className="comment">
+              <Box className="comment-container">
+                <Typography variant="subtitle1">
+                  <strong>Nguyen Minh Hieu</strong> - <span>June 7, 2023</span>
+                </Typography>
+                <Typography paragraph>
+                  Simple and effective design. One of my favorites.
+                </Typography>
+              </Box>
+            </Box>
+            <Box className="review_form_wrapper">
+              <Box className="review_form">
+                <Typography variant="h6" gutterBottom>
+                  Add a review
+                </Typography>
+                <form className="comment-form-review">
+                  <Typography className="comment-notes" gutterBottom>
+                    Your email address will not be published. Required fields
+                    are marked <span className="required">*</span>
+                  </Typography>
+                  <Box className="comment-form-rating">
+                    <Typography>Your rating</Typography>
+                    <Rating name="simple-controlled" />
+                  </Box>
+                  <TextField
+                    id="review"
+                    name="review"
+                    label="Your review"
+                    multiline
+                    rows={4}
+                    fullWidth
+                    required
+                  />
+                  <TextField
+                    id="name"
+                    name="name"
+                    label="Name"
+                    fullWidth
+                    required
+                  />
+                  <TextField
+                    id="email"
+                    name="email"
+                    label="Email"
+                    type="email"
+                    fullWidth
+                    required
+                  />
+                  <Button type="submit" variant="contained" color="primary">
+                    Submit
+                  </Button>
+                </form>
+              </Box>
+            </Box>
+          </TabPanel>
+        </Box>
 
       </Container>
       <Footer />

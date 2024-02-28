@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import Hidden from "@mui/material/Hidden";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { DsAppBar, DsButton } from "./styled";
 import {
   Typography,
@@ -11,16 +11,23 @@ import {
   Box,
   Grid,
   Container,
+  Tooltip,
 } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import LoginIcon from "@mui/icons-material/Login";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
+import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import Fade from "@mui/material/Fade";
 import Logo from "../../images/logo.png";
+import useAuth from "../../hooks/useAuth";
 import AccountMenu from "../AccountMeun/AccountMeun";
 import { useState } from "react";
 import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import useAuth from "../../hooks/useAuth";
+
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -34,10 +41,26 @@ const Header = () => {
     setAnchorEl(null);
   };
 
-  const slideProps = {
-    mountOnEnter: true,
-    unmountOnExit: true,
-    timeout: { enter: 225, exit: 195 },
+  const [isLoggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setLoggedIn(!!token);
+  }, []);
+
+  const context = useAuth();
+  const [productNumber, setProductNumber] = useState(0);
+  const [serviceNumber, setServiceNumber] = useState(0);
+
+  const reddot = {
+    backgroundColor: "red",
+    position: "absolute",
+    width: "20px",
+    height: "20px",
+    top: "0",
+    right: "0",
+    borderRadius: "50%",
+    fontSize: "15px",
   };
 
   const [isLoggedIn, setLoggedIn] = useState(false);
@@ -74,13 +97,23 @@ const Header = () => {
                 sx={{
                   color: "#000",
                   "& > button": {
-                    fontSize: "16px",
+                    fontSize: "17px",
                     fontFamily: "'Poppins', sans-serif !important",
                   },
                 }}
               >
-                <DsButton color="inherit">Trang chủ</DsButton>
-                <DsButton color="inherit">Blog</DsButton>
+
+                <DsButton
+                  color="inherit"
+                  href="/"
+                  sx={{
+                    fontFamily: "'Poppins', sans-serif !important",
+                    fontSize: "17px",
+                  }}
+                >
+                  Trang chủ
+                </DsButton>
+
                 <DsButton color="inherit" onClick={handleClick}>
                   Diễn đàn
                   <ArrowDropDownIcon />
@@ -100,65 +133,106 @@ const Header = () => {
                   <MenuItem onClick={handleClose}>Blog 2</MenuItem>
                   <MenuItem onClick={handleClose}>Blog 3</MenuItem>
                 </Menu>
-                <NavLink to="/product-homepage">
-                  <DsButton
-                    color="inherit"
 
-                    sx={{
-                      fontFamily: "'Poppins', sans-serif !important",
-                      fontSize: "16px",
-                      color: "#000000"
-                    }}
-                  >
-                    Sản phẩm
-                  </DsButton>
-                </NavLink>
-                <NavLink to="/service-homepage">
-                  <DsButton
-                    color="inherit"
-                    sx={{
-                      fontFamily: "'Poppins', sans-serif !important",
-                      fontSize: "16px",
-                      color: "#000000"
-                    }}
-                  >
-                    Dịch vụ
-                  </DsButton>
-                </NavLink>
-                {!isLoggedIn &&
-                  <NavLink to="/sign-in">
-                    <DsButton
-                      color="warning"
-                      href="service-homepage"
-                      sx={{
-                        fontFamily: "'Poppins', sans-serif !important",
-                        fontSize: "16px",
-                        color: "#000000",
-                      }}
-                    >
-                      Đăng nhập
-                    </DsButton>
-                  </NavLink>
-                }
-                {!isLoggedIn &&
-                  <NavLink to="/sign-up">
-                    <DsButton
-                      color="warning"
-                      href="service-homepage"
-                      sx={{
-                        fontFamily: "'Poppins', sans-serif !important",
-                        fontSize: "16px",
-                        color: "#000000"
-                      }}
-                    >
-                      Đăng ký
-                    </DsButton>
-                  </NavLink>
-                }
-                {isLoggedIn && <DsButton><AccountMenu /></DsButton>}
+                <DsButton
+                  color="inherit"
+                  href="/product-homepage"
+                  sx={{
+                    fontFamily: "'Poppins', sans-serif !important",
+                    fontSize: "17px",
+                  }}
+                >
+                  Sản phẩm
+                </DsButton>
+                <DsButton
+                  color="inherit"
+                  href="/service-homepage"
+                  sx={{
+                    fontFamily: "'Poppins', sans-serif !important",
+                    fontSize: "17px",
+                  }}
+                >
+                  Dịch vụ
+                </DsButton>
+                <DsButton color="inherit">Liên hệ</DsButton>
               </Box>
             </Grid>
           </Hidden>
+          <Box
+            sx={{
+              display: "flex",
+              flexGrow: 0,
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                textAlign: "center",
+              }}
+            >
+              {isLoggedIn && (
+                <Tooltip
+                  title="Giỏ hàng dịch vụ"
+                  style={{ position: "relative" }}
+                >
+                  <NavLink to="cart-service">
+                    <IconButton size="small" sx={{ ml: 2 }}>
+                      <ShoppingBagIcon
+                        sx={{ width: 32, height: 32 }}
+                      ></ShoppingBagIcon>
+                    </IconButton>
+                  </NavLink>
+                  <div style={reddot}>{context.serviceNumber}</div>
+                </Tooltip>
+              )}
+
+              {isLoggedIn && (
+                <Tooltip
+                  title="Giỏ hàng sản phẩm"
+                  style={{ position: "relative" }}
+                >
+                  <NavLink to="/cart-product">
+                    <IconButton size="small" sx={{ ml: 2 }}>
+                      <ShoppingCartIcon
+                        sx={{ width: 32, height: 32 }}
+                      ></ShoppingCartIcon>
+                    </IconButton>
+                  </NavLink>
+                  <div style={reddot}>{context.productNumber}</div>
+                </Tooltip>
+              )}
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                textAlign: "center",
+              }}
+            >
+              {!isLoggedIn && (
+                <Tooltip title="Đăng kí">
+                  <NavLink to="/sign-up">
+                    <IconButton size="small" sx={{ ml: 2 }}>
+                      <AppRegistrationIcon
+                        sx={{ width: 32, height: 32 }}
+                      ></AppRegistrationIcon>
+                    </IconButton>
+                  </NavLink>
+                </Tooltip>
+              )}
+              {!isLoggedIn && (
+                <Tooltip title="Đăng nhập">
+                  <NavLink to="/sign-in">
+                    <IconButton size="small" sx={{ ml: 2 }}>
+                      <LoginIcon sx={{ width: 32, height: 32 }}></LoginIcon>
+                    </IconButton>
+                  </NavLink>
+                </Tooltip>
+              )}
+            </Box>
+            {isLoggedIn && <AccountMenu />}
+          </Box>
           {/* Menu Icon for Small Screens */}
           <Hidden smUp>
             <Grid item xs={2}>

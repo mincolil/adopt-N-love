@@ -291,7 +291,7 @@ export default function PetUser() {
                       }}
                     >
                       <Button variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
-                        Sửa thông tin
+                        Báo cáo bệnh tình
                       </Button>
                     </CardActions>
                   </Card>

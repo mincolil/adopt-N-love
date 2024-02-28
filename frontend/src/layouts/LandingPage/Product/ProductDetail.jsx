@@ -123,7 +123,7 @@ const ProductDetail = () => {
       console.log(err);
     }
   };
-  
+
   if (!product) {
     return (
       <Backdrop
@@ -136,6 +136,7 @@ const ProductDetail = () => {
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
+  }
 
   const handleAddToCart = async (id) => {
     if (context.auth.token === undefined) {
@@ -167,11 +168,12 @@ const ProductDetail = () => {
     }
   };
 
+
   return (
     <>
       <Header />
 
-      <Container sx={{position: "relative", top: "120px", marginBottom: "150px"}}>
+      <Container sx={{ position: "relative", top: "120px", marginBottom: "150px" }}>
         <Breadcrumbs
           aria-label="breadcrumb"
           separator={<KeyboardDoubleArrowRightIcon fontSize="small" />}
@@ -353,5 +355,6 @@ const ProductDetail = () => {
     </>
   );
 };
+
 
 export default ProductDetail;

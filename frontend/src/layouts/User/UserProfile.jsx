@@ -32,6 +32,8 @@ import { emphasize } from "@mui/material/styles";
 import ButtonCustomize from "../../components/Button/Button";
 import Header from "../../components/Header/Header";
 import Background from "../../images/background.png";
+import { ToastContainer } from "react-toastify";
+
 
 const StyledBreadcrumb = styled(Chip)(({ theme }) => {
   const backgroundColor =
@@ -180,6 +182,7 @@ export default function UserPRofile() {
     <>
       <Header />
       <ThemeProvider theme={defaultTheme}>
+        <ToastContainer />
         <CustomContainer component="main" maxWidth="false" sx={{ pt: 10, pb: 4, backgroundImage: `url(${Background})`, backgroundRepeat: "no-repeat", backgroundSize: "cover" }}>
           <CssBaseline />
           <Container maxWidth="lg">

@@ -22,11 +22,7 @@ import Fade from "@mui/material/Fade";
 import Logo from "../../images/logo.png";
 import useAuth from "../../hooks/useAuth";
 import AccountMenu from "../AccountMeun/AccountMeun";
-import { useState } from "react";
-import { useEffect } from "react";
-import { NavLink } from "react-router-dom";
 import { styled } from "@mui/material/styles";
-import useAuth from "../../hooks/useAuth";
 
 
 const Header = () => {
@@ -50,7 +46,7 @@ const Header = () => {
 
   const context = useAuth();
   const [productNumber, setProductNumber] = useState(0);
-  const [serviceNumber, setServiceNumber] = useState(0);
+
 
   const reddot = {
     backgroundColor: "red",
@@ -62,17 +58,6 @@ const Header = () => {
     borderRadius: "50%",
     fontSize: "15px",
   };
-
-  const [isLoggedIn, setLoggedIn] = useState(false);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    setLoggedIn(!!token);
-  }, []);
-
-  const context = useAuth();
-  const [productNumber, setProductNumber] = useState(0);
-  const [serviceNumber, setServiceNumber] = useState(0);
 
   return (
     <DsAppBar position="fixed" style={{ backgroundColor: "#ffffff" }}>

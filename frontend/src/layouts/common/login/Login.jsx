@@ -3,6 +3,7 @@ import Banner from "../../../images/banner.png";
 import DogBanner from "../../../images/dog_banner.png";
 import Background from "../../../images/background.png";
 import Cat from "../../../images/cat.png";
+import { ToastContainer } from "react-toastify";
 //MUI
 import {
   Avatar,
@@ -101,6 +102,7 @@ const Login = () => {
 
   return (
     <ThemeProvider theme={defaultTheme}>
+      <ToastContainer />
       <Grid container component="main" sx={{ height: "100vh" }}>
         <CssBaseline />
         <Grid

@@ -30,6 +30,10 @@ import Chip from "@mui/material/Chip";
 import HomeIcon from "@mui/icons-material/Home";
 import { emphasize } from "@mui/material/styles";
 import ButtonCustomize from "../../components/Button/Button";
+import Header from "../../components/Header/Header";
+import Background from "../../images/background.png";
+import { ToastContainer } from "react-toastify";
+
 
 const StyledBreadcrumb = styled(Chip)(({ theme }) => {
   const backgroundColor =
@@ -175,159 +179,151 @@ export default function UserPRofile() {
   }, [fullname, email, password, phone, role, gender, address]);
 
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <CustomContainer component="main" maxWidth="false" sx={{ pt: 10, pb: 4 }}>
-        <CssBaseline />
-        <Box
-          maxWidth="full"
-          sx={{
-            bgcolor: "background.paper",
-            p: 2,
-            display: "flex",
-            justifyContent: "space-between",
-            borderRadius: "5px",
-            alignItems: "center",
-          }}
-        >
-          <Box>
-            <Breadcrumbs maxItems={2} aria-label="breadcrumb">
-              <StyledBreadcrumb
-                component={NavLink}
-                to="/"
-                label="Trang chủ"
-                icon={<HomeIcon fontSize="small" />}
-              />
-              {/* <StyledBreadcrumb component="a" href="#" label="Catalog" /> */}
-              <StyledBreadcrumb
-                component={NavLink}
-                to="/user-profile"
-                label="Thông tin cá nhân"
-              />
-            </Breadcrumbs>
-          </Box>
-        </Box>
-        <Container maxWidth="lg">
-          <Paper
-            variant="outlined"
-            sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-          >
-            <Typography variant="h6" gutterBottom>
-              Thông tin cá nhân
-            </Typography>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="firstName"
-                  name="firstName"
-                  label="Họ và tên"
-                  fullWidth
-                  value={fullname}
-                  autoComplete="given-name"
-                  variant="standard"
-                  onChange={(e) => handleValidationFullName(e)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <RadioGroup
-                  value={gender}
-                  onChange={handleGenderChange}
-                  row
-                  aria-label="gender"
-                  name="gender"
-                >
-                  <FormControlLabel
-                    value={true}
-                    control={<Radio />}
-                    label="Nam"
+    <>
+      <Header />
+      <ThemeProvider theme={defaultTheme}>
+        <ToastContainer />
+        <CustomContainer component="main" maxWidth="false" sx={{ pt: 10, pb: 4, backgroundImage: `url(${Background})`, backgroundRepeat: "no-repeat", backgroundSize: "cover" }}>
+          <CssBaseline />
+          <Container maxWidth="lg">
+            <Paper
+              variant="outlined"
+              sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
+            >
+              <Typography variant="h6" gutterBottom>
+                Thông tin cá nhân
+              </Typography>
+              <Grid container spacing={3}>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    color="warning"
+                    required
+                    id="firstName"
+                    name="firstName"
+                    label="Họ và tên"
+                    fullWidth
+                    value={fullname}
+                    autoComplete="given-name"
+                    variant="standard"
+                    onChange={(e) => handleValidationFullName(e)}
                   />
-                  <FormControlLabel
-                    value={false}
-                    control={<Radio />}
-                    label="Nữ"
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <RadioGroup
+                    value={gender}
+                    onChange={handleGenderChange}
+                    row
+                    aria-label="gender"
+                    name="gender"
+                  >
+                    <FormControlLabel
+                      value={true}
+                      control={<Radio sx={{
+                        color: "orange",
+                        '&.Mui-checked': {
+                          color: "orange",
+                        },
+                      }} />}
+                      label="Nam"
+                    />
+                    <FormControlLabel
+                      value={false}
+                      control={<Radio sx={{
+                        color: "orange",
+                        '&.Mui-checked': {
+                          color: "orange",
+                        },
+                      }} />}
+                      label="Nữ"
+                    />
+                  </RadioGroup>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    color="warning"
+                    required
+                    id="password"
+                    name="password"
+                    value={password}
+                    label="Password"
+                    autoComplete="shipping email"
+                    variant="standard"
+                    sx={{ display: "none" }}
+                    onChange={(e) => setPassWord(e.target.value)}
                   />
-                </RadioGroup>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    color="warning"
+                    required
+                    id="rolle"
+                    name="role"
+                    value={role}
+                    label="Password"
+                    autoComplete="shipping email"
+                    variant="standard"
+                    sx={{ display: "none" }}
+                    onChange={(e) => setRole(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    color="warning"
+                    required
+                    id="email"
+                    name="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    label="Email"
+                    fullWidth
+                    autoComplete="shipping email"
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                    variant="filled"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    color="warning"
+                    id="address"
+                    name="address"
+                    label="Địa chỉ"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    fullWidth
+                    autoComplete="shipping address"
+                    variant="standard"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    color="warning"
+                    required
+                    id="phone"
+                    name="phone"
+                    label="Số điện thoại"
+                    value={phone}
+                    onChange={(e) => handleValidationPhone(e)}
+                    fullWidth
+                    autoComplete="shipping phone"
+                    variant="standard"
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="password"
-                  name="password"
-                  value={password}
-                  label="Password"
-                  autoComplete="shipping email"
-                  variant="standard"
-                  sx={{ display: "none" }}
-                  onChange={(e) => setPassWord(e.target.value)}
+              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                <ButtonCustomize
+                  onClick={() => handleUpdate(context.auth.id)}
+                  nameButton="Cập nhật"
+                  variant="contained"
+                  sx={{ marginTop: "8px" }}
                 />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="rolle"
-                  name="role"
-                  value={role}
-                  label="Password"
-                  autoComplete="shipping email"
-                  variant="standard"
-                  sx={{ display: "none" }}
-                  onChange={(e) => setRole(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  id="email"
-                  name="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  label="Email"
-                  fullWidth
-                  autoComplete="shipping email"
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                  variant="filled"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  id="address"
-                  name="address"
-                  label="Địa chỉ"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  fullWidth
-                  autoComplete="shipping address"
-                  variant="standard"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="phone"
-                  name="phone"
-                  label="Số điện thoại"
-                  value={phone}
-                  onChange={(e) => handleValidationPhone(e)}
-                  fullWidth
-                  autoComplete="shipping phone"
-                  variant="standard"
-                />
-              </Grid>
-            </Grid>
-            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-              <ButtonCustomize
-                onClick={() => handleUpdate(context.auth.id)}
-                nameButton="Cập nhật"
-                variant="contained"
-                sx={{ marginTop: "8px" }}
-              />
-            </Box>
-          </Paper>
-        </Container>
-      </CustomContainer>
-      <Footer />
-    </ThemeProvider>
+              </Box>
+            </Paper>
+          </Container>
+        </CustomContainer>
+        <Footer />
+      </ThemeProvider >
+    </>
   );
 }

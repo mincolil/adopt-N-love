@@ -22,6 +22,8 @@ import Chip from "@mui/material/Chip";
 import HomeIcon from "@mui/icons-material/Home";
 import { emphasize } from "@mui/material/styles";
 import ButtonCustomize from "../../components/Button/Button";
+import Background from "../../images/background.png";
+import Header from "../../components/Header/Header";
 
 const StyledBreadcrumb = styled(Chip)(({ theme }) => {
   const backgroundColor =
@@ -125,89 +127,67 @@ const ChangePassword = () => {
   };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <CustomContainer component="main" maxWidth="false" sx={{ pt: 10, pb: 4 }}>
-        <Box
-          maxWidth="full"
-          sx={{
-            bgcolor: "background.paper",
-            p: 2,
-            display: "flex",
-            justifyContent: "space-between",
-            borderRadius: "5px",
-            alignItems: "center",
-          }}
-        >
-          <Box>
-            <Breadcrumbs maxItems={2} aria-label="breadcrumb">
-              <StyledBreadcrumb
-                component={NavLink}
-                to="/"
-                label="Trang chủ"
-                icon={<HomeIcon fontSize="small" />}
-              />
-              {/* <StyledBreadcrumb component="a" href="#" label="Catalog" /> */}
-              <StyledBreadcrumb
-                component={NavLink}
-                to="/change-password"
-                label="Đổi mật khẩu"
-              />
-            </Breadcrumbs>
-          </Box>
-        </Box>
-        <Container maxWidth="sm">
-          <Paper
-            variant="outlined"
-            sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-          >
-            <Typography component="h1" variant="h6" gutterBottom>
-              Đổi mật khẩu
-            </Typography>
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  fullWidth
-                  label="Mật khẩu cũ"
-                  type="password"
-                  value={oldPassword}
-                  onChange={(e) => setOldPassword(e.target.value)}
-                />
+    <>
+      <Header />
+      <ThemeProvider theme={defaultTheme}>
+        <CustomContainer component="main" maxWidth="false" sx={{ pt: 10, pb: 4, backgroundImage: `url(${Background})`, backgroundRepeat: "no-repeat", backgroundSize: "cover" }}>
+          <Container maxWidth="sm">
+            <Paper
+              variant="outlined"
+              sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
+            >
+              <Typography component="h1" variant="h6" gutterBottom>
+                Đổi mật khẩu
+              </Typography>
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <TextField
+                    color="warning"
+                    variant="outlined"
+                    fullWidth
+                    label="Mật khẩu cũ"
+                    type="password"
+                    value={oldPassword}
+                    onChange={(e) => setOldPassword(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    color="warning"
+                    variant="outlined"
+                    fullWidth
+                    label="Mật khẩu mới"
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => handleValidationNewPassword(e)}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    color="warning"
+                    variant="outlined"
+                    fullWidth
+                    label="Nhập lại mật khẩu mới"
+                    type="password"
+                    value={rePassword}
+                    onChange={(e) => setRePassword(e.target.value)}
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  fullWidth
-                  label="Mật khẩu mới"
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => handleValidationNewPassword(e)}
+              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                <ButtonCustomize
+                  onClick={handleChangePassword}
+                  nameButton="Đổi mật khẩu"
+                  variant="contained"
+                  sx={{ marginTop: "8px" }}
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  fullWidth
-                  label="Nhập lại mật khẩu mới"
-                  type="password"
-                  value={rePassword}
-                  onChange={(e) => setRePassword(e.target.value)}
-                />
-              </Grid>
-            </Grid>
-            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-              <ButtonCustomize
-                onClick={handleChangePassword}
-                nameButton="Đổi mật khẩu"
-                variant="contained"
-                sx={{ marginTop: "8px" }}
-              />
-            </Box>
-          </Paper>
-        </Container>
-      </CustomContainer>
-      <Footer />
-    </ThemeProvider>
+              </Box>
+            </Paper>
+          </Container>
+        </CustomContainer>
+        <Footer />
+      </ThemeProvider>
+    </>
   );
 };
 

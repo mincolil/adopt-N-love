@@ -1,42 +1,60 @@
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, NavLink } from "react-router-dom";
+import useAuth from "../../../hooks/useAuth";
 import {
-  Box,
-  Grid,
-  Typography,
-  Button,
-  Toolbar,
-  AppBar,
-  CircularProgress,
-  Backdrop,
-  Paper,
-  Divider,
   Container,
-  createTheme,
-  ThemeProvider,
-  CssBaseline,
+  Typography,
+  Link,
+  Button,
+  Box,
+  IconButton,
+  Breadcrumbs,
+  Tabs,
+  Tab,
+  TextField,
+  Rating,
+  Chip,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import Footer from "../../../components/Footer/Footer";
-import { NavLink } from "react-router-dom";
-import Chip from "@mui/material/Chip";
 import HomeIcon from "@mui/icons-material/Home";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { emphasize } from "@mui/material/styles";
-import Breadcrumbs from "@mui/material/Breadcrumbs";
+import Grid from "@mui/material/Unstable_Grid2";
+import "./styled/ProductDetail.css";
+import Header from "../../../components/Header/Header";
+import Footer from "../../../components/Footer/Footer";
+import axios from "axios";
+import { toast } from "react-toastify";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import MuiAccordion from "@mui/material/Accordion";
 import MuiAccordionSummary from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
-import { Description } from "@mui/icons-material";
-import axios from "axios";
-import { toast } from "react-toastify";
-import useAuth from "../../../hooks/useAuth";
-import { useState } from "react";
-import { useEffect } from "react";
-import Comments from "../../../components/Comments/Comments";
-import ProductSlider from "../../../components/Header/SliderProduct";
-import dayjs from "dayjs";
-import ButtonCustomize from "../../../components/Button/Button";
+import { styled } from "@mui/material/styles";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
+import Comments from "../../../components/Comments/Comments";
+
+const BASE_URL = "http://localhost:3500";
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`product-tabpanel-${index}`}
+      aria-labelledby={`product-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
 
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -48,6 +66,11 @@ const Accordion = styled((props) => (
   "&:before": {
     display: "none",
   },
+}));
+
+const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
+  padding: theme.spacing(2),
+  borderTop: "1px solid rgba(0, 0, 0, .125)",
 }));
 
 const AccordionSummary = styled((props) => (
@@ -69,51 +92,6 @@ const AccordionSummary = styled((props) => (
   },
 }));
 
-const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
-  padding: theme.spacing(2),
-  borderTop: "1px solid rgba(0, 0, 0, .125)",
-}));
-
-const Image = styled("img")({
-  maxWidth: "100%",
-  maxHeight: 400,
-});
-
-const numberToVND = (number) => {
-  return number.toLocaleString("vi-VN", {
-    style: "currency",
-    currency: "VND",
-  });
-};
-
-const StyledBreadcrumb = styled(Chip)(({ theme }) => {
-  const backgroundColor =
-    theme.palette.mode === "light"
-      ? theme.palette.grey[100]
-      : theme.palette.grey[800];
-  return {
-    backgroundColor,
-    height: theme.spacing(3),
-    color: theme.palette.text.primary,
-    fontWeight: theme.typography.fontWeightRegular,
-    "&:hover, &:focus": {
-      backgroundColor: emphasize(backgroundColor, 0.06),
-    },
-    "&:active": {
-      boxShadow: theme.shadows[1],
-      backgroundColor: emphasize(backgroundColor, 0.12),
-    },
-  };
-});
-
-const CustomContainer = styled(Container)({
-  background:
-    "linear-gradient(to bottom, #F4BEB2, #F4BEB2, #ECDAD6, #E5E6E7, #73A1CC)",
-});
-
-const BASE_URL = "http://localhost:3500";
-
-const defaultTheme = createTheme();
 
 const ProductDetail = () => {
   const { productId } = useParams();
@@ -121,6 +99,11 @@ const ProductDetail = () => {
   const [quantitySell, setQuantitySell] = useState(1);
   const [expanded, setExpanded] = useState("panel1");
   const context = useAuth();
+  const [tab, setTab] = useState(0);
+
+  const handleChangeTab = (event, newTab) => {
+    setTab(newTab);
+  };
 
   // ----------------------------------- API GET PRODUCT BY ID --------------------------------
   useEffect(() => {
@@ -151,25 +134,9 @@ const ProductDetail = () => {
     );
   }
 
-  const handleIncreaseClick = (max) => {
-    if (quantitySell >= max) {
-      toast.error("Quá giới hạn số lượng");
-    } else {
-      setQuantitySell((quantitySell) => quantitySell + 1);
-    }
-  };
-
-  const handleDecreaseClick = () => {
-    setQuantitySell((quantitySell) => Math.max(quantitySell - 1, 1));
-  };
-
-  const handleAddToCartClick = () => {
-    // console.log(`Add ${quantitySell} '${product?.productName}' to cart`);
-  };
-
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
-  };
+  }
 
   const handleAddToCart = async (id) => {
     if (context.auth.token === undefined) {
@@ -201,213 +168,193 @@ const ProductDetail = () => {
     }
   };
 
+
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <CssBaseline />
+    <>
+      <Header />
 
-      <CustomContainer component="main" maxWidth="full" sx={{ pt: 12 }}>
-        {/* <MainPost post={mainPost} /> */}
-        <Container
-          maxWidth="full"
-          sx={{
-            bgcolor: "background.paper",
-            p: 3,
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            borderRadius: "16px",
-          }}
+      <Container sx={{ position: "relative", top: "120px", marginBottom: "150px" }}>
+        <Breadcrumbs
+          aria-label="breadcrumb"
+          separator={<KeyboardDoubleArrowRightIcon fontSize="small" />}
         >
-          <Breadcrumbs maxItems={2} aria-label="breadcrumb">
-            <StyledBreadcrumb
-              component={NavLink}
-              to="/"
-              label="Trang chủ"
-              icon={<HomeIcon fontSize="small" />}
-            />
-            {/* <StyledBreadcrumb component="a" href="#" label="Catalog" /> */}
-            <StyledBreadcrumb
-              component={NavLink}
-              to="/product-homepage"
-              label="Sản phẩm"
-            />
-            <StyledBreadcrumb label="Thông tin chi tiết sản phẩm" />
-          </Breadcrumbs>
-        </Container>
-        <Grid container spacing={1} sx={{ flexGrow: 2 }}>
-          <Grid item xs={12} sm={8}>
-            <Container maxWidth="false" sx={{ pb: 3 }}>
-              <Paper
-                variant="outlined"
-                sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-              >
-                <Grid container spacing={2} sx={{ flexGrow: 2 }}>
-                  <Grid item xs={12} sm={4}>
-                    <Image
-                      src={
-                        product.productImage !== undefined
-                          ? `${product.productImage}`
-                          : "https://previews.123rf.com/images/bybochka/bybochka1510/bybochka151000200/46365274-pet-care-flat-icon-set-pet-care-banner-background-poster-concept-flat-design-vector-illustration.jpg?fj=1"
-                      }
-                      alt=""
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={8}>
-                    <Typography
-                      variant="h5"
-                      sx={{ textTransform: "uppercase" }}
-                    >
-                      <strong>{product.productName}</strong>
-                    </Typography>
-                    {product.discount !== 0 &&
-                    dayjs().isBetween(
-                      dayjs(product.saleStartTime),
-                      dayjs(product.saleEndTime)
-                    ) ? (
-                      <Box
-                        display="flex"
-                        flexGrow={1}
-                        sx={{
-                          justifyContent: "flex-start",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Typography
-                          gutterBottom
-                          variant="h6"
-                          component="h2"
-                          sx={{
-                            textDecoration: "line-through",
-                            marginRight: "8px",
-                            color: "gray",
-                          }}
-                        >
-                          {numberToVND(product.price)}
-                        </Typography>
-                        <Typography
-                          gutterBottom
-                          variant="h6"
-                          component="h2"
-                          sx={{ color: "red" }}
-                        >
-                          {numberToVND(
-                            product.price -
-                              (product.price * product.discount) / 100
-                          )}
-                        </Typography>
-                        <Typography
-                          gutterBottom
-                          variant="h6"
-                          component="h2"
-                          sx={{
-                            color: "#fff",
-                            backgroundColor: "#ee4d2d",
-                            marginLeft: "10px",
-                            fontSize: ".75rem",
-                            borderRadius: "2px",
-                            padding: "2px 4px",
-                            fontWeight: "600",
-                            whiteSpace: "nowrap",
-                            textTransform: "uppercase",
-                          }}
-                        >
-                          {product.discount}% Giảm
-                        </Typography>
-                      </Box>
-                    ) : (
-                      <Typography
-                        gutterBottom
-                        variant="h6"
-                        component="h2"
-                        sx={{ color: "red" }}
-                      >
-                        {numberToVND(product.price)}
-                      </Typography>
-                    )}
-                    <Typography variant="body1">
-                      Số lượng còn:{product.quantity}
-                    </Typography>
-
-                    <Typography variant="body1">Đặt số lượng:</Typography>
-                    <Box display="flex" alignItems="center" mb={2}>
-                      <Button onClick={handleDecreaseClick} variant="outlined">
-                        -
-                      </Button>
-                      <Box mx={2}>{quantitySell}</Box>
-                      <Button
-                        onClick={() => handleIncreaseClick(product.quantity)}
-                        variant="outlined"
-                      >
-                        +
-                      </Button>
-                    </Box>
-                    <ButtonCustomize
-                      onClick={() => handleAddToCart(product._id)}
-                      variant="contained"
-                      sx={{ marginTop: "8px" }}
-                      nameButton="Thêm vào giỏ hàng"
-                    />
-                  </Grid>
-                </Grid>
-                <Accordion
-                  expanded={expanded === "panel1"}
-                  onChange={handleChange("panel1")}
-                  sx={{ marginTop: "20px" }}
+          <Link
+            underline="hover"
+            sx={{ display: "flex", alignItems: "center" }}
+            color="inherit"
+            href="/"
+          >
+            <HomeIcon sx={{ mr: 0.5 }} fontSize="medium" />
+            Trang chủ
+          </Link>
+          <Link
+            underline="hover"
+            sx={{ display: "flex", alignItems: "center" }}
+            color="inherit"
+            href="/product-homepage"
+          >
+            Sản phẩm
+          </Link>
+          <Typography
+            sx={{ display: "flex", alignItems: "center" }}
+            color="#000000"
+          >
+            {product && product.productName}
+          </Typography>
+        </Breadcrumbs>
+        <Box className="content-details">
+          <Grid container>
+            <Grid item xl={5} lg={5}>
+              <Box>
+                <img
+                  className="img_zoom"
+                  src={
+                    product && product.productImage !== undefined
+                      ? `${product.productImage}`
+                      : "https://previews.123rf.com/images/bybochka/bybochka1510/bybochka151000200/46365274-pet-care-flat-icon-set-pet-care-banner-background-poster-concept-flat-design-vector-illustration.jpg?fj=1"
+                  }
+                  alt="img"
+                  style={{ width: "-webkit-fill-available" }}
+                />
+              </Box>
+            </Grid>
+            <Grid item xl={7} lg={7} className="details-infor">
+              <Typography variant="h1" className="product-title">
+                {product && product.productName}
+              </Typography>
+              {/* <Box className="stars-rating">
+              <Box className="star-rating">
+                <span className="star-5"></span>
+              </Box>
+              <Typography variant="body2" className="count-star">
+                (7)
+              </Typography>
+            </Box> */}
+              <Typography variant="body2" className="availability">
+                Số lượng còn:
+                <Link href="#"> {product && product.quantity}</Link>
+              </Typography>
+              <Typography variant="body1" className="price">
+                <span>{product && product.price} VND</span>
+              </Typography>
+              <Box className="product-details-description">
+                <Typography variant="body2">
+                  {product && product.description}
+                </Typography>
+              </Box>
+              <Box className="quantity-add-to-cart">
+                <Box className="control">
+                  <IconButton className="qtyminus quantity-minus" href="#">
+                    -
+                  </IconButton>
+                  <input
+                    type="text"
+                    data-step="1"
+                    data-min="0"
+                    value="1"
+                    title="Qty"
+                    className="input-quantity"
+                    size="4"
+                  />
+                  <IconButton className="qtyplus quantity-plus" href="#">
+                    +
+                  </IconButton>
+                </Box>
+                <Button
+                  className="single_add_to_cart_button"
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleAddToCart(product._id)}
                 >
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1bh-content"
-                    id="panel1bh-header"
-                  >
-                    <Typography sx={{ width: "33%", flexShrink: 0 }}>
-                      <strong>Thông tin chi tiết sản phẩm</strong>
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>{product.description}</AccordionDetails>
-                </Accordion>
-                <Accordion
-                  expanded={expanded === "panel2"}
-                  onChange={handleChange("panel2")}
-                >
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel2bh-content"
-                    id="panel2bh-header"
-                  >
-                    <Typography sx={{ width: "33%", flexShrink: 0 }}>
-                      <strong> Đánh giá sản phẩm</strong>
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Comments value={product._id} />
-                  </AccordionDetails>
-                </Accordion>
-              </Paper>
-            </Container>
+                  Thêm vào giỏ hàng
+                </Button>
+              </Box>
+            </Grid>
           </Grid>
-
-          <Grid item xs={12} sm={4}>
-            <Container maxWidth="false" sx={{ pb: 3 }}>
-              <Paper
-                variant="outlined"
-                sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-              >
-                <Grid item xs={12} sm={12}>
-                  <Typography variant="h5" sx={{ textTransform: "uppercase" }}>
-                    <strong>Sản phẩm mới</strong>
+        </Box>
+        <Box className="tab-details-product">
+          <Tabs
+            value={tab}
+            onChange={handleChangeTab}
+            aria-label="product tabs"
+            sx={{
+              "& .MuiTabs-flexContainer": {
+                justifyContent: "center",
+              },
+            }}
+          >
+            <Tab label="Chi tiết sản phẩm" />
+            <Tab label="Đánh giá sản phẩm" />
+          </Tabs>
+          <TabPanel value={tab} index={0}>
+            <Typography paragraph>{product && product.description}</Typography>
+          </TabPanel>
+          <TabPanel value={tab} index={1}>
+            <Typography variant="h6" gutterBottom>
+              1 review for <span>Glorious Eau</span>
+            </Typography>
+            <Box className="comment">
+              <Box className="comment-container">
+                <Typography variant="subtitle1">
+                  <strong>Nguyen Minh Hieu</strong> - <span>June 7, 2023</span>
+                </Typography>
+                <Typography paragraph>
+                  Simple and effective design. One of my favorites.
+                </Typography>
+              </Box>
+            </Box>
+            <Box className="review_form_wrapper">
+              <Box className="review_form">
+                <Typography variant="h6" gutterBottom>
+                  Add a review
+                </Typography>
+                <form className="comment-form-review">
+                  <Typography className="comment-notes" gutterBottom>
+                    Your email address will not be published. Required fields
+                    are marked <span className="required">*</span>
                   </Typography>
-                </Grid>
-                <ProductSlider loadProductById={loadProductById} />
-              </Paper>
-            </Container>
-          </Grid>
-        </Grid>
-      </CustomContainer>
+                  <Box className="comment-form-rating">
+                    <Typography>Your rating</Typography>
+                    <Rating name="simple-controlled" />
+                  </Box>
+                  <TextField
+                    id="review"
+                    name="review"
+                    label="Your review"
+                    multiline
+                    rows={4}
+                    fullWidth
+                    required
+                  />
+                  <TextField
+                    id="name"
+                    name="name"
+                    label="Name"
+                    fullWidth
+                    required
+                  />
+                  <TextField
+                    id="email"
+                    name="email"
+                    label="Email"
+                    type="email"
+                    fullWidth
+                    required
+                  />
+                  <Button type="submit" variant="contained" color="primary">
+                    Submit
+                  </Button>
+                </form>
+              </Box>
+            </Box>
+          </TabPanel>
+        </Box>
 
-      {/* End footer */}
+      </Container>
       <Footer />
-    </ThemeProvider>
+    </>
   );
 };
+
 
 export default ProductDetail;

@@ -8,6 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import Background from "../../images/background.png";
 
 import { Outlet, useNavigate } from "react-router-dom";
 // Axios
@@ -17,9 +18,12 @@ import AccountMenu from "../../components/AccountMeun/AccountMeun";
 import { styled } from "@mui/material/styles";
 import { Container, Grid, Paper } from "@mui/material";
 import ChartDashBroad from "./Chart";
+import { ToastContainer } from "react-toastify";
 
 const CustomAppBar = styled(AppBar)({
   background: "linear-gradient(to right, #ADD8E6, #FFFF99, #FFC0CB)",
+  backgroundImage: `url(${Background})`,
+  backgroundRepeat: "no-repeat", backgroundSize: "cover"
 });
 
 const drawerWidth = 240;
@@ -37,6 +41,7 @@ function ResponsiveDrawer(props) {
 
   return (
     <Box sx={{ display: "flex" }}>
+      <ToastContainer />
       <CssBaseline />
       <CustomAppBar
         position="fixed"

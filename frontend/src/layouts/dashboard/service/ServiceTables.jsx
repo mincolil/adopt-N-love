@@ -23,6 +23,7 @@ import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import { ToastContainer } from "react-toastify";
 
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
@@ -219,10 +220,10 @@ export default function ServiceTable() {
       if (loadData.data.error) {
         toast.warning(
           "Kết quả " +
-            "[" +
-            keyword +
-            "]" +
-            " bạn vừa tìm không có! Vui lòng nhập lại."
+          "[" +
+          keyword +
+          "]" +
+          " bạn vừa tìm không có! Vui lòng nhập lại."
         );
         loadAllService(currentPage);
       } else {
@@ -246,6 +247,7 @@ export default function ServiceTable() {
 
   return (
     <>
+      <ToastContainer />
       <Grid
         spacing={2}
         container
@@ -345,7 +347,7 @@ export default function ServiceTable() {
                           variant="outlined"
                           label={value.status ? "Hoạt động" : "Không hoạt động"}
                           color={statusColor}
-                          // onClick={() => handleUpdateServiceStatus(value._id)}
+                        // onClick={() => handleUpdateServiceStatus(value._id)}
                         />
                       </TableCell>
                     </TableRow>

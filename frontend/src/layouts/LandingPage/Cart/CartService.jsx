@@ -7,6 +7,7 @@ import Grid from '@mui/material/Grid';
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 
 import useAuth from '../../../hooks/useAuth';
 import dayjs from "dayjs";
@@ -150,24 +151,24 @@ export default function CartService() {
       window.confirm("Bạn có chắc muốn xoá dịch vụ này không ?") ===
       true
     ) {
-    try {
-      await axios.delete(
-        `http://localhost:3500/cartService/remove-from-cart/${id}`,
-        {
-          headers: { 'Authorization': context.auth.token },
-          withCredentials: true
-        }
-      )
-        .then((data) => {
-          handleLoadCartService()
-          context.handleLoadCartService()
-          toast.success("Xoá dịch vụ thành công")
-        })
+      try {
+        await axios.delete(
+          `http://localhost:3500/cartService/remove-from-cart/${id}`,
+          {
+            headers: { 'Authorization': context.auth.token },
+            withCredentials: true
+          }
+        )
+          .then((data) => {
+            handleLoadCartService()
+            context.handleLoadCartService()
+            toast.success("Xoá dịch vụ thành công")
+          })
 
-    } catch (err) {
-      console.log(err);
+      } catch (err) {
+        console.log(err);
+      }
     }
-  }
   }
 
   const numberToVND = (number) => {
@@ -179,6 +180,7 @@ export default function CartService() {
 
   return (
     <>
+      <toastContainer />
       <h1 style={{ textAlign: 'center', marginTop: '100px' }}>DANH SÁCH DỊCH VỤ ĐÃ CHỌN</h1>
       <Card sx={{ minWidth: 275 }} style={{ padding: '20px', margin: '0 50px 200px 50px', boxShadow: 'none' }}>
         <Box sx={{ flexGrow: 1 }}>

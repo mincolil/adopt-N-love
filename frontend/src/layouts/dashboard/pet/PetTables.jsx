@@ -26,6 +26,7 @@ import SearchIcon from "@mui/icons-material/Search";
 
 import CloseIcon from "@mui/icons-material/Close";
 import { styled } from "@mui/material/styles";
+import { ToastContainer } from "react-toastify";
 
 import ButtonCustomize from "../../../components/Button/Button";
 
@@ -154,10 +155,10 @@ export default function PetTable() {
       if (loadData.data.error) {
         toast.warning(
           "Kết quả " +
-            "[" +
-            keyword +
-            "]" +
-            " bạn vừa tìm không có! Vui lòng nhập lại. "
+          "[" +
+          keyword +
+          "]" +
+          " bạn vừa tìm không có! Vui lòng nhập lại. "
         );
         loadAllPet(currentPage);
       } else {
@@ -229,6 +230,7 @@ export default function PetTable() {
 
   return (
     <>
+      <ToastContainer />
       <Box sx={{ position: "" }}>
         <Grid
           spacing={2}

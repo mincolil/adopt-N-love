@@ -36,6 +36,7 @@ import "./styled/ProductList.css";
 import styled from "styled-components";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import useAuth from "../../../hooks/useAuth";
 
 const BASE_URL = "http://localhost:3500";
@@ -259,10 +260,10 @@ export default function ProductList() {
       if (loadData.data.error) {
         toast.warning(
           "Kết quả " +
-            "[" +
-            keyword +
-            "]" +
-            " bạn vừa tìm không có! Vui lòng nhập lại. "
+          "[" +
+          keyword +
+          "]" +
+          " bạn vừa tìm không có! Vui lòng nhập lại. "
         );
         loadAllProduct(currentPage);
       } else {
@@ -285,7 +286,7 @@ export default function ProductList() {
       >
         <Breadcrumbs
           aria-label="breadcrumb"
-          sx={{ marginBottom: "30px"}}
+          sx={{ marginBottom: "30px" }}
           separator={<KeyboardDoubleArrowRightIcon fontSize="small" />}
         >
           <Link

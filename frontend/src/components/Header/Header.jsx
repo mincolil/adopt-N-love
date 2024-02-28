@@ -63,7 +63,7 @@ const Header = () => {
       <Container>
         <Grid container alignItems="center" justifyContent="space-between">
           {/* Logo */}
-          <Grid item xl={4}>
+          <Grid item xl={3}>
             <Typography variant="h6">
               <Link to="/">
                 <img
@@ -76,7 +76,7 @@ const Header = () => {
           </Grid>
           {/* Navigation Buttons */}
           <Hidden smDown>
-            <Grid item xl={8}>
+            <Grid item xl={6}>
               <Box
                 sx={{
                   color: "#000",

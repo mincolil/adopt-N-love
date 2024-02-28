@@ -37,6 +37,7 @@ import ContentCus from "../../../components/Typography/ContentCus";
 import DateFormat from "../../../components/DateFormat";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import BlogSlider from "../../../components/Header/SliderBlog";
 
 const Image = styled("img")({
@@ -107,6 +108,7 @@ const BlogDetail = () => {
 
   return (
     <ThemeProvider theme={defaultTheme}>
+      <ToastContainer />
       <CssBaseline />
 
       <CustomContainer component="main" maxWidth="full" sx={{ pt: 12 }}>

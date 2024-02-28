@@ -24,6 +24,7 @@ import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import MuiAccordion from "@mui/material/Accordion";
 import MuiAccordionSummary from "@mui/material/AccordionSummary";
@@ -171,6 +172,7 @@ const ProductDetail = () => {
 
   return (
     <>
+      <ToastContainer />
       <Header />
 
       <Container sx={{ position: "relative", top: "120px", marginBottom: "150px" }}>

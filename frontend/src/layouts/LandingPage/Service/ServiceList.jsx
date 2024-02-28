@@ -35,6 +35,7 @@ import "./ServiceList.css";
 import styled from "styled-components";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import useAuth from "../../../hooks/useAuth";
 import { Link as RouterLink } from "react-router-dom";
 
@@ -153,8 +154,8 @@ export default function ServiceList() {
     }
   };
 
-   // --------------------- GET ALL SERVICE BY CATEGORY ID SERVICE -----------------------------
-   async function hanldeClickCategory(page, cateId) {
+  // --------------------- GET ALL SERVICE BY CATEGORY ID SERVICE -----------------------------
+  async function hanldeClickCategory(page, cateId) {
     // console.log("Check data cate ID", cateId);
     setCategoryId(cateId);
     if (cateId === undefined || cateId === "") {
@@ -215,8 +216,8 @@ export default function ServiceList() {
     }
   };
 
-   // ----------------------------------- GET ALL SERVICE BY SERVICE NAME --------------------------------
-   const searchServiceByName = async (page) => {
+  // ----------------------------------- GET ALL SERVICE BY SERVICE NAME --------------------------------
+  const searchServiceByName = async (page) => {
     try {
       const loadData = await axios.get(
         `${BASE_URL}/service?service=${keyword.trim()}&page=${page}&limit=9`
@@ -224,10 +225,10 @@ export default function ServiceList() {
       if (loadData.data.error) {
         toast.warning(
           "Kết quả " +
-            "[" +
-            keyword +
-            "]" +
-            " bạn vừa tìm không có! Vui lòng nhập lại."
+          "[" +
+          keyword +
+          "]" +
+          " bạn vừa tìm không có! Vui lòng nhập lại."
         );
         loadAllService(currentPage);
       } else {
@@ -245,6 +246,7 @@ export default function ServiceList() {
 
   return (
     <>
+      <toastContainer />
       <Header />
       <Container
         sx={{ position: "relative", top: "120px", paddingBottom: "200px" }}

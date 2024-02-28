@@ -27,6 +27,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 
 import useAuth from '../../hooks/useAuth';
 import DateFormat from '../../components/DateFormat';
@@ -178,6 +179,7 @@ export default function ServicePurchase() {
 
     return (
         <>
+            <ToastContainer />
             <h1 style={{ textAlign: 'center', marginTop: '100px' }}>DỊCH VỤ ĐÃ ĐẶT</h1>
             <Grid container>
                 {statusList.map((value) => {

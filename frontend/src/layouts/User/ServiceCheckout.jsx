@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid';
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-
+import { ToastContainer } from "react-toastify";
 import useAuth from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { Toast } from 'bootstrap';
@@ -129,6 +129,7 @@ export default function ServiceCheckout() {
 
     return (
         <Box sx={{ flexGrow: 1, marginTop: '100px', marginLeft: '50px', marginRight: '50px' }}>
+            <ToastContainer />
             <Grid container spacing={5}>
                 <Grid item xs={7}>
                     <h6 style={{ marginTop: '30px', fontWeight: 'bolder', fontSize: '18px' }}>THÔNG TIN THANH TOÁN</h6>

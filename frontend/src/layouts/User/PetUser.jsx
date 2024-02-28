@@ -185,7 +185,7 @@ export default function PetUser() {
                   >
                     <CardOverflow
                       variant="solid"
-                      style={{ backgroundColor: "#f57c00" }}
+                      style={{ backgroundColor: "#f57c00", backgroundImage: `url(${Background})` }}
                       sx={{
                         resize: "vertical",
                         display: "flex",
@@ -312,7 +312,7 @@ export default function PetUser() {
             >
               <CardOverflow
                 variant="solid"
-                style={{ backgroundColor: "#f57c00" }}
+                style={{ backgroundColor: "#f57c00", backgroundImage: `url(${Background})` }}
                 sx={{
                   resize: "vertical",
                   display: "flex",

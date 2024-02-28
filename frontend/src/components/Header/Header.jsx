@@ -19,7 +19,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import Fade from "@mui/material/Fade";
-import Logo from "../../images/logo.png";
+import Logo from "../../images/RealLogo2.png";
 import useAuth from "../../hooks/useAuth";
 import AccountMenu from "../AccountMeun/AccountMeun";
 import { styled } from "@mui/material/styles";
@@ -46,6 +46,7 @@ const Header = () => {
   const context = useAuth();
   const [productNumber, setProductNumber] = useState(0);
 
+
   const reddot = {
     backgroundColor: "red",
     position: "absolute",
@@ -60,9 +61,9 @@ const Header = () => {
   return (
     <DsAppBar position="fixed" style={{ backgroundColor: "#ffffff" }}>
       <Container>
-        <Grid container alignItems="center">
+        <Grid container alignItems="center" justifyContent="space-between">
           {/* Logo */}
-          <Grid item xl={3}>
+          <Grid item xl={4}>
             <Typography variant="h6">
               <Link to="/">
                 <img
@@ -75,7 +76,7 @@ const Header = () => {
           </Grid>
           {/* Navigation Buttons */}
           <Hidden smDown>
-            <Grid item xl={6}>
+            <Grid item xl={8}>
               <Box
                 sx={{
                   color: "#000",
@@ -85,6 +86,7 @@ const Header = () => {
                   },
                 }}
               >
+
                 <DsButton
                   color="inherit"
                   href="/"
@@ -140,84 +142,81 @@ const Header = () => {
               </Box>
             </Grid>
           </Hidden>
-          <Grid item xl={3} sx={{display: "flex", justifyContent: "flex-end"}}>
+          <Box
+            sx={{
+              display: "flex",
+              flexGrow: 0,
+            }}
+          >
             <Box
               sx={{
                 display: "flex",
-                flexGrow: 0,
+                alignItems: "center",
+                textAlign: "center",
               }}
             >
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  textAlign: "center",
-                }}
-              >
-                {isLoggedIn && (
-                  <Tooltip
-                    title="Giỏ hàng dịch vụ"
-                    style={{ position: "relative" }}
-                  >
-                    <NavLink to="cart-service">
-                      <IconButton size="small" sx={{ ml: 2 }}>
-                        <ShoppingBagIcon
-                          sx={{ width: 32, height: 32 }}
-                        ></ShoppingBagIcon>
-                      </IconButton>
-                    </NavLink>
-                    <div style={reddot}>{context.serviceNumber}</div>
-                  </Tooltip>
-                )}
+              {isLoggedIn && (
+                <Tooltip
+                  title="Giỏ hàng dịch vụ"
+                  style={{ position: "relative" }}
+                >
+                  <NavLink to="cart-service">
+                    <IconButton size="small" sx={{ ml: 2 }}>
+                      <ShoppingBagIcon
+                        sx={{ width: 32, height: 32 }}
+                      ></ShoppingBagIcon>
+                    </IconButton>
+                  </NavLink>
+                  <div style={reddot}>{context.serviceNumber}</div>
+                </Tooltip>
+              )}
 
-                {isLoggedIn && (
-                  <Tooltip
-                    title="Giỏ hàng sản phẩm"
-                    style={{ position: "relative" }}
-                  >
-                    <NavLink to="/cart-product">
-                      <IconButton size="small" sx={{ ml: 2 }}>
-                        <ShoppingCartIcon
-                          sx={{ width: 32, height: 32 }}
-                        ></ShoppingCartIcon>
-                      </IconButton>
-                    </NavLink>
-                    <div style={reddot}>{context.productNumber}</div>
-                  </Tooltip>
-                )}
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  textAlign: "center",
-                }}
-              >
-                {!isLoggedIn && (
-                  <Tooltip title="Đăng kí">
-                    <NavLink to="/sign-up">
-                      <IconButton size="small" sx={{ ml: 2 }}>
-                        <AppRegistrationIcon
-                          sx={{ width: 32, height: 32 }}
-                        ></AppRegistrationIcon>
-                      </IconButton>
-                    </NavLink>
-                  </Tooltip>
-                )}
-                {!isLoggedIn && (
-                  <Tooltip title="Đăng nhập">
-                    <NavLink to="/sign-in">
-                      <IconButton size="small" sx={{ ml: 2 }}>
-                        <LoginIcon sx={{ width: 32, height: 32 }}></LoginIcon>
-                      </IconButton>
-                    </NavLink>
-                  </Tooltip>
-                )}
-              </Box>
-              {isLoggedIn && <AccountMenu />}
+              {isLoggedIn && (
+                <Tooltip
+                  title="Giỏ hàng sản phẩm"
+                  style={{ position: "relative" }}
+                >
+                  <NavLink to="/cart-product">
+                    <IconButton size="small" sx={{ ml: 2 }}>
+                      <ShoppingCartIcon
+                        sx={{ width: 32, height: 32 }}
+                      ></ShoppingCartIcon>
+                    </IconButton>
+                  </NavLink>
+                  <div style={reddot}>{context.productNumber}</div>
+                </Tooltip>
+              )}
             </Box>
-          </Grid>
-
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                textAlign: "center",
+              }}
+            >
+              {!isLoggedIn && (
+                <Tooltip title="Đăng kí">
+                  <NavLink to="/sign-up">
+                    <IconButton size="small" sx={{ ml: 2 }}>
+                      <AppRegistrationIcon
+                        sx={{ width: 32, height: 32 }}
+                      ></AppRegistrationIcon>
+                    </IconButton>
+                  </NavLink>
+                </Tooltip>
+              )}
+              {!isLoggedIn && (
+                <Tooltip title="Đăng nhập">
+                  <NavLink to="/sign-in">
+                    <IconButton size="small" sx={{ ml: 2 }}>
+                      <LoginIcon sx={{ width: 32, height: 32 }}></LoginIcon>
+                    </IconButton>
+                  </NavLink>
+                </Tooltip>
+              )}
+            </Box>
+            {isLoggedIn && <AccountMenu />}
+          </Box>
           {/* Menu Icon for Small Screens */}
           <Hidden smUp>
             <Grid item xs={2}>

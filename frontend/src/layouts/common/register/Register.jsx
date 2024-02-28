@@ -1,8 +1,9 @@
 import * as React from "react";
 import Banner from "../../../images/banner.png";
 import DogBanner from "../../../images/dog_banner.png";
-import Background from "../../../images/background.png";
+import Background from "../../../images/dog_background.png";
 import Cat from "../../../images/cat.png";
+import { ToastContainer } from "react-toastify";
 //MUI
 import {
   Avatar,
@@ -77,24 +78,24 @@ const Register = () => {
   };
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Grid container component="main" sx={{ height: "100vh" }}>
+      <ToastContainer />
+      <Grid container component="main" sx={{
+        height: "100vh", backgroundImage:
+          `url(${Background})`,
+        backgroundRepeat: "no-repeat",
+        backgroundColor: (t) =>
+          t.palette.mode === "light"
+            ? t.palette.grey[50]
+            : t.palette.grey[900],
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}>
         <CssBaseline />
         <Grid
           item
           xs={false}
           sm={4}
           md={7}
-          sx={{
-            backgroundImage:
-              `url(${Background})`,
-            backgroundRepeat: "no-repeat",
-            backgroundColor: (t) =>
-              t.palette.mode === "light"
-                ? t.palette.grey[50]
-                : t.palette.grey[900],
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
         />
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <Box

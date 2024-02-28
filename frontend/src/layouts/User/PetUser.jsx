@@ -185,7 +185,7 @@ export default function PetUser() {
                   >
                     <CardOverflow
                       variant="solid"
-                      style={{ backgroundColor: "#f57c00" }}
+                      style={{ backgroundColor: "#f57c00", backgroundImage: `url(${Background})` }}
                       sx={{
                         resize: "vertical",
                         display: "flex",
@@ -291,7 +291,7 @@ export default function PetUser() {
                       }}
                     >
                       <Button variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
-                        Sửa thông tin
+                        Báo cáo bệnh tình
                       </Button>
                     </CardActions>
                   </Card>
@@ -312,7 +312,7 @@ export default function PetUser() {
             >
               <CardOverflow
                 variant="solid"
-                style={{ backgroundColor: "#f57c00" }}
+                style={{ backgroundColor: "#f57c00", backgroundImage: `url(${Background})` }}
                 sx={{
                   resize: "vertical",
                   display: "flex",

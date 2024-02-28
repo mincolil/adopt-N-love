@@ -15,6 +15,7 @@ import Cat from "../../images/cat.png";
 import AdaptIcon1 from "../../images/adapt_icon_1.png";
 import AdaptIcon2 from "../../images/adapt_icon_2.png";
 import Avatar1 from "../../images/avatar1.png";
+import Logo from "../../images/AdoptNLove.png";
 import { ToastContainer } from "react-toastify";
 
 const DsButton = styled(Button)`

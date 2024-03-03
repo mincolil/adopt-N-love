@@ -33,7 +33,7 @@
     "react-material-ui-carousel": "^3.4.2",
     "react-paginate": "^8.2.0",
     "react-router-dom": "^6.17.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "react-slick": "^0.29.0",
     "react-swipeable-views": "^0.14.0",
     "react-toastify": "^9.1.3",

@@ -1,10 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const adoptController = require('../controllers/adoptController');
-const userController = require('../controllers/usersController');
 
 
 router.get('/', adoptController.getAllAdopt)
-    .post('/create-new-adopt', adoptController.createNewAdopt)
+    .post('/', adoptController.createNewAdopt) //test
+    .patch('/', adoptController.updateAdopt)//test
+    .get('/userid', adoptController.getAdoptByUserId)
+    .put('/updateStatus', adoptController.updateStatus)
+    .delete('/:id', adoptController.deleteOne)
+    .get('/:adoptId', adoptController.getAdoptById)
 
 module.exports = router;

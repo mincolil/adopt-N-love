@@ -27,17 +27,36 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import DeleteIcon from "@mui/icons-material/Delete";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import dayjs from "dayjs";
 
 export default function CartProduct() {
   const navigate = useNavigate();
 
   const [data, setData] = useState([]);
-  const [quantity, setQuantity] = useState(0);
   const [loged, setLoged] = useState(false);
   const [total, setTotal] = useState(0);
 
   const context = useAuth();
+
+  const [quantity, setQuantity] = useState(1);
+
+  const handleIncreaseQuantity = () => {
+    setQuantity(quantity + 1);
+  };
+
+  const handleDecreaseQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
+
+  const handleCheckOut = async () => {
+    context.auth.fullname = data[0].userId.fullname
+    data[0].userId.address !== undefined ? context.auth.address = data[0].userId.address : context.auth.address = ""
+    data[0].userId.phone !== undefined ? context.auth.phone = data[0].userId.phone : context.auth.phone = ""
+    navigate('/product-checkout');
+  }
 
   const handleLoadCartProduct = async () => {
     if (context.auth.token !== undefined) {
@@ -92,10 +111,11 @@ export default function CartProduct() {
   return (
     <>
       <Header />
-      <Container>
+      <Container
+        sx={{ position: "relative", top: "120px", marginBottom: "150px" }}
+      >
         <Breadcrumbs
           aria-label="breadcrumb"
-          sx={{ position: "relative", top: "120px" }}
           separator={<KeyboardDoubleArrowRightIcon fontSize="small" />}
         >
           <Link
@@ -152,20 +172,26 @@ export default function CartProduct() {
                         className="product-quantity"
                         data-title="Quantity"
                       >
-                        <Box sx={{width: "120px"}}>
-                          <IconButton aria-label="delete">
+                        <Box sx={{ width: "120px" }}>
+                          <IconButton
+                            aria-label="decrease quantity"
+                            onClick={handleDecreaseQuantity}
+                          >
                             <RemoveIcon />
                           </IconButton>
                           <input
                             type="text"
                             data-step="1"
                             data-min="0"
-                            value="1"
+                            value={product.quantity}
                             title="Qty"
                             className="input-quantity"
                             size="4"
                           />
-                          <IconButton aria-label="delete">
+                          <IconButton
+                            aria-label="increase quantity"
+                            onClick={handleIncreaseQuantity}
+                          >
                             <AddIcon />
                           </IconButton>
                         </Box>
@@ -186,44 +212,74 @@ export default function CartProduct() {
                   ))}
                   <TableRow>
                     <TableCell className="actions" colSpan={6}>
-                      <Box className="coupon">
-                        <Typography variant="subtitle1" className="coupon_code">
-                          Coupon Code:
-                        </Typography>
-                        <TextField
-                          type="text"
-                          className="input-text"
-                          placeholder="Promotion code here"
-                        />
-                        <Button variant="contained" className="button"></Button>
-                      </Box>
-                      <Box className="order-total">
-                        <Typography variant="subtitle1" className="title">
-                          Total Price:
-                        </Typography>
-                        <Typography variant="subtitle1" className="total-price">
-                          $95
-                        </Typography>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Box
+                          className="coupon"
+                          sx={{ display: "flex", alignItems: "center" }}
+                        >
+                          <Typography
+                            variant="subtitle1"
+                            className="coupon_code"
+                          >
+                            Nhập mã:
+                          </Typography>
+                          <TextField
+                            type="text"
+                            className="input-text"
+                            placeholder="Promotion code here"
+                            sx={{
+                              marginLeft: "15px",
+                              marginRight: "8px",
+                              "& .MuiOutlinedInput-root": {
+                                borderRadius: "15px",
+                              },
+                            }}
+                            InputProps={{
+                              endAdornment: (
+                                <IconButton>
+                                  <ArrowForwardIcon />
+                                </IconButton>
+                              ),
+                            }}
+                          />
+                        </Box>
+
+                        <Box
+                          className="order-total"
+                          sx={{ display: "flex", alignItems: "center" }}
+                        >
+                          <Typography variant="h3">Tổng:</Typography>
+                          <Typography variant="h3" className="total-price">
+                            {total} VND
+                          </Typography>
+                        </Box>
                       </Box>
                     </TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
             </TableContainer>
-            {/* <Box className="control-cart">
-                <Button
-                  variant="contained"
-                  className="button btn-continue-shopping"
-                >
-                  Continue Shopping
-                </Button>
-                <Button
-                  variant="contained"
-                  className="button btn-cart-to-checkout"
-                >
-                  Checkout
-                </Button>
-              </Box> */}
+            <Box className="control-cart">
+              <Button
+                variant="outlined"
+                className="button btn-continue-shopping"
+                sx={{marginRight: "20px"}}
+              >
+                Tiếp tục mua sắm
+              </Button>
+              <Button
+                variant="outlined"
+                className="button btn-cart-to-checkout"
+                onClick={() => handleCheckOut()}
+              >
+                Thanh toán
+              </Button>
+            </Box>
           </Box>
         </Box>
       </Container>

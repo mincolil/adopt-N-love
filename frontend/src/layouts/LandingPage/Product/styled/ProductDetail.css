@@ -1,5 +1,5 @@
 .content-details {
-  margin-top: 150px;
+  margin-top: 50px;
   margin-bottom: 100px;
 }
 
@@ -7,11 +7,12 @@
   padding-left: 70px !important;
 }
 
-.product-title {
+.details-infor .product-title {
   font-family: "Poppins", sans-serif !important;
   font-size: 24px !important;
   font-weight: 600 !important;
   color: #333;
+  text-transform: capitalize;
 }
 
 .availability {
@@ -87,4 +88,8 @@
   font-size: 18px !important;
   font-weight: bolder !important;
   text-transform: uppercase !important;
+}
+
+.tab-details-product .tabs {
+  justify-content: center;
 }

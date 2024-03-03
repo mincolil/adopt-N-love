@@ -1,4 +1,9 @@
 import * as React from "react";
+import Banner from "../../../images/banner.png";
+import DogBanner from "../../../images/dog_banner.png";
+import Background from "../../../images/dog_background.png";
+import Cat from "../../../images/cat.png";
+import { ToastContainer } from "react-toastify";
 //MUI
 import {
   Avatar,
@@ -97,24 +102,35 @@ const Login = () => {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Grid container component="main" sx={{ height: "100vh" }}>
+      <ToastContainer />
+      <Grid container component="main" sx={{
+        height: "100vh", backgroundImage:
+          `url(${Background})`,
+        backgroundRepeat: "no-repeat",
+        backgroundColor: (t) =>
+          t.palette.mode === "light"
+            ? t.palette.grey[50]
+            : t.palette.grey[900],
+        backgroundSize: "cover",
+        backgroundPosition: "center"
+      }}>
         <CssBaseline />
         <Grid
           item
           xs={false}
           sm={4}
           md={7}
-          sx={{
-            backgroundImage:
-              "url(https://img.freepik.com/premium-vector/veterinary-clinic-doctor-examining-vaccination-health-care-pets-like-dogs-cats-flat-cartoon-background-vector-illustration-poster-banner_2175-3383.jpg?w=2000)",
-            backgroundRepeat: "no-repeat",
-            backgroundColor: (t) =>
-              t.palette.mode === "light"
-                ? t.palette.grey[50]
-                : t.palette.grey[900],
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
+        // sx={{
+        //   backgroundImage:
+        //     `url(${Background})`,
+        //   backgroundRepeat: "no-repeat",
+        //   backgroundColor: (t) =>
+        //     t.palette.mode === "light"
+        //       ? t.palette.grey[50]
+        //       : t.palette.grey[900],
+        //   backgroundSize: "cover",
+        //   backgroundPosition: "center",
+        // }}
         />
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <Box
@@ -126,11 +142,19 @@ const Login = () => {
               alignItems: "center",
             }}
           >
-            <Link href="/">
-              <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-                <PetsIcon />
-              </Avatar>
-            </Link>
+            <Link href="/" ><Box
+              sx={{ xs: 1, zIndex: "1" }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <img src={Cat} alt="" style={{ maxWidth: "30%" }} />
+              </Box>
+            </Box></Link>
 
             <Typography component="h1" variant="h5">
               Đăng nhập
@@ -142,6 +166,7 @@ const Login = () => {
               sx={{ mt: 1 }}
             >
               <TextField
+                color="warning"
                 margin="normal"
                 required
                 fullWidth
@@ -154,6 +179,7 @@ const Login = () => {
                 onChange={(e) => setData({ ...data, email: e.target.value })}
               />
               <TextField
+                color="warning"
                 margin="normal"
                 required
                 fullWidth
@@ -166,14 +192,15 @@ const Login = () => {
                 onChange={(e) => setData({ ...data, password: e.target.value })}
               />
               {/* <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              /> */}
+                  control={<Checkbox value="remember" color="primary" />}
+                  label="Remember me"
+                /> */}
               <Button
+                color="warning"
                 type="submit"
                 fullWidth
                 variant="contained"
-                sx={{ mt: 3, mb: 2 }}
+                sx={{ mt: 3, mb: 2, }}
                 onClick={loginUser}
               >
                 Đăng nhập

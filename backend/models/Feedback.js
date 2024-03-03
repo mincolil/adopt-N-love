@@ -15,6 +15,10 @@ const feedbackSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "Product",
         },
+        doctorId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+        },
         comment: String,
         star: Number,
         image: String,

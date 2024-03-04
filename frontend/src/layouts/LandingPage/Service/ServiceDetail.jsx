@@ -19,20 +19,13 @@ import {
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import Grid from "@mui/material/Unstable_Grid2";
-//import "./styled/Servicedetail.css";
+import "./styled/ServiceDetail.css";
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { ToastContainer } from "react-toastify";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import MuiAccordion from "@mui/material/Accordion";
-import MuiAccordionSummary from "@mui/material/AccordionSummary";
-import MuiAccordionDetails from "@mui/material/AccordionDetails";
-import { styled } from "@mui/material/styles";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
-import Comments from "../../../components/Comments/Comments";
+import ChoosePet from "../../../components/Modal/ModalChoosePet";
 
 const BASE_URL = "http://localhost:3500";
 
@@ -56,29 +49,32 @@ function TabPanel(props) {
   );
 }
 
-const ProductDetail = () => {
-  const { productId } = useParams();
-  const [product, setProduct] = useState(null);
+const ServiceDetail = () => {
+  const [dataPet, setDataPet] = useState([]);
+  const { serviceId } = useParams();
+  const [service, setService] = useState(null);
   const [quantitySell, setQuantitySell] = useState(1);
-  const context = useAuth();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState({});
   const [tab, setTab] = useState(0);
+  const context = useAuth();
 
   const handleChangeTab = (event, newTab) => {
     setTab(newTab);
   };
 
-  // ----------------------------------- API GET PRODUCT BY ID --------------------------------
+  // ----------------------------------- API GET SERVICE BY ID --------------------------------
   useEffect(() => {
-    loadProductById();
+    loadServiceById();
   }, []);
 
-  const loadProductById = async () => {
+  const loadServiceById = async () => {
     try {
-      const loadData = await axios.get(`${BASE_URL}/product/${productId}`);
+      const loadData = await axios.get(`${BASE_URL}/service/${serviceId}`);
       if (loadData.error) {
         toast.error(loadData.error);
       } else {
-        setProduct(loadData.data);
+        setService(loadData.data);
         // console.log(loadData.data);
       }
     } catch (err) {
@@ -86,7 +82,7 @@ const ProductDetail = () => {
     }
   };
 
-  if (!product) {
+  if (!service) {
     return (
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -96,43 +92,62 @@ const ProductDetail = () => {
     );
   }
 
-  const handleAddToCart = async (id) => {
+  const handleIncreaseClick = () => {
+    setQuantitySell((quantitySell) => quantitySell + 1);
+  };
+
+  const handleDecreaseClick = () => {
+    setQuantitySell((quantitySell) => Math.max(quantitySell - 1, 1));
+  };
+
+  // --------------------- GET DETAIL SERVICE BY ID -----------------------------
+
+  const handleCloseEditModal = () => {
+    setIsModalOpen(false);
+    setSelectedService(null);
+  };
+
+  const handleAddToCartClick = async (serviceId) => {
     if (context.auth.token === undefined) {
-      alert("Bạn chưa đăng nhập, vui lòng đăng nhập !");
-    } else if (
-      window.confirm("Bạn có muốn thêm sản phẩm này không ?") == true
-    ) {
+      toast.warning("Bạn chưa đăng nhập, vui lòng đăng nhập !");
+    } else {
       try {
-        const addProductToCart = await axios
-          .post(
-            `${BASE_URL}/cartProduct/add-to-cart`,
-            {
-              productId: id,
-              quantity: quantitySell,
-            },
-            {
-              headers: { Authorization: context.auth.token },
-              withCredentials: true,
-            }
-          )
-          .then((data) => {
-            toast.success("Thêm sản phẩm vào giỏ hàng thành công");
-            context.handleLoadCartProduct();
-          });
+        const loadDataPet = await axios.post(
+          `http://localhost:3500/pet/booking`,
+          {
+            userId: context.auth.id,
+            serviceId: serviceId,
+          }
+        );
+        if (loadDataPet.error) {
+          toast.error(loadDataPet.error);
+        } else {
+          // setData(loadDataPet.data.docs);
+
+          setDataPet(loadDataPet.data);
+          setIsModalOpen(true);
+          setSelectedService(serviceId);
+          if (serviceId !== undefined) {
+            context.auth.serviceId = serviceId;
+          }
+
+          // console.log("Kiểm tra pet của người dùng", loadDataPet.data);
+        }
       } catch (err) {
-        // console.log(err);
-        toast.error(err.response.data.error);
+        console.log(err);
       }
+      // console.log("Check data id", serviceId);
+      // setSelectedService(serviceId);
     }
   };
 
-
   return (
     <>
-      <ToastContainer />
       <Header />
 
-      <Container sx={{ position: "relative", top: "120px", marginBottom: "150px" }}>
+      <Container
+        sx={{ position: "relative", top: "120px", marginBottom: "150px" }}
+      >
         <Breadcrumbs
           aria-label="breadcrumb"
           separator={<KeyboardDoubleArrowRightIcon fontSize="small" />}
@@ -158,7 +173,7 @@ const ProductDetail = () => {
             sx={{ display: "flex", alignItems: "center" }}
             color="#000000"
           >
-            {product && product.productName}
+            {service && service.serviceName}
           </Typography>
         </Breadcrumbs>
         <Box className="content-details">
@@ -168,8 +183,8 @@ const ProductDetail = () => {
                 <img
                   className="img_zoom"
                   src={
-                    product && product.productImage !== undefined
-                      ? `${product.productImage}`
+                    service && service.serviceImage !== undefined
+                      ? `${service.serviceImage}`
                       : "https://previews.123rf.com/images/bybochka/bybochka1510/bybochka151000200/46365274-pet-care-flat-icon-set-pet-care-banner-background-poster-concept-flat-design-vector-illustration.jpg?fj=1"
                   }
                   alt="img"
@@ -179,7 +194,7 @@ const ProductDetail = () => {
             </Grid>
             <Grid item xl={7} lg={7} className="details-infor">
               <Typography variant="h1" className="product-title">
-                {product && product.productName}
+                {service && service.serviceName}
               </Typography>
               {/* <Box className="stars-rating">
               <Box className="star-rating">
@@ -189,43 +204,22 @@ const ProductDetail = () => {
                 (7)
               </Typography>
             </Box> */}
-              <Typography variant="body2" className="availability">
-                Số lượng còn:
-                <Link href="#"> {product && product.quantity}</Link>
-              </Typography>
               <Typography variant="body1" className="price">
-                <span>{product && product.price} VND</span>
+                <span>{service && service.price} VND</span>
               </Typography>
               <Box className="product-details-description">
                 <Typography variant="body2">
-                  {product && product.description}
+                  {service && service.description}
                 </Typography>
               </Box>
               <Box className="quantity-add-to-cart">
-                <Box className="control">
-                  <IconButton className="qtyminus quantity-minus" href="#">
-                    -
-                  </IconButton>
-                  <input
-                    type="text"
-                    data-step="1"
-                    data-min="0"
-                    value="1"
-                    title="Qty"
-                    className="input-quantity"
-                    size="4"
-                  />
-                  <IconButton className="qtyplus quantity-plus" href="#">
-                    +
-                  </IconButton>
-                </Box>
                 <Button
                   className="single_add_to_cart_button"
                   variant="contained"
                   color="primary"
-                  onClick={() => handleAddToCart(product._id)}
+                  onClick={() => handleAddToCartClick(service._id)}
                 >
-                  Thêm vào giỏ hàng
+                  Đăng ký dịch vụ
                 </Button>
               </Box>
             </Grid>
@@ -246,7 +240,7 @@ const ProductDetail = () => {
             <Tab label="Đánh giá sản phẩm" />
           </Tabs>
           <TabPanel value={tab} index={0}>
-            <Typography paragraph>{product && product.description}</Typography>
+            <Typography paragraph>{service && service.description}</Typography>
           </TabPanel>
           <TabPanel value={tab} index={1}>
             <Typography variant="h6" gutterBottom>
@@ -308,12 +302,18 @@ const ProductDetail = () => {
             </Box>
           </TabPanel>
         </Box>
-
+        {/* Choose Pet */}
+        <ChoosePet
+          open={isModalOpen}
+          onClose={handleCloseEditModal}
+          service={selectedService}
+          pet={dataPet}
+          loadData={handleAddToCartClick}
+        />
       </Container>
       <Footer />
     </>
   );
 };
 
-
-export default ProductDetail;
+export default ServiceDetail;

@@ -46,7 +46,6 @@ const Header = () => {
   const context = useAuth();
   const [productNumber, setProductNumber] = useState(0);
 
-
   const reddot = {
     backgroundColor: "red",
     position: "absolute",
@@ -61,7 +60,7 @@ const Header = () => {
   return (
     <DsAppBar position="fixed" style={{ backgroundColor: "#ffffff" }}>
       <Container>
-        <Grid container alignItems="center" justifyContent="space-between">
+        <Grid container alignItems="center">
           {/* Logo */}
           <Grid item xl={3}>
             <Typography variant="h6">
@@ -86,7 +85,6 @@ const Header = () => {
                   },
                 }}
               >
-
                 <DsButton
                   color="inherit"
                   href="/"
@@ -142,81 +140,85 @@ const Header = () => {
               </Box>
             </Grid>
           </Hidden>
-          <Box
-            sx={{
-              display: "flex",
-              flexGrow: 0,
-            }}
-          >
+          <Grid item xl={3}>
             <Box
               sx={{
                 display: "flex",
-                alignItems: "center",
-                textAlign: "center",
+                flexGrow: 0,
+                justifyContent: "flex-end"
               }}
             >
-              {isLoggedIn && (
-                <Tooltip
-                  title="Giỏ hàng dịch vụ"
-                  style={{ position: "relative" }}
-                >
-                  <NavLink to="cart-service">
-                    <IconButton size="small" sx={{ ml: 2 }}>
-                      <ShoppingBagIcon
-                        sx={{ width: 32, height: 32 }}
-                      ></ShoppingBagIcon>
-                    </IconButton>
-                  </NavLink>
-                  <div style={reddot}>{context.serviceNumber}</div>
-                </Tooltip>
-              )}
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  textAlign: "center",
+                }}
+              >
+                {isLoggedIn && (
+                  <Tooltip
+                    title="Giỏ hàng dịch vụ"
+                    style={{ position: "relative" }}
+                  >
+                    <NavLink to="/cart-service">
+                      <IconButton size="small" sx={{ ml: 2 }}>
+                        <ShoppingBagIcon
+                          sx={{ width: 32, height: 32 }}
+                        ></ShoppingBagIcon>
+                      </IconButton>
+                    </NavLink>
+                    <div style={reddot}>{context.serviceNumber}</div>
+                  </Tooltip>
+                )}
 
-              {isLoggedIn && (
-                <Tooltip
-                  title="Giỏ hàng sản phẩm"
-                  style={{ position: "relative" }}
-                >
-                  <NavLink to="/cart-product">
-                    <IconButton size="small" sx={{ ml: 2 }}>
-                      <ShoppingCartIcon
-                        sx={{ width: 32, height: 32 }}
-                      ></ShoppingCartIcon>
-                    </IconButton>
-                  </NavLink>
-                  <div style={reddot}>{context.productNumber}</div>
-                </Tooltip>
-              )}
+                {isLoggedIn && (
+                  <Tooltip
+                    title="Giỏ hàng sản phẩm"
+                    style={{ position: "relative" }}
+                  >
+                    <NavLink to="/cart-product">
+                      <IconButton size="small" sx={{ ml: 2 }}>
+                        <ShoppingCartIcon
+                          sx={{ width: 32, height: 32 }}
+                        ></ShoppingCartIcon>
+                      </IconButton>
+                    </NavLink>
+                    <div style={reddot}>{context.productNumber}</div>
+                  </Tooltip>
+                )}
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  textAlign: "center",
+                }}
+              >
+                {!isLoggedIn && (
+                  <Tooltip title="Đăng kí">
+                    <NavLink to="/sign-up">
+                      <IconButton size="small" sx={{ ml: 2 }}>
+                        <AppRegistrationIcon
+                          sx={{ width: 32, height: 32 }}
+                        ></AppRegistrationIcon>
+                      </IconButton>
+                    </NavLink>
+                  </Tooltip>
+                )}
+                {!isLoggedIn && (
+                  <Tooltip title="Đăng nhập">
+                    <NavLink to="/sign-in">
+                      <IconButton size="small" sx={{ ml: 2 }}>
+                        <LoginIcon sx={{ width: 32, height: 32 }}></LoginIcon>
+                      </IconButton>
+                    </NavLink>
+                  </Tooltip>
+                )}
+              </Box>
+              {isLoggedIn && <AccountMenu />}
             </Box>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                textAlign: "center",
-              }}
-            >
-              {!isLoggedIn && (
-                <Tooltip title="Đăng kí">
-                  <NavLink to="/sign-up">
-                    <IconButton size="small" sx={{ ml: 2 }}>
-                      <AppRegistrationIcon
-                        sx={{ width: 32, height: 32 }}
-                      ></AppRegistrationIcon>
-                    </IconButton>
-                  </NavLink>
-                </Tooltip>
-              )}
-              {!isLoggedIn && (
-                <Tooltip title="Đăng nhập">
-                  <NavLink to="/sign-in">
-                    <IconButton size="small" sx={{ ml: 2 }}>
-                      <LoginIcon sx={{ width: 32, height: 32 }}></LoginIcon>
-                    </IconButton>
-                  </NavLink>
-                </Tooltip>
-              )}
-            </Box>
-            {isLoggedIn && <AccountMenu />}
-          </Box>
+          </Grid>
+
           {/* Menu Icon for Small Screens */}
           <Hidden smUp>
             <Grid item xs={2}>

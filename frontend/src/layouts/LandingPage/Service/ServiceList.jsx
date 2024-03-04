@@ -31,7 +31,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import HomeIcon from "@mui/icons-material/Home";
 import Grid from "@mui/material/Unstable_Grid2";
-import "./ServiceList.css";
+import "./styled/ServiceList.css";
 import styled from "styled-components";
 import axios from "axios";
 import { toast } from "react-toastify";

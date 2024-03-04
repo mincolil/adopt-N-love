@@ -52,6 +52,13 @@ export default function CartProduct() {
     }
   };
 
+  const handleCheckOut = async () => {
+    context.auth.fullname = data[0].userId.fullname
+    data[0].userId.address !== undefined ? context.auth.address = data[0].userId.address : context.auth.address = ""
+    data[0].userId.phone !== undefined ? context.auth.phone = data[0].userId.phone : context.auth.phone = ""
+    navigate('/product-checkout');
+  }
+
   const handleLoadCartProduct = async () => {
     if (context.auth.token !== undefined) {
       setLoged(true);
@@ -270,6 +277,7 @@ export default function CartProduct() {
               <Button
                 variant="outlined"
                 className="button btn-cart-to-checkout"
+                onClick={() => handleCheckOut()}
               >
                 Thanh toán
               </Button>

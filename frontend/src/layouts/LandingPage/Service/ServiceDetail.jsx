@@ -1,3 +1,9 @@
+
+
+
+
+
+
 import { useParams } from "react-router-dom";
 import {
   Box,
@@ -267,10 +273,10 @@ const ServiceDetail = () => {
                       <strong>{service.serviceName}</strong>
                     </Typography>
                     {service.discount !== 0 &&
-                    dayjs().isBetween(
-                      dayjs(service.saleStartTime),
-                      dayjs(service.saleEndTime)
-                    ) ? (
+                      dayjs().isBetween(
+                        dayjs(service.saleStartTime),
+                        dayjs(service.saleEndTime)
+                      ) ? (
                       <Box
                         display="flex"
                         flexGrow={1}
@@ -299,7 +305,7 @@ const ServiceDetail = () => {
                         >
                           {numberToVND(
                             service.price -
-                              (service.price * service.discount) / 100
+                            (service.price * service.discount) / 100
                           )}
                         </Typography>
                         <Typography

@@ -22,6 +22,7 @@ import CloseIcon from "@mui/icons-material/Close";
 
 import ButtonCustomize from "../../../components/Button/Button";
 import DateFormat from "../../../components/DateFormat";
+import { ToastContainer } from "react-toastify";
 
 //React
 import { useState } from "react";
@@ -345,6 +346,7 @@ export default function BookingTable() {
 
   return (
     <>
+      <ToastContainer />
       <Grid
         spacing={2}
         container

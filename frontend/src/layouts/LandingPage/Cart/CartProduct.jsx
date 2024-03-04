@@ -20,6 +20,7 @@ import {
 import Grid from "@mui/material/Unstable_Grid2";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import useAuth from "../../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
@@ -88,7 +89,7 @@ export default function CartProduct() {
                 (loadData.data[i].productId.price -
                   (loadData.data[i].productId.price *
                     loadData.data[i].productId.discount) /
-                    100);
+                  100);
             } else {
               totalPrice +=
                 loadData.data[i].quantity * loadData.data[i].productId.price;
@@ -110,6 +111,7 @@ export default function CartProduct() {
 
   return (
     <>
+      <toastContainer />
       <Header />
       <Container
         sx={{ position: "relative", top: "120px", marginBottom: "150px" }}
@@ -268,7 +270,7 @@ export default function CartProduct() {
               <Button
                 variant="outlined"
                 className="button btn-continue-shopping"
-                sx={{marginRight: "20px"}}
+                sx={{ marginRight: "20px" }}
               >
                 Tiếp tục mua sắm
               </Button>

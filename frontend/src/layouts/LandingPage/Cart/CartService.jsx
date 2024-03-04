@@ -20,6 +20,7 @@ import {
 import Grid from "@mui/material/Unstable_Grid2";
 import axios from "axios";
 import { toast } from "react-toastify";
+
 import useAuth from "../../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
@@ -28,6 +29,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+
 import dayjs from "dayjs";
 
 export default function CartService() {
@@ -135,24 +137,24 @@ export default function CartService() {
       window.confirm("Bạn có chắc muốn xoá dịch vụ này không ?") ===
       true
     ) {
-    try {
-      await axios.delete(
-        `http://localhost:3500/cartService/remove-from-cart/${id}`,
-        {
-          headers: { 'Authorization': context.auth.token },
-          withCredentials: true
-        }
-      )
-        .then((data) => {
-          handleLoadCartService()
-          context.handleLoadCartService()
-          toast.success("Xoá dịch vụ thành công")
-        })
+      try {
+        await axios.delete(
+          `http://localhost:3500/cartService/remove-from-cart/${id}`,
+          {
+            headers: { 'Authorization': context.auth.token },
+            withCredentials: true
+          }
+        )
+          .then((data) => {
+            handleLoadCartService()
+            context.handleLoadCartService()
+            toast.success("Xoá dịch vụ thành công")
+          })
 
-    } catch (err) {
-      console.log(err);
+      } catch (err) {
+        console.log(err);
+      }
     }
-  }
   }
 
   const numberToVND = (number) => {

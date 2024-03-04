@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const ResetPassword = () => {
@@ -130,6 +131,7 @@ const ResetPassword = () => {
 
   return (
     <>
+      <ToastContainer />
       <Header />
       <Grid
         sx={{

@@ -211,6 +211,7 @@ export default function ServiceCheckout() {
               <Grid item xs={6}>
                 <p style={{ textAlign: "right" }}>TỔNG</p>
               </Grid>
+
             </Grid>
             <hr />
             <Grid container spacing={2}>

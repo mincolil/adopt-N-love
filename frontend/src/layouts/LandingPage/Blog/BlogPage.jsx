@@ -17,6 +17,7 @@ import { useState, useEffect } from "react";
 // Axios
 import axios from "axios";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 
 //@material-ui/core
 import { styled } from "@mui/material/styles";
@@ -173,6 +174,7 @@ export default function BlogPage() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
+      <toastContainer />
       <CssBaseline />
 
       <CustomContainer component="main" maxWidth="full" sx={{ pt: 12 }}>
@@ -249,11 +251,10 @@ export default function BlogPage() {
                             }
                             sx={{
                               border: "none",
-                              backgroundImage: `url(${
-                                isHovered === index
+                              backgroundImage: `url(${isHovered === index
                                   ? `${value.image}`
                                   : `${value.image}`
-                              })`,
+                                })`,
                               backgroundSize: "cover",
                               height: "200px",
                               filter:

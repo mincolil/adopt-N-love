@@ -23,6 +23,7 @@ import {
 import Stack from "@mui/material/Stack";
 import Chip from "@mui/material/Chip";
 import SearchIcon from "@mui/icons-material/Search";
+import { ToastContainer } from "react-toastify";
 
 import CloseIcon from "@mui/icons-material/Close";
 import { styled } from "@mui/material/styles";
@@ -112,6 +113,7 @@ export default function CategoryTable() {
 
   return (
     <>
+      <ToastContainer />
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
         <TableContainer sx={{ maxHeight: 440 }}>
           <Table stickyHeader aria-label="sticky table">

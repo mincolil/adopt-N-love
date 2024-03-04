@@ -11,6 +11,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import useAuth from "../../hooks/useAuth";
 import { Avatar, Box, Container, Grid, Stack, TextField } from "@mui/joy";
 import PetsIcon from "@mui/icons-material/Pets";
@@ -155,6 +156,7 @@ export default function PetUser() {
 
   return (
     <>
+      <toastContainer />
       <Header />
       <React.Fragment>
         <CustomContainer component="main" maxWidth="false" sx={{ pt: 10, pb: 4 }}>

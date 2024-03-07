@@ -96,9 +96,9 @@ const Header = () => {
                   Trang chủ
                 </DsButton>
 
-                <DsButton color="inherit" onClick={handleClick}>
-                  Diễn đàn
-                  <ArrowDropDownIcon />
+                <DsButton color="inherit" >
+                  Nhận nuôi
+                  {/* <ArrowDropDownIcon /> */}
                 </DsButton>
                 <Menu
                   id="blog-menu"
@@ -136,7 +136,7 @@ const Header = () => {
                 >
                   Dịch vụ
                 </DsButton>
-                <DsButton color="inherit">Liên hệ</DsButton>
+                <DsButton color="inherit">Blog</DsButton>
               </Box>
             </Grid>
           </Hidden>

@@ -1,4 +1,6 @@
 const AdoptPet = require('../models/AdoptPet')
+const Pet = require('../models/Pet')
+const User = require('../models/User')
 
 const createNewAdopt = async (req, res) => {
     try {
@@ -36,42 +38,111 @@ const createNewAdopt = async (req, res) => {
     }
 }
 
+// const getAllAdopt = async (req, res) => {
+//     try {
+//         const { page, limit, petName, sort } = req.query
+
+//         const query = {}
+
+//         if (petName) {
+//             query.petName = { $regex: new RegExp(petName, 'i') }
+//         }
+
+//         const options = {
+//             page: parseInt(page, 10) || 1,
+//             limit: parseInt(limit, 10) || 10,
+//             sort: { createdAt: -1 }, // mắc định sắp xếp theo thời gian gần đây nhất
+//         }
+
+//         if (sort === 'acs') {
+//             options.sort = 1
+//         }
+//         if (sort === 'desc') {
+//             options.sort = -1
+//         }
+
+//         const result = await AdoptPet.paginate(query, options)
+//         if (!result) return res.json({
+//             error: "No adopt pet found"
+//         })
+//         res.status(200).json({
+//             result,
+//             "query": query
+//         })
+//     } catch (error) {
+//         console.log(err)
+//         res.status(500).json({
+//             error: err
+//         })
+//     }
+// }
+
+//get all adopt pet that forAdoption = true
 const getAllAdopt = async (req, res) => {
     try {
-        const { page, limit, petName, sort } = req.query
+        const { page, limit, categoryId } = req.query
 
-        const query = {}
+        const query = {
+            forAdoption: true
+        }
 
-        if (petName) {
-            query.petName = { $regex: new RegExp(petName, 'i') }
+        if (categoryId) {
+            query.categoryId = categoryId;
         }
 
         const options = {
-            page: parseInt(page, 10) || 1,
-            limit: parseInt(limit, 10) || 10,
-            sort: { createdAt: -1 }, // mắc định sắp xếp theo thời gian gần đây nhất
+            page: parseInt(page) || 1,
+            limit: parseInt(limit) || 10,
         }
 
-        if (sort === 'acs') {
-            options.sort = 1
-        }
-        if (sort === 'desc') {
-            options.sort = -1
-        }
+        const result = await Pet.paginate(query, {
+            page: parseInt(page) || 1,
+            limit: parseInt(limit) || 10,
+            populate: {
+                path: 'userId',
+                model: 'User',
+                select: 'fullname phone',
+            }
+        })
 
-        const result = await AdoptPet.paginate(query, options)
-        if (!result) return res.json({
-            error: "No adopt pet found"
-        })
-        res.status(200).json({
-            result,
-            "query": query
-        })
-    } catch (error) {
+        if (!result || result.docs === 0) {
+            return res.status(404).json({
+                error: "There are no Pet available for adoption in the Database",
+            });
+        }
+        res.status(200).json(result);
+
+    } catch (err) {
         console.log(err)
-        res.status(500).json({
-            error: err
-        })
+        res.status(500).json(err)
+    }
+}
+
+const getAdoptByUsername = async (req, res) => {
+    try {
+        const searchTerm = req.query.name || '';
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
+        // Find the user based on the provided username
+        const users = await User.find({ fullname: new RegExp(searchTerm, 'i') });
+
+        // Extract the user IDs from the found users
+        const userIds = users.map(user => user._id);
+
+        // Find pets where userId is in the list of found user IDs and forAdoption is true
+        const petPaginateResult = await Pet.paginate({ userId: { $in: userIds }, forAdoption: true }, {
+            page, limit, populate: {
+                path: 'userId',
+                model: 'User',
+                select: 'fullname phone',
+            }
+        });
+
+        res.json(petPaginateResult);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 }
 
@@ -178,5 +249,6 @@ module.exports = {
     updateStatus,
     deleteOne,
     updateAdopt,
-    getAdoptById
+    getAdoptById,
+    getAdoptByUsername
 }

@@ -128,7 +128,8 @@ const getPetByUsername = async (req, res) => {
     const petPaginateResult = await Pet.paginate({ userId: { $in: userIds } }, {
       page, limit, populate: {
         path: 'userId',
-        select: 'fullname',
+        model: 'User',
+        select: 'fullname phone',
       }
     });
 

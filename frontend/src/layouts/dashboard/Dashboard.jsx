@@ -64,7 +64,7 @@ function ResponsiveDrawer(props) {
             variant="h6"
             noWrap
             component="div"
-            sx={{ color: "black" }}
+            sx={{ color: "white" }}
           >
             Bảng điều khiển
           </Typography>

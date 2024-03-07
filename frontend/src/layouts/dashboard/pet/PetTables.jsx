@@ -146,6 +146,23 @@ export default function PetTable() {
     }
   };
 
+  // ----------------------------------- DELETE PET BY ID --------------------------------
+  const handleDeletePet = async (id) => {
+    if (window.confirm("Bạn có chắc chắn muốn xóa không?") === false) return;
+    try {
+      const deleteData = await axios.delete(`${BASE_URL}/pet/${id}`);
+      if (deleteData.error) {
+        toast.error(deleteData.error);
+      } else {
+        toast.success(deleteData.data.message);
+        loadAllPet(currentPage);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+
   // ----------------------------------- GET ALL PET BY USER NAME --------------------------------
   const searchPetById = async (page) => {
     try {
@@ -307,7 +324,7 @@ export default function PetTable() {
                   return (
                     <TableRow
                       hover
-                      onClick={() => handleUpdatePet(value)}
+                      //onClick={() => handleUpdatePet(value)}
                       key={index}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
@@ -339,13 +356,19 @@ export default function PetTable() {
                         />
                       </TableCell>
                       {/* <TableCell align="center">
-                        <ButtonGroup>
-                          <ButtonCustomize
-                            variant="contained"
-                            // component={RouterLink}
-                            nameButton="Cập nhật"
-                            fullWidth
-                          />
+                        <ButtonGroup variant="text" color="primary">
+                          <Button
+                            onClick={() => handleUpdatePet(value)}
+                            color="primary"
+                          >
+                            Sửa
+                          </Button>
+                          <Button
+                            onClick={() => handleDeletePet(value._id)}
+                            color="error"
+                          >
+                            Xóa
+                          </Button>
                         </ButtonGroup>
                       </TableCell> */}
                     </TableRow>

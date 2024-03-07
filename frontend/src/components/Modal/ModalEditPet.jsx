@@ -139,6 +139,7 @@ const ModalEditPet = (props) => {
       setHeight(dataEditPet.height);
       setWeight(dataEditPet.weight);
       setPetImage(dataEditPet.petImage);
+      console.log("Check dataEditPet", dataEditPet);
     }
   }, [dataEditPet]);
 
@@ -241,7 +242,7 @@ const ModalEditPet = (props) => {
               value={data}
               sx={{ display: "none" }}
               onChange={(e) => setUserId(e.target.value)}
-              // defaultValue={dataEditPet.userId.fullname}
+            // defaultValue={dataEditPet.userId.fullname}
             />
             <TextField
               required={true}
@@ -268,7 +269,7 @@ const ModalEditPet = (props) => {
                       <MenuItem
                         key={value._id}
                         value={value._id}
-                        // onClick={(e) => hanldeClickCategory(e.target.value)}
+                      // onClick={(e) => hanldeClickCategory(e.target.value)}
                       >
                         {value.feature}
                       </MenuItem>

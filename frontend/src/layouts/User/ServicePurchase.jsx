@@ -33,6 +33,8 @@ import useAuth from '../../hooks/useAuth';
 import DateFormat from '../../components/DateFormat';
 import ButtonCustomize from "../../components/Button/Button";
 import { useNavigate } from "react-router-dom";
+import Footer from "../../components/Footer/Footer";
+import Header from "../../components/Header/Header";
 // import dayjs from "dayjs";
 
 export default function ServicePurchase() {
@@ -179,6 +181,7 @@ export default function ServicePurchase() {
 
     return (
         <>
+            <Header />
             <ToastContainer />
             <h1 style={{ textAlign: 'center', marginTop: '100px' }}>DỊCH VỤ ĐÃ ĐẶT</h1>
             <Grid container>

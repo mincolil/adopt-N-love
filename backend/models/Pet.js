@@ -25,6 +25,10 @@ const petSchema = new mongoose.Schema({
     weight: Number,
     height: Number,
     petImage: String,
+    forAdoption: {
+        type: Boolean,
+        default: false,
+    },
 })
 
 petSchema.plugin(mongoosePaginate)

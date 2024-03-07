@@ -38,6 +38,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import DashboardList from "./layouts/dashboard/DashboardList";
 import Introduce from "./layouts/User/Introduce";
 import ServiceCheckout from "./layouts/User/ServiceCheckout";
+import AdoptPetTable from "./layouts/dashboard/pet/AdoptPetTable";
 
 // import AdminLayout from "./layouts/dashboard/layouts/Admin"
 
@@ -75,6 +76,7 @@ function App() {
                   element={<ServiceTable />}
                 />
                 <Route path="/dashboard/pet-list" element={<PetTable />} />
+                <Route path="/dashboard/adopt-pet-list" element={<AdoptPetTable />} />
                 <Route
                   path="/dashboard/product-list"
                   element={<ProductTable />}

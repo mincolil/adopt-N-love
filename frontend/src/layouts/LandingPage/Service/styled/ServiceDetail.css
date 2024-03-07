@@ -1,95 +1,95 @@
 .content-details {
-    margin-top: 50px;
-    margin-bottom: 100px;
-  }
-  
-  .details-infor {
-    padding-left: 70px !important;
-  }
-  
-  .details-infor .product-title {
-    font-family: "Poppins", sans-serif !important;
-    font-size: 24px !important;
-    font-weight: 600 !important;
-    color: #333;
-    text-transform: capitalize;
-  }
-  
-  .availability {
-    font-family: "Poppins", sans-serif !important;
-    font-size: 14px !important;
-    color: #555555;
-    margin-top: 10px !important;
-    margin-bottom: 10px !important;
-  }
-  
-  .availability a {
-    color: #ab8e66 !important;
-    font-weight: 600 !important;
-    text-decoration: none;
-  }
-  
-  .price {
-    font-size: 22px !important;
-    font-weight: 500 !important;
-    color: #111111;
-    margin-bottom: 15px !important;
-  }
-  
-  .product-details-description {
-    font-family: "Poppins", sans-serif !important;
-    font-size: 14px !important;
-    color: #555555;
-    margin-bottom: 15px !important;
-  }
-  
-  .variations .text-attribute {
-    font-family: "Poppins", sans-serif !important;
-    font-size: 14px !important;
-    font-weight: 600 !important;
-  }
-  
-  .quantity-add-to-cart {
-    position: relative;
-    top: 40px;
-  }
-  
-  .control {
-    display: inline-block;
-    vertical-align: middle;
-    margin-right: 5px;
-    padding: 1px 8px;
-    border: 1px solid #e9e9e9;
-    width: 19%;
-    border-radius: 30px;
-  }
-  
-  .input-quantity {
-    border: none;
-    padding: 7px 0;
-    text-align: center;
-    font-size: 16px;
-    color: #333333;
-    font-weight: 500;
-    width: 40px;
-    height: inherit;
-  }
-  
-  .single_add_to_cart_button {
-    font-size: 13px !important;
-    margin-left: 25px !important;
-    padding: 15px 30px !important;
-    background-color: #ab8e66 !important;
-    border-radius: 30px !important;
-    font-family: "Poppins", sans-serif !important;
-  }
-  
-  .tab-details-product button {
-    font-size: 18px !important;
-    font-weight: bolder !important;
-    text-transform: uppercase !important;
-  }
-  
-  .tab-details-product .tabs {
-    justify-content: center;
-  }
+  margin-top: 50px;
+  margin-bottom: 100px;
+}
+
+.details-infor {
+  padding-left: 70px !important;
+}
+
+.details-infor .product-title {
+  font-family: "Poppins", sans-serif !important;
+  font-size: 24px !important;
+  font-weight: 600 !important;
+  color: #333;
+  text-transform: capitalize;
+}
+
+.availability {
+  font-family: "Poppins", sans-serif !important;
+  font-size: 14px !important;
+  color: #555555;
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
+}
+
+.availability a {
+  color: #ab8e66 !important;
+  font-weight: 600 !important;
+  text-decoration: none;
+}
+
+.price {
+  font-size: 22px !important;
+  font-weight: 500 !important;
+  color: #111111;
+  margin-bottom: 15px !important;
+}
+
+.product-details-description {
+  font-family: "Poppins", sans-serif !important;
+  font-size: 14px !important;
+  color: #555555;
+  margin-bottom: 15px !important;
+}
+
+.variations .text-attribute {
+  font-family: "Poppins", sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+.quantity-add-to-cart {
+  position: relative;
+  top: 40px;
+}
+
+.control {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 5px;
+  padding: 1px 8px;
+  border: 1px solid #e9e9e9;
+  width: 19%;
+  border-radius: 30px;
+}
+
+.input-quantity {
+  border: none;
+  padding: 7px 0;
+  text-align: center;
+  font-size: 16px;
+  color: #333333;
+  font-weight: 500;
+  width: 40px;
+  height: inherit;
+}
+
+.single_add_to_cart_button {
+  font-size: 13px !important;
+  margin-left: 25px !important;
+  padding: 15px 30px !important;
+  background-color: #ab8e66 !important;
+  border-radius: 30px !important;
+  font-family: "Poppins", sans-serif !important;
+}
+
+.tab-details-product button {
+  font-size: 18px !important;
+  font-weight: bolder !important;
+  text-transform: uppercase !important;
+}
+
+.tab-details-product .tabs {
+  justify-content: center;
+}

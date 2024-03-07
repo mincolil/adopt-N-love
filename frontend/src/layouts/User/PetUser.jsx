@@ -302,9 +302,13 @@ export default function PetUser() {
                         width: "clamp(min(100%, 160px), 50%, min(100%, 200px))",
                       }}
                     >
-                      <Button variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
+                      <Button onMouseDown={() => handleUpdatePet(value)} variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
                         Báo cáo bệnh tình
                       </Button>
+                      <Button onMouseDown={() => handleUpdatePet(value)} variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
+                        Sửa
+                      </Button>
+
                     </CardActions>
                   </Card>
                 );
@@ -430,7 +434,7 @@ export default function PetUser() {
           data={context.auth.id}
           category={category}
         />
-      </React.Fragment>
+      </React.Fragment >
     </>
   );
 }

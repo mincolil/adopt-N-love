@@ -126,7 +126,8 @@ const getBookingDetailByPetId = async (req, res) => {
         const options = {
             page: parseInt(req.query.page) || 1, // Parse query parameters for pagination
             limit: parseInt(req.query.limit) || 10,
-            populate: 'serviceId' // Specify the field to populate
+            populate: 'serviceId bookingId', // Specify the field to populate
+            //populate: 'bookingId' // Specify the field to populate
         };
 
         const result = await BookingDetail.paginate(query, options);

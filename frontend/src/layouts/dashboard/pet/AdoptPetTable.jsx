@@ -323,7 +323,7 @@ export default function AdoptPetTable() {
                                 <TableCell align="left">Chiều cao</TableCell>
                                 <TableCell align="left">Loại thú cưng</TableCell>
                                 <TableCell align="left">Trạng thái</TableCell>
-                                <TableCell align="center">Chức năng</TableCell>
+                                {/* <TableCell align="center">Chức năng</TableCell> */}
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -365,7 +365,7 @@ export default function AdoptPetTable() {
                                                     color={statusColor}
                                                 />
                                             </TableCell>
-                                            <TableCell align="center">
+                                            {/* <TableCell align="center">
                                                 <ButtonGroup variant="text" color="primary">
                                                     <Button
                                                         onClick={() => handleUpdatePet(value)}
@@ -380,7 +380,7 @@ export default function AdoptPetTable() {
                                                         Xóa
                                                     </Button>
                                                 </ButtonGroup>
-                                            </TableCell>
+                                            </TableCell> */}
                                         </TableRow>
                                     );
                                 })}

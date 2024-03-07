@@ -29,6 +29,7 @@ import Header from "../../components/Header/Header";
 import Background from "../../images/background.png";
 import { orange } from '@mui/material/colors';
 import Icon from "../../images/adapt_icon_2.png";
+import ModalDetailPet from "../../components/Modal/ModalDetailPet";
 
 const CustomContainer = styled(Container)({
   background:
@@ -114,6 +115,8 @@ export default function PetUser() {
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [dataEditPet, setDataEditPet] = useState({});
+  const [openDetailModal, setOpenDetailModal] = useState(false);
+  const [dataDetailPet, setDataDetailPet] = useState({});
 
   // --------------------- OPEN MODAL  -----------------------------
   const handleCreateModal = () => {
@@ -126,10 +129,17 @@ export default function PetUser() {
     setOpenEditModal(true);
   };
 
+  const handleDetailPet = (pet) => {
+    // console.log("Check data", pet);
+    setDataDetailPet(pet);
+    setOpenDetailModal(true);
+  };
+
   // --------------------- CLOSE MODAL  -----------------------------
   const handleCloseModal = () => {
     setOpenCreateModal(false);
     setOpenEditModal(false);
+    setOpenDetailModal(false);
   };
 
   // --------------------- GET ALL CATEGORY PET -----------------------------
@@ -171,7 +181,7 @@ export default function PetUser() {
                 const statusColor = value.status ? "primary" : "error";
                 return (
                   <Card
-                    onClick={() => handleUpdatePet(value)}
+                    onClick={() => handleDetailPet(value)}
                     data-resizable
                     sx={{
                       mr: 3,
@@ -411,6 +421,14 @@ export default function PetUser() {
           page={currentPage}
           category={category}
           data={context.auth.id}
+        />
+        <ModalDetailPet
+          open={openDetailModal}
+          onClose={handleCloseModal}
+          dataEditPet={dataDetailPet}
+          page={currentPage}
+          data={context.auth.id}
+          category={category}
         />
       </React.Fragment>
     </>

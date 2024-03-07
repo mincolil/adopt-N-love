@@ -301,10 +301,10 @@ const ModalDetailPet = (props) => {
                         <Table stickyHeader aria-label="sticky table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell align="left">Tên người dùng</TableCell>
-                                    <TableCell align="left">Số điện thoại</TableCell>
-                                    <TableCell align="left">Ngày đặt dịch vụ</TableCell>
-                                    <TableCell align="left">Tổng giá trị</TableCell>
+                                    <TableCell align="left">Tên dịch vụ</TableCell>
+                                    <TableCell align="left">Ngày đặt</TableCell>
+                                    <TableCell align="left">Số lượng</TableCell>
+                                    <TableCell align="left">Giá trị</TableCell>
                                     <TableCell align="left">Trạng thái</TableCell>
                                 </TableRow>
                             </TableHead>
@@ -323,15 +323,15 @@ const ModalDetailPet = (props) => {
                                                     {value.serviceId !== null ? value.serviceId.serviceName : ""}
                                                 </TableCell>
                                                 <TableCell align="left">
-                                                    {value.createdAt !== null ? value.createdAt : ""}
+                                                    <DateFormat date={value.createdAt} />
                                                 </TableCell>
                                                 <TableCell align="left">
-                                                    <DateFormat date={value.createdAt} />
+                                                    {value.quantity}
                                                 </TableCell>
                                                 <TableCell align="left">
                                                     {numberToVND(value.serviceId.price)}
                                                 </TableCell>
-                                                <TableCell align="left">{value.quantity}</TableCell>
+                                                <TableCell align="left">{value.bookingId.status}</TableCell>
                                             </TableRow>
                                         );
                                     })}
@@ -346,4 +346,4 @@ const ModalDetailPet = (props) => {
     );
 };
 
-export default ModalEditPet;
+export default ModalDetailPet;

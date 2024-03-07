@@ -37,6 +37,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import ModalAddPet from "../../../components/Modal/ModalAddPet";
 import ModalEditPet from "../../../components/Modal/ModalEditPet";
+import ModalDetailPet from "../../../components/Modal/ModalDetailPet";
 import useAuth from "../../../hooks/useAuth";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DropDownService from "../../../components/DropDown/DropDownService";
@@ -68,6 +69,8 @@ export default function AdoptPetTable() {
     const [openCreateModal, setOpenCreateModal] = useState(false);
     const [openEditModal, setOpenEditModal] = useState(false);
     const [dataEditPet, setDataEditPet] = useState({});
+    const [openDetailModal, setOpenDetailModal] = useState(false);
+    const [dataDetailPet, setDataDetailPet] = useState({});
 
     const context = useAuth();
 
@@ -82,10 +85,17 @@ export default function AdoptPetTable() {
         setOpenEditModal(true);
     };
 
+    const handleDetailPet = (pet) => {
+        // console.log("Check data", pet);
+        setDataDetailPet(pet);
+        setOpenDetailModal(true);
+    };
+
     // --------------------- CLOSE MODAL  -----------------------------
     const handleCloseModal = () => {
         setOpenCreateModal(false);
         setOpenEditModal(false);
+        setOpenDetailModal(false);
     };
 
     // ----------------------------------- API GET ALL PET --------------------------------
@@ -323,7 +333,8 @@ export default function AdoptPetTable() {
                                     return (
                                         <TableRow
                                             hover
-                                            onClick={() => handleUpdatePet(value)}
+                                            //onClick={() => handleUpdatePet(value)}
+                                            onClick={() => handleDetailPet(value)}
                                             key={index}
                                             sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                                         >
@@ -400,6 +411,16 @@ export default function AdoptPetTable() {
                 open={openEditModal}
                 onClose={handleCloseModal}
                 dataEditPet={dataEditPet}
+                handUpdateEditTable={loadAllPet}
+                page={currentPage}
+                data={context.auth.id}
+                category={category}
+            />
+            {/* Modal detail */}
+            <ModalDetailPet
+                open={openDetailModal}
+                onClose={handleCloseModal}
+                dataEditPet={dataDetailPet}
                 handUpdateEditTable={loadAllPet}
                 page={currentPage}
                 data={context.auth.id}

@@ -121,7 +121,7 @@ const deleteOrderDetail = async (req, res) => {
 
 const getBookingDetailByPetId = async (req, res) => {
     try {
-        const { petId } = req.params;
+        const petId = req.params.petId;
         const query = { petId }; // Corrected variable name from `id` to `petId`
         const options = {
             page: parseInt(req.query.page) || 1, // Parse query parameters for pagination

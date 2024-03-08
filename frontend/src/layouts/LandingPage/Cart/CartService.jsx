@@ -87,33 +87,33 @@ export default function CartService() {
   // ----------------------------------------------------------------
 
   const handleCheckOut = async () => {
-    // if (window.confirm('Bạn có muốn sử dụng dịch vụ này ?') === true) {
-    //   if (data.length === 0) {
-    //     alert('Bạn không có dịch vụ trong giỏ hàng')
-    //   } else {
-    //     try {
-    //       await axios.post(
-    //         `http://localhost:3500/cartService/checkout`,
-    //         {
-    //           totalPrice: total
-    //         },
-    //         {
-    //           headers: { 'Authorization': context.auth.token },
-    //           withCredentials: true
-    //         }
-    //       )
-    //         .then((data) => {
-    //           alert('Đặt dịch vụ thành công')
-    //           context.handleLoadCartService()
-    //           navigate('/service-purchase')
+    if (window.confirm('Bạn có muốn sử dụng dịch vụ này ?') === true) {
+      if (data.length === 0) {
+        alert('Bạn không có dịch vụ trong giỏ hàng')
+      } else {
+        try {
+          await axios.post(
+            `http://localhost:3500/cartService/checkout`,
+            {
+              totalPrice: total
+            },
+            {
+              headers: { 'Authorization': context.auth.token },
+              withCredentials: true
+            }
+          )
+            .then((data) => {
+              alert('Đặt dịch vụ thành công')
+              context.handleLoadCartService()
+              navigate('/service-purchase')
 
-    //         })
+            })
 
-    //     } catch (err) {
-    //       console.log(err);
-    //     }
-    //   }
-    // }
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    }
     console.log(data)
     context.auth.fullname = data[0].userId.fullname
     data[0].userId.phone !== undefined ? context.auth.phone = data[0].userId.phone : context.auth.phone = ""
@@ -296,7 +296,7 @@ export default function CartService() {
               <Button
                 variant="outlined"
                 className="button btn-continue-shopping"
-                sx={{marginRight: "20px"}}
+                sx={{ marginRight: "20px" }}
               >
                 Tiếp tục mua sắm
               </Button>

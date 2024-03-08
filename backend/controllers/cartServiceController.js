@@ -28,7 +28,7 @@ const addToCart = async (req, res) => {
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
         const userId = decoded.id;
 
-        const { serviceId, petId, quantity } = req.body;
+        const { serviceId, petId, quantity, bookingDate } = req.body;
 
         const service = await Service.findById(serviceId);
 
@@ -47,7 +47,8 @@ const addToCart = async (req, res) => {
                 userId,
                 petId,
                 serviceId,
-                quantity: quantity
+                quantity: quantity,
+                bookingDate
             });
         }
         const result = await cartService.save();
@@ -118,6 +119,7 @@ const checkout = async (req, res) => {
                     petId: cartItem.petId,
                     serviceId: cartItem.serviceId,
                     quantity: cartItem.quantity,
+                    bookingDate: cartItem.bookingDate,
                 });
 
                 await bookingDetail.save();

@@ -21,6 +21,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { Grid, Input } from "@mui/material";
 import ButtonCustomize from "../Button/Button";
+import { ToastContainer } from "react-toastify";
 
 const PET_NAME_REGEX =
   /^[ A-Za-zÀ-Ỹà-ỹĂ-Ắă-ằẤ-Ứấ-ứÂ-Ấâ-ấĨ-Ỹĩ-ỹĐđÊ-Ểê-ểÔ-Ốô-ốơ-ởƠ-Ớơ-ớƯ-Ứư-ứỲ-Ỵỳ-ỵ\s]{2,}$/;
@@ -200,6 +201,7 @@ const ModalAddPet = (props) => {
       onClose={onClose}
       sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
     >
+      <ToastContainer />
       <Box
         sx={{
           bgcolor: "background.paper",
@@ -240,7 +242,7 @@ const ModalAddPet = (props) => {
               margin="normal"
               value={petName}
               onChange={(e) => handleValidationPetName(e)}
-              // error={!valid}
+            // error={!valid}
             />
             <FormControl fullWidth margin="normal">
               <InputLabel id="demo-select-small-label">
@@ -257,7 +259,7 @@ const ModalAddPet = (props) => {
                       <MenuItem
                         key={value._id}
                         value={value._id}
-                        // onClick={(e) => hanldeClickCategory(e.target.value)}
+                      // onClick={(e) => hanldeClickCategory(e.target.value)}
                       >
                         {value.feature}
                       </MenuItem>

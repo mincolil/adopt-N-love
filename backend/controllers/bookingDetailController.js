@@ -143,9 +143,34 @@ const getBookingDetailByPetId = async (req, res) => {
     }
 };
 
+// Get booking detail by booking date
+const getBookingDetailByBookingDate = async (req, res) => {
+    try {
+        const bookingDate = req.params.bookingDate;
+        const query = { bookingDate };
+        const options = {
+            page: parseInt(req.query.page) || 1, // Parse query parameters for pagination
+            limit: parseInt(req.query.limit) || 10,
+            populate: 'serviceId petId bookingId', // Specify the field to populate
+        };
+
+        const result = await BookingDetail.paginate(query, options);
+
+        if (result.docs.length > 0) {
+            return res.status(200).json(result);
+        } else {
+            return res.status(200).json(result);
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
 module.exports = {
     getBookingDetailByBookingId,
     createBookingDetail,
     deleteOrderDetail,
-    getBookingDetailByPetId
+    getBookingDetailByPetId,
+    getBookingDetailByBookingDate
 }

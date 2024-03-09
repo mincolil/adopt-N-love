@@ -96,7 +96,7 @@ const ChoosePet = ({ open, onClose, service, pet, loadData }) => {
   //Create date string
   const dateString = (selectedDate, selectedTime) => {
     const date = selectedDate.format('YYYY-MM-DD');
-    const time = selectedTime.format('hh:mm:ss');
+    const time = selectedTime.format('hh:00:00');
     return `${date}T${time}`;
   }
 
@@ -183,6 +183,33 @@ const ChoosePet = ({ open, onClose, service, pet, loadData }) => {
   useEffect(() => {
     loadAllCategoryPet();
   }, []);
+  // ------------------------------- HANDEL CHECK EMPTY SLOT ------------------------------
+  const checkEmptySlot = async (date) => {
+    try {
+      const totalSlots = await axios.get('http://localhost:3500/bookingDetail/bookingDate/' + date);
+      if (totalSlots.data.docs.length >= 2) {
+        console.log("het");
+        return false;
+      }
+      console.log("con");
+      return true;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  // ------------------------------- Handel CONVERT DATE STRING TO DATE ------------------------------
+  const formatJSONDate = (date) => {
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const hours = String(date.getUTCHours()).padStart(2, '0');
+    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+    const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+    const milliseconds = String(date.getUTCMilliseconds()).padStart(3, '0');
+
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}+00:00`;
+  }
 
   // --------------------------------ADD SERVICE TO CART------------------------------
   const handleAddToCart = async (id) => {
@@ -195,29 +222,36 @@ const ChoosePet = ({ open, onClose, service, pet, loadData }) => {
         true
       ) {
         const date = new Date(dateString(selectedDate, selectedTime));
-        console.log("Check date", date);
-        try {
-          const addServiceToCart = await axios
-            .post(
-              `http://localhost:3500/cartService/add-to-cart`,
-              {
-                serviceId: context.auth.serviceId,
-                petId: id,
-                bookingDate: date,
-              },
-              {
-                headers: { Authorization: context.auth.token },
-                withCredentials: true,
-              }
-            )
-            .then((data) => {
-              toast.success("Thêm dịch vụ vào giỏ hàng thành công");
-              context.handleLoadCartService();
-              onClose();
-            });
-        } catch (err) {
-          console.log(err);
-          toast.error(err.response.data.error);
+        date.setUTCHours(date.getUTCHours() + 7);
+        const checkSlot = await checkEmptySlot(date)
+        if (!checkSlot) {
+          toast.error("Thời gian này đã có người đặt, vui lòng chọn thời gian khác");
+          return;
+        }
+        else {
+          try {
+            const addServiceToCart = await axios
+              .post(
+                `http://localhost:3500/cartService/add-to-cart`,
+                {
+                  serviceId: context.auth.serviceId,
+                  petId: id,
+                  bookingDate: date,
+                },
+                {
+                  headers: { Authorization: context.auth.token },
+                  withCredentials: true,
+                }
+              )
+              .then((data) => {
+                toast.success("Thêm dịch vụ vào giỏ hàng thành công");
+                context.handleLoadCartService();
+                onClose();
+              });
+          } catch (err) {
+            console.log(err);
+            toast.error(err.response.data.error);
+          }
         }
       }
     }
@@ -249,15 +283,15 @@ const ChoosePet = ({ open, onClose, service, pet, loadData }) => {
             }} />
             <SlotPicker
               // Required, interval between two slots in minutes, 30 = 30 min
-              interval={120}
+              interval={60}
               // Required, when user selects a time slot, you will get the 'from' selected value
               onSelectTime={s => handleSelectTime(s)}
               // Optional, array of unavailable time slots
-              unAvailableSlots={['12:00', '13:59']}
+              unAvailableSlots={['12:00', '13:00']}
               // Optional, 8AM the start of the slots
               from={'08:00'}
               // Optional, 09:00PM the end of the slots
-              to={'16:00'}
+              to={'17:00'}
               // Optional, 01:00 PM, will be selected by default
               defaultSelectedTime={'13:00'}
               // Optional, selected slot color

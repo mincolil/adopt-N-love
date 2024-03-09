@@ -187,7 +187,13 @@ const ChoosePet = ({ open, onClose, service, pet, loadData }) => {
   const checkEmptySlot = async (date) => {
     try {
       const totalSlots = await axios.get('http://localhost:3500/bookingDetail/bookingDate/' + date);
-      if (totalSlots.data.docs.length >= 2) {
+      const cartSlots = await axios.get('http://localhost:3500/cartService/bookingDate/' + date, {
+        headers: { 'Authorization': context.auth.token },
+        withCredentials: true
+      });
+      const total = totalSlots.data.docs.length + cartSlots.data.length;
+      console.log(total);
+      if (total >= 2) {
         console.log("het");
         return false;
       }
@@ -225,7 +231,7 @@ const ChoosePet = ({ open, onClose, service, pet, loadData }) => {
         date.setUTCHours(date.getUTCHours() + 7);
         const checkSlot = await checkEmptySlot(date)
         if (!checkSlot) {
-          toast.error("Thời gian này đã có người đặt, vui lòng chọn thời gian khác");
+          toast.error("Thời gian này đã có người kín lịch, vui lòng chọn thời gian khác");
           return;
         }
         else {

@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 // method: GET
 const getAll = async (req, res) => {
     try {
-        const { sortPrice, page, limit, categoryId, service } = req.query
+        const { sortPrice, page, limit, categoryId, service, minPrice, maxPrice } = req.query
         const query = {}
         query.status = { $eq: true }
         if (categoryId) {
@@ -15,6 +15,11 @@ const getAll = async (req, res) => {
         if (service) {
             query.serviceName = { $regex: new RegExp(service, 'i') };
         }
+        // search by price range
+        if (req.query.minPrice && req.query.maxPrice) {
+            query.price = { $gte: req.query.minPrice, $lte: req.query.maxPrice }
+        }
+
         const options = {
             page: parseInt(page) || 1, // mặc định trang là 1
             limit: parseInt(limit) || 10, // tạm thời để là 5 cho An test paging

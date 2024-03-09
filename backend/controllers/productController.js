@@ -2,7 +2,7 @@ const Product = require("../models/Product");
 
 const getAll = async (req, res) => {
     try {
-        const { page, limit, product, categoryId } = req.query;
+        const { page, limit, product, categoryId, minPrice, maxPrice } = req.query;
         const query = {}
         query.quantity = { $gt: 0 };
         if (categoryId) {
@@ -12,6 +12,11 @@ const getAll = async (req, res) => {
         if (product) {
             query.productName = { $regex: new RegExp(product, 'i') }
         }
+        // search by price range
+        if (req.query.minPrice && req.query.maxPrice) {
+            query.price = { $gte: req.query.minPrice, $lte: req.query.maxPrice }
+        }
+
         const options = {
             page: parseInt(page) || 1, // mặc định trang là 1
             limit: parseInt(limit) || 10,

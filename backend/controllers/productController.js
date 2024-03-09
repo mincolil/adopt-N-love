@@ -21,6 +21,11 @@ const getAll = async (req, res) => {
             page: parseInt(page) || 1, // mặc định trang là 1
             limit: parseInt(limit) || 10,
         };
+        if (sortPrice === 'asc') {
+            options.sort = { price: 1 } // sắp xếp giá theo giá tăng dần
+        } else if (sortPrice === 'desc') {
+            options.sort = { price: -1 } // sắp xếp theo giá giảm dần
+        }
 
         const result = await Product.paginate(query, options);
 

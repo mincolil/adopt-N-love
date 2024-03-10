@@ -171,10 +171,8 @@ export default function ProductList() {
         toast.error(loadData.error);
       } else {
         setTotalPages(loadData.data.pages);
-        // console.log("Check totalPage", totalPages);
         setData(loadData.data.docs);
         setTotalProducts(loadData.data.limit);
-        // console.log(loadData.data.docs);
         setCurrentPage(loadData.data.page);
       }
     } catch (err) {
@@ -182,6 +180,7 @@ export default function ProductList() {
     }
   };
 
+  console.log(data);
   // --------------------- Click paging -----------------------------
   const [categoryId, setCategoryId] = useState("");
   const handlePageClick = (event, value) => {

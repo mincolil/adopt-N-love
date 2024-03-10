@@ -234,7 +234,7 @@ export default function CartService() {
                         </span>
                       </TableCell>
                       <TableCell className="product-remove">
-                        <DeleteIcon fontSize="large" />
+                        <DeleteIcon fontSize="large" onClick={(e) => handleDeleteOrder(service.serviceId._id)}/>
                       </TableCell>
                     </TableRow>
                   ))}

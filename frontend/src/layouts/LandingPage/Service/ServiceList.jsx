@@ -107,7 +107,6 @@ export default function ServiceList() {
 
   const [price, setPrice] = useState([0, 200]);
   const [services, setServices] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = React.useState("price-asc");
 
   const [data, setData] = useState([]);
@@ -118,10 +117,6 @@ export default function ServiceList() {
 
   const handlePriceChange = (event, newPrice) => {
     setPrice(newPrice);
-  };
-
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
   };
 
   const handleSortChange = (event) => {
@@ -205,6 +200,13 @@ export default function ServiceList() {
 
   const handleKeywordChange = (e) => {
     setKeyword(e.target.value);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleSearchClick();
+    }
   };
 
   const handleSearchClick = async () => {
@@ -353,10 +355,11 @@ export default function ServiceList() {
                     <InputBase
                       sx={{ ml: 1, flex: 1 }}
                       placeholder="Tìm dịch vụ ... "
-                      value={searchTerm}
-                      onChange={handleSearchChange}
+                      value={keyword}
+                      onChange={handleKeywordChange}
+                      onKeyDown={handleKeyDown}
                     />
-                    <IconButton sx={{ p: "10px" }} aria-label="search">
+                    <IconButton sx={{ p: "10px" }} aria-label="search" onClick={handleSearchClick}>
                       <SearchIcon />
                     </IconButton>
                   </Paper>

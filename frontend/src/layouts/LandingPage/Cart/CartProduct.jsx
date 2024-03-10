@@ -53,11 +53,15 @@ export default function CartProduct() {
   };
 
   const handleCheckOut = async () => {
-    context.auth.fullname = data[0].userId.fullname
-    data[0].userId.address !== undefined ? context.auth.address = data[0].userId.address : context.auth.address = ""
-    data[0].userId.phone !== undefined ? context.auth.phone = data[0].userId.phone : context.auth.phone = ""
-    navigate('/product-checkout');
-  }
+    context.auth.fullname = data[0].userId.fullname;
+    data[0].userId.address !== undefined
+      ? (context.auth.address = data[0].userId.address)
+      : (context.auth.address = "");
+    data[0].userId.phone !== undefined
+      ? (context.auth.phone = data[0].userId.phone)
+      : (context.auth.phone = "");
+    navigate("/product-checkout");
+  };
 
   const handleLoadCartProduct = async () => {
     if (context.auth.token !== undefined) {
@@ -89,7 +93,7 @@ export default function CartProduct() {
                 (loadData.data[i].productId.price -
                   (loadData.data[i].productId.price *
                     loadData.data[i].productId.discount) /
-                  100);
+                    100);
             } else {
               totalPrice +=
                 loadData.data[i].quantity * loadData.data[i].productId.price;
@@ -107,7 +111,24 @@ export default function CartProduct() {
     handleLoadCartProduct();
   }, []);
 
-  console.log(data);
+  const handleDeleteOrder = async (id) => {
+    if (window.confirm("Bạn có chắc muốn xoá sản phẩm này không ?") === true) {
+      try {
+        await axios
+          .delete(`http://localhost:3500/cartProduct/remove-from-cart/${id}`, {
+            headers: { Authorization: context.auth.token },
+            withCredentials: true,
+          })
+          .then((data) => {
+            handleLoadCartProduct();
+            context.handleLoadCartProduct();
+            toast.success("Xoá sản phẩm thành công");
+          });
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
 
   return (
     <>
@@ -208,7 +229,12 @@ export default function CartProduct() {
                         </span>
                       </TableCell>
                       <TableCell className="product-remove">
-                        <DeleteIcon fontSize="large" />
+                        <DeleteIcon
+                          fontSize="large"
+                          onClick={(e) =>
+                            handleDeleteOrder(product.productId._id)
+                          }
+                        />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -267,20 +293,32 @@ export default function CartProduct() {
               </Table>
             </TableContainer>
             <Box className="control-cart">
-              <Button
-                variant="outlined"
-                className="button btn-continue-shopping"
-                sx={{ marginRight: "20px" }}
-              >
-                Tiếp tục mua sắm
-              </Button>
-              <Button
-                variant="outlined"
-                className="button btn-cart-to-checkout"
-                onClick={() => handleCheckOut()}
-              >
-                Thanh toán
-              </Button>
+              {data.length === 0 ? (
+                <Button
+                  variant="outlined"
+                  className="button btn-continue-shopping"
+                  sx={{ marginRight: "20px" }}
+                >
+                  Không có sản phẩm trong giỏ hàng
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    variant="outlined"
+                    className="button btn-continue-shopping"
+                    sx={{ marginRight: "20px" }}
+                  >
+                    Tiếp tục mua sắm
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    className="button btn-cart-to-checkout"
+                    onClick={() => handleCheckOut()}
+                  >
+                    Thanh toán
+                  </Button>
+                </>
+              )}
             </Box>
           </Box>
         </Box>

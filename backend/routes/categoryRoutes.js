@@ -7,4 +7,5 @@ router.get('/', categoryController.getAll)
     .patch('/', categoryController.updateCategory) //test
     .delete('/:id', categoryController.deleteOne)
     .get('/catename/:name', categoryController.getCategoryByName)
+
 module.exports = router

@@ -7,5 +7,6 @@ router.get('/view-cart/', cartServiceController.viewCart) //test
     .post('/add-to-cart', cartServiceController.addToCart) //test
     .delete('/remove-from-cart/:serviceId', cartServiceController.removeFromCart)
     .get('/bookingDate/:bookingDate', cartServiceController.getCartServiceByBookingDate)
+    .get('/:petId/:bookingDate', cartServiceController.getCartServiceByBookingDateAndPetId)
 
 module.exports = router   

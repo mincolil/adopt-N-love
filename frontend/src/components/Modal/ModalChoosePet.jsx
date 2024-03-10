@@ -54,6 +54,8 @@ const ChoosePet = ({ open, onClose, service, pet, loadData }) => {
   const [selectedTime, setSelectedTime] = useState(null);
   const [selectedDate, setToDate] = React.useState(null);
 
+  const [categorySlot, setCategorySlot] = useState([]);
+
   const context = useAuth();
   // console.log(context.auth.serviceId);
 
@@ -100,25 +102,25 @@ const ChoosePet = ({ open, onClose, service, pet, loadData }) => {
     return `${date}T${time}`;
   }
 
-  const handleLoadCartService = async () => {
-    try {
-      const loadData = await axios.get(
-        `http://localhost:3500/cartService/view-cart`,
-        {
-          headers: { Authorization: context.auth.token },
-          withCredentials: true,
-        }
-      );
-      if (loadData.error) {
-        toast.error(loadData.error);
-      } else {
-        setDataCart(loadData.data);
-      }
-    } catch (err) {
-      // console.log(err);
-      toast.error(err.response.data.error);
-    }
-  };
+  // const handleLoadCartService = async () => {
+  //   try {
+  //     const loadData = await axios.get(
+  //       `http://localhost:3500/cartService/view-cart`,
+  //       {
+  //         headers: { Authorization: context.auth.token },
+  //         withCredentials: true,
+  //       }
+  //     );
+  //     if (loadData.error) {
+  //       toast.error(loadData.error);
+  //     } else {
+  //       setDataCart(loadData.data);
+  //     }
+  //   } catch (err) {
+  //     // console.log(err);
+  //     toast.error(err.response.data.error);
+  //   }
+  // };
 
   // --------------------- Click paging -----------------------------
   const handlePageClick = (event, value) => {
@@ -183,7 +185,24 @@ const ChoosePet = ({ open, onClose, service, pet, loadData }) => {
   useEffect(() => {
     loadAllCategoryPet();
   }, []);
-  // ------------------------------- HANDEL CHECK EMPTY SLOT ------------------------------
+
+  useEffect(() => {
+    loadCategorySlot();
+  }, [context.auth.serviceId]);
+
+  // ------------------------------- HANDLE GET CATEFORY SLOT ------------------------------
+  const loadCategorySlot = async () => {
+    try {
+      const loadDataCategorySlot = await axios.get(`http://localhost:3500/service/${context.auth.serviceId}`);
+      const categorySlot = loadDataCategorySlot.data.categoryId.slot;
+      console.log(categorySlot);
+      setCategorySlot(categorySlot);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // ------------------------------- HANDLE CHECK EMPTY SLOT ------------------------------
   const checkEmptySlot = async (date) => {
     try {
       const totalSlots = await axios.get('http://localhost:3500/bookingDetail/bookingDate/' + date);
@@ -194,17 +213,37 @@ const ChoosePet = ({ open, onClose, service, pet, loadData }) => {
       const total = totalSlots.data.docs.length + cartSlots.data.length;
       console.log(total);
       if (total >= 2) {
-        console.log("het");
         return false;
       }
-      console.log("con");
       return true;
     } catch (err) {
       console.log(err);
     }
   }
 
-  // ------------------------------- Handel CONVERT DATE STRING TO DATE ------------------------------
+  // ------------------------------- HANDLE CHECK DUPPLICATE PET ------------------------------
+  const isDuplicatePet = async (id, date) => {
+    try {
+      const checkPetBooking = await axios.get(`http://localhost:3500/bookingDetail/${id}/${date}`);
+      const checkPetCart = await axios.get(`http://localhost:3500/cartService/${id}/${date}`, {
+        headers: { 'Authorization': context.auth.token },
+        withCredentials: true
+      });
+      //check exsit pet in booking date
+      const totalSlot = checkPetBooking.data.docs.length + checkPetCart.data.length;
+      console.log("ee " + totalSlot);
+      if (totalSlot < 1) {
+        console.log("con");
+        return false;
+      }
+      console.log("het");
+      return true;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  // ------------------------------- Handle CONVERT DATE STRING TO DATE ------------------------------
   const formatJSONDate = (date) => {
     const year = date.getUTCFullYear();
     const month = String(date.getUTCMonth() + 1).padStart(2, '0');
@@ -230,8 +269,13 @@ const ChoosePet = ({ open, onClose, service, pet, loadData }) => {
         const date = new Date(dateString(selectedDate, selectedTime));
         date.setUTCHours(date.getUTCHours() + 7);
         const checkSlot = await checkEmptySlot(date)
+        const checkPet = await isDuplicatePet(id, date);
         if (!checkSlot) {
           toast.error("Thời gian này đã có người kín lịch, vui lòng chọn thời gian khác");
+          return;
+        }
+        else if (checkPet) {
+          toast.error("Thú cưng này của bạn đã đặt lịch hẹn vào thời gian này, vui lòng chọn thời gian khác");
           return;
         }
         else {
@@ -263,6 +307,12 @@ const ChoosePet = ({ open, onClose, service, pet, loadData }) => {
     }
   };
 
+  const isWeekend = (date) => {
+    const day = date.day();
+
+    return day === 0 || day === 6;
+  };
+
   return (
     <Dialog open={open} onClose={onClose}>
       <ToastContainer />
@@ -278,7 +328,7 @@ const ChoosePet = ({ open, onClose, service, pet, loadData }) => {
             components={['DateTimePicker', 'DateTimePicker', 'DateTimePicker']}
           // Adjust the margin as needed
           >
-            <DatePicker label="Ngày hẹn" onChange={handleEndDateChange} sx={{
+            <DatePicker label="Ngày hẹn" onChange={handleEndDateChange} disablePast={true} shouldDisableDate={isWeekend} sx={{
               "& .MuiInputLabel-root.Mui-focused": { color: "#ff5722" }, "& .MuiOutlinedInput-root": {
                 "&:hover > fieldset": { borderColor: "#ff5722" },
                 height: "48px",

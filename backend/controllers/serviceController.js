@@ -198,7 +198,8 @@ const deleteMany = async (req, res) => {
 const getServiceById = async (req, res) => {
     try {
         const { id } = req.params;
-        const service = await Service.findById(id);
+        const service = await Service.findById(id).populate('categoryId');
+
         if (!service) {
             res.status(204).json({ error: "Service Not Found" });
         } else {

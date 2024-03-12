@@ -100,21 +100,17 @@ const Header = () => {
                   Nhận nuôi
                   {/* <ArrowDropDownIcon /> */}
                 </DsButton>
-                <Menu
-                  id="blog-menu"
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={handleClose}
-                  MenuListProps={{
-                    "aria-labelledby": "blog-button",
+
+                <DsButton
+                  color="inherit"
+                  href="/service-homepage"
+                  sx={{
+                    fontFamily: "'Poppins', sans-serif !important",
+                    fontSize: "17px",
                   }}
-                  TransitionComponent={Fade}
-                  TransitionProps={{ timeout: 300 }}
                 >
-                  <MenuItem onClick={handleClose}>Blog 1</MenuItem>
-                  <MenuItem onClick={handleClose}>Blog 2</MenuItem>
-                  <MenuItem onClick={handleClose}>Blog 3</MenuItem>
-                </Menu>
+                  Dịch vụ
+                </DsButton>
 
                 <DsButton
                   color="inherit"
@@ -126,16 +122,7 @@ const Header = () => {
                 >
                   Sản phẩm
                 </DsButton>
-                <DsButton
-                  color="inherit"
-                  href="/service-homepage"
-                  sx={{
-                    fontFamily: "'Poppins', sans-serif !important",
-                    fontSize: "17px",
-                  }}
-                >
-                  Dịch vụ
-                </DsButton>
+
                 <DsButton color="inherit" href="/blog-homepage" sx={{
                   fontFamily: "'Poppins', sans-serif !important",
                   fontSize: "17px",

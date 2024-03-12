@@ -96,6 +96,20 @@ const ProductDetail = () => {
     );
   }
 
+  // ---------------------HANDLE INCREASE AND DECREASE QUANTITY SELL---------------------
+  const handleIncreaseClick = (max) => {
+    if (quantitySell >= max) {
+      toast.error("Quá giới hạn số lượng");
+    } else {
+      setQuantitySell((quantitySell) => quantitySell + 1);
+    }
+  };
+
+  const handleDecreaseClick = () => {
+    setQuantitySell((quantitySell) => Math.max(quantitySell - 1, 1));
+  };
+
+
   const handleAddToCart = async (id) => {
     if (context.auth.token === undefined) {
       alert("Bạn chưa đăng nhập, vui lòng đăng nhập !");
@@ -203,19 +217,19 @@ const ProductDetail = () => {
               </Box>
               <Box className="quantity-add-to-cart">
                 <Box className="control">
-                  <IconButton className="qtyminus quantity-minus" href="#">
+                  <IconButton className="qtyminus quantity-minus" onClick={handleDecreaseClick}>
                     -
                   </IconButton>
                   <input
                     type="text"
                     data-step="1"
                     data-min="0"
-                    value="1"
+                    value={quantitySell}
                     title="Qty"
                     className="input-quantity"
                     size="4"
                   />
-                  <IconButton className="qtyplus quantity-plus" href="#">
+                  <IconButton className="qtyplus quantity-plus" onClick={() => handleIncreaseClick(product.quantity)}>
                     +
                   </IconButton>
                 </Box>

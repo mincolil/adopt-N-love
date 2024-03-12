@@ -136,7 +136,10 @@ const Header = () => {
                 >
                   Dịch vụ
                 </DsButton>
-                <DsButton color="inherit">Blog</DsButton>
+                <DsButton color="inherit" href="/blog-homepage" sx={{
+                  fontFamily: "'Poppins', sans-serif !important",
+                  fontSize: "17px",
+                }}>Blog</DsButton>
               </Box>
             </Grid>
           </Hidden>

@@ -39,6 +39,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 import BlogSlider from "../../../components/Header/SliderBlog";
+import Header from "../../../components/Header/Header";
 
 const Image = styled("img")({
   maxWidth: "100%",
@@ -109,6 +110,7 @@ const BlogDetail = () => {
   return (
     <ThemeProvider theme={defaultTheme}>
       <ToastContainer />
+      <Header />
       <CssBaseline />
 
       <CustomContainer component="main" maxWidth="full" sx={{ pt: 12 }}>

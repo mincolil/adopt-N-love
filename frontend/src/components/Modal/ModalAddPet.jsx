@@ -39,6 +39,8 @@ const ModalAddPet = (props) => {
   const [weight, setWeight] = useState(null);
   const [height, setHeight] = useState(null);
   const [image, setImage] = useState(null);
+  const [age, setAge] = useState(null);
+  const [breed, setBreed] = useState("");
 
   // --------------------- HANLDE CHANGE STATUS -----------------------------
   const handleStatusChange = (event) => {
@@ -57,6 +59,10 @@ const ModalAddPet = (props) => {
 
   const handleValidationPetName = (e) => {
     setPetName(e.target.value);
+  };
+
+  const handleValidationAge = (e) => {
+    setAge(e.target.value);
   };
 
   useEffect(() => {
@@ -81,6 +87,10 @@ const ModalAddPet = (props) => {
 
   const handleValidationColor = (e) => {
     setColor(e.target.value);
+  };
+
+  const handleValidationBreed = (e) => {
+    setBreed(e.target.value);
   };
 
   useEffect(() => {
@@ -163,11 +173,12 @@ const ModalAddPet = (props) => {
           height: height === "" ? null : height,
           weight: weight === "" ? null : weight,
           petImage,
+          age: age === "" ? null : age,
+          breed,
         });
         if (response.error) {
           toast.error(response.error);
         } else {
-          // console.log("Thành công!!", response);
           toast.success("Thêm mới thú cưng thành công!");
           setUserId("");
           setPetName("");
@@ -292,6 +303,22 @@ const ModalAddPet = (props) => {
               margin="normal"
               value={color}
               onChange={(e) => handleValidationColor(e)}
+            />
+
+            <TextField
+              fullWidth
+              label="Tuổi"
+              margin="normal"
+              value={age}
+              onChange={(e) => handleValidationAge(e)}
+            />
+
+            <TextField
+              fullWidth
+              label="Giống loại thú cưng"
+              margin="normal"
+              value={breed}
+              onChange={(e) => handleValidationBreed(e)}
             />
 
             <TextField

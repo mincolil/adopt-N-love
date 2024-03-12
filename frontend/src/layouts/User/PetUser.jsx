@@ -249,19 +249,19 @@ export default function PetUser() {
                       </AspectRatio>
                     </CardOverflow>
                     <Typography
-                      level="title-lg"
+                      level="h2"
                       sx={{ mt: "calc(var(--icon-size) / 2)" }}
                     >
                       🎊 {value.petName} 🎊
                     </Typography>
-                    <Typography level="h3" component="div">
+                    {/* <Typography level="h3" component="div">
                       Chủ nhân
                     </Typography>
                     <Typography level="h2" sx={{ maxWidth: "40ch" }}>
                       {value.userId.fullname}
-                    </Typography>
+                    </Typography> */}
                     <Grid container spacing={3}>
-                      <Grid item xs={12} sm={6}>
+                      <Grid item xs={12} sm={4}>
                         <Typography variant="h5" component="h1">
                           Chiều cao
                         </Typography>
@@ -269,7 +269,7 @@ export default function PetUser() {
                           {value.height}cm
                         </Typography>
                       </Grid>
-                      <Grid item xs={12} sm={6}>
+                      <Grid item xs={12} sm={4}>
                         <Typography variant="h5" component="h1">
                           Cân nặng
                         </Typography>
@@ -277,12 +277,28 @@ export default function PetUser() {
                           {value.weight}kg
                         </Typography>
                       </Grid>
-                      <Grid item xs={12} sm={12}>
+                      <Grid item xs={12} sm={4}>
                         <Typography variant="h5" component="h1">
                           Màu lông
                         </Typography>
                         <Typography level="h4" sx={{ maxWidth: "40ch" }}>
-                          {value.color}
+                          {value.color}kg
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="h5" component="h1">
+                          Giống
+                        </Typography>
+                        <Typography level="h4" sx={{ maxWidth: "40ch" }}>
+                          {value.breed}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="h5" component="h1">
+                          Tuổi
+                        </Typography>
+                        <Typography level="h4" sx={{ maxWidth: "40ch" }}>
+                          {value.age}
                         </Typography>
                       </Grid>
                       <Grid item xs={12} sm={12}>
@@ -303,12 +319,14 @@ export default function PetUser() {
                       }}
                     >
                       <Button onMouseDown={() => handleUpdatePet(value)} variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
-                        Báo cáo bệnh tình
+                        Đăng ký phòng khám
+                      </Button>
+                      <Button onMouseDown={() => handleUpdatePet(value)} variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
+                        Cho nhận nuôi
                       </Button>
                       <Button onMouseDown={() => handleUpdatePet(value)} variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
                         Sửa
                       </Button>
-
                     </CardActions>
                   </Card>
                 );

@@ -15,7 +15,7 @@ import {
   DialogContent,
   IconButton,
   Grid,
-  DialogActions
+  DialogActions,
 } from "@mui/material";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
@@ -25,8 +25,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import useAuth from '../../hooks/useAuth';
-import DateFormat from '../../components/DateFormat';
+import useAuth from "../../hooks/useAuth";
+import DateFormat from "../../components/DateFormat";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import ButtonCustomize from "../../components/Button/Button";
@@ -34,11 +34,12 @@ import ButtonCustomize from "../../components/Button/Button";
 export default function ProductPurchase() {
   // const DEFAULT_PAGE = 1;
   // const DEFAULT_LIMIT = 5;
-  const DEFAULT_STATUS = "Chờ xác nhận"
-  const CANCEL_STATUS = "Huỷ"
+  const DEFAULT_STATUS = "Chờ xác nhận";
+  const CANCEL_STATUS = "Huỷ";
 
   const [data, setData] = useState([]);
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
 
   const [orderDetail, setOrderDetail] = useState([]);
   const [id, setId] = useState();
@@ -55,42 +56,44 @@ export default function ProductPurchase() {
   const handleLoadCartProductById = async (option) => {
     if (context.auth.token !== undefined) {
       try {
-        setStatus(option)
-        const loadData = await axios.get(
-          `http://localhost:3500/order/get-all-order-by-uid/${context.auth.id}`,
-          {
-            headers: { 'Authorization': context.auth.token },
-            withCredentials: true
-          }
-        )
+        setStatus(option);
+        setSelectedStatus(option);
+        const loadData = await axios
+          .get(
+            `http://localhost:3500/order/get-all-order-by-uid/${context.auth.id}`,
+            {
+              headers: { Authorization: context.auth.token },
+              withCredentials: true,
+            }
+          )
           .then((data) => {
-            const filterData = []
+            const filterData = [];
             // console.log(data.data)
 
             for (let i = 0; i < data.data.length; i++) {
               if (data.data[i].status === option) {
-                filterData.push(data.data[i])
+                filterData.push(data.data[i]);
               }
             }
-            setData(filterData)
-          })
+            setData(filterData);
+          });
       } catch (err) {
         console.log(err);
       }
     }
-  }
+  };
 
   useEffect(() => {
-    handleLoadCartProductById(DEFAULT_STATUS)
+    handleLoadCartProductById(DEFAULT_STATUS);
   }, []);
 
   // ----------------------------------------------------------------
 
   const handleFeedBack = (id) => {
-    context.auth.feedback = true
-    navigate(`/product-homepage/${id}`)
+    context.auth.feedback = true;
+    navigate(`/product-homepage/${id}`);
     // console.log(context.auth)
-  }
+  };
 
   // ----------------------------------------------------------------
 
@@ -102,7 +105,7 @@ export default function ProductPurchase() {
       } else {
         // console.log(data.data);
         setId(id);
-        setOrderDetail(data.data)
+        setOrderDetail(data.data);
       }
     } catch (err) {
       console.log(err);
@@ -113,16 +116,20 @@ export default function ProductPurchase() {
   // ----------------------------------------------------------------
 
   const handleRemoveOrder = async (id) => {
-    if (window.confirm("Bạn có muốn cập nhật trạng thái đơn hàng không ?") === true) {
+    if (
+      window.confirm("Bạn có muốn cập nhật trạng thái đơn hàng không ?") ===
+      true
+    ) {
       try {
-        await axios.put(`http://localhost:3500/order/update-status/${id}`, { orderStatus: CANCEL_STATUS })
+        await axios
+          .put(`http://localhost:3500/order/update-status/${id}`, {
+            orderStatus: CANCEL_STATUS,
+          })
           .then((data) => {
-            handleLoadCartProductById(CANCEL_STATUS)
+            handleLoadCartProductById(CANCEL_STATUS);
             handleClose();
           })
-          .catch((error) => {
-
-          })
+          .catch((error) => {});
       } catch (err) {
         console.log(err);
       }
@@ -144,15 +151,20 @@ export default function ProductPurchase() {
   };
 
   const buttonStyle = {
-    width: '100%',
-    padding: '16px 0',
-    marginBottom: '20px',
-    fontSize: '17px',
-    border: 'none',
-    backgroundColor: '#efeff5',
-    color: 'black',
-    cursor: 'pointer',
-  }
+    width: "100%",
+    padding: "16px 0",
+    marginBottom: "20px",
+    fontSize: "17px",
+    border: "none",
+    backgroundColor: "#efeff5",
+    color: "black",
+    cursor: "pointer",
+  };
+
+  const selectedButtonStyle = {
+    ...buttonStyle,
+    backgroundColor: "rgb(255 87 34 / 22%)",
+  };
 
   const numberToVND = (number) => {
     return number.toLocaleString("vi-VN", {
@@ -161,19 +173,27 @@ export default function ProductPurchase() {
     });
   };
 
-  const statusList = ['Chờ xác nhận', 'Đang giao hàng', 'Đã nhận hàng', 'Huỷ']
+  const statusList = ["Chờ xác nhận", "Đang giao hàng", "Đã nhận hàng", "Huỷ"];
 
   return (
     <>
       <Header />
-      <h1 style={{ textAlign: 'center', marginTop: '100px' }}>ĐƠN HÀNG</h1>
+      <h1 style={{ textAlign: "center", marginTop: "100px" }}>ĐƠN HÀNG</h1>
       <Grid container>
         {statusList.map((value) => {
           return (
             <Grid item xs={12 / statusList.length}>
-              <button className="button-status" style={buttonStyle} onClick={(e) => handleLoadCartProductById(value)}>{value}</button>
+              <button
+                className="button-status"
+                style={
+                  selectedStatus === value ? selectedButtonStyle : buttonStyle
+                }
+                onClick={(e) => handleLoadCartProductById(value)}
+              >
+                {value}
+              </button>
             </Grid>
-          )
+          );
         })}
       </Grid>
 
@@ -190,14 +210,18 @@ export default function ProductPurchase() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.length === 0
-              ? (<TableCell colSpan={6} style={{ textAlign: 'center', fontWeight: 'bold' }}>
+            {data.length === 0 ? (
+              <TableCell
+                colSpan={6}
+                style={{ textAlign: "center", fontWeight: "bold" }}
+              >
                 KHÔNG CÓ SẢN PHẨM TRONG MỤC NÀY
-              </TableCell>)
-              : data.map((value, index) => (
+              </TableCell>
+            ) : (
+              data.map((value, index) => (
                 <TableRow
                   key={index}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   onClick={(e) => handleViewOrderDetail(value._id)}
                 >
                   <TableCell component="th" scope="row">
@@ -205,11 +229,16 @@ export default function ProductPurchase() {
                   </TableCell>
                   <TableCell align="right">{value.recipientName}</TableCell>
                   <TableCell align="right">{value.deliveryAddress}</TableCell>
-                  <TableCell align="right"><DateFormat date={value.updatedAt} /></TableCell>
-                  <TableCell align="right">{numberToVND(value.totalPrice)}</TableCell>
+                  <TableCell align="right">
+                    <DateFormat date={value.updatedAt} />
+                  </TableCell>
+                  <TableCell align="right">
+                    {numberToVND(value.totalPrice)}
+                  </TableCell>
                   <TableCell align="right">{value.status}</TableCell>
                 </TableRow>
-              ))}
+              ))
+            )}
           </TableBody>
         </Table>
       </TableContainer>
@@ -241,8 +270,7 @@ export default function ProductPurchase() {
               rowSpacing={1}
               columnSpacing={{ xs: 1, sm: 2, md: 3 }}
             >
-
-              <Table sx={{ width: '100%' }} aria-label="simple table">
+              <Table sx={{ width: "100%" }} aria-label="simple table">
                 <TableHead>
                   <TableRow>
                     <TableCell children>STT</TableCell>
@@ -257,52 +285,56 @@ export default function ProductPurchase() {
                     return (
                       <TableRow
                         key={index}
-                        sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
                       >
                         <TableCell component="th" scope="row">
                           {index + 1}
                         </TableCell>
                         <TableCell align="left">{value.orderId}</TableCell>
-                        <TableCell align="left">{value.productId !== null ? value.product.productName : ''}</TableCell>
-                        <TableCell align="left">{value.quantity}</TableCell>
-                        <TableCell align="left">{numberToVND(value.price)}</TableCell>
                         <TableCell align="left">
-                          {
-                            status === 'Đã nhận hàng'
-                              ? (
-                                <ButtonCustomize
-                                  onClick={() => handleFeedBack(value.product._id)}
-                                  nameButton="Đánh giá"
-                                  variant="contained"
-                                  sx={{ marginTop: "8px" }}
-                                />
-
-                              ) : ''
-                          }
+                          {value.productId !== null
+                            ? value.product.productName
+                            : ""}
+                        </TableCell>
+                        <TableCell align="left">{value.quantity}</TableCell>
+                        <TableCell align="left">
+                          {numberToVND(value.price)}
+                        </TableCell>
+                        <TableCell align="left">
+                          {status === "Đã nhận hàng" ? (
+                            <ButtonCustomize
+                              onClick={() => handleFeedBack(value.product._id)}
+                              nameButton="Đánh giá"
+                              variant="contained"
+                              sx={{ marginTop: "8px" }}
+                            />
+                          ) : (
+                            ""
+                          )}
                         </TableCell>
                       </TableRow>
                     );
                   })}
                 </TableBody>
               </Table>
-
             </Grid>
           </DialogContent>
-          {
-            status === DEFAULT_STATUS ?
-              (
-                <DialogActions>
-                  <Button
-                    variant="contained"
-                    margin="normal"
-                    color="primary"
-                    onClick={() => handleRemoveOrder(id)}
-                  >
-                    Huỷ đặt hàng
-                  </Button>
-                </DialogActions>
-              ) : ""
-          }
+          {status === DEFAULT_STATUS ? (
+            <DialogActions>
+              <Button
+                variant="contained"
+                margin="normal"
+                color="primary"
+                onClick={() => handleRemoveOrder(id)}
+              >
+                Huỷ đặt hàng
+              </Button>
+            </DialogActions>
+          ) : (
+            ""
+          )}
         </Box>
       </Modal>
     </>

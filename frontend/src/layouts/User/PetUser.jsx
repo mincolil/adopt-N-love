@@ -164,6 +164,25 @@ export default function PetUser() {
     loadAllCategoryPet();
   }, []);
 
+  //---------------------- HNADLE ADOPT PET -----------------------------
+  const handleAdoptPet = (pet) => {
+    try {
+      const updatePet = axios.patch(`http://localhost:3500/pet/adopt`, {
+        id: pet._id,
+        forAdoption: !pet.forAdoption,
+      });
+      if (updatePet.error) {
+        toast.error(updatePet.error);
+      } else {
+        toast.success("Cập nhật thành công");
+        loadAllPetByUserId(currentPage);
+      }
+    }
+    catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <>
       <toastContainer />
@@ -309,6 +328,16 @@ export default function PetUser() {
                           color={statusColor}
                         />
                       </Grid>
+                      {value.forAdoption && (
+                        <Grid item xs={12} sm={12}>
+                          <Chip
+                            size="small"
+                            variant="outlined"
+                            label="Đã đăng ký nhận nuôi"
+                            color="primary"
+                          />
+                        </Grid>
+                      )}
                     </Grid>
                     <CardActions
                       orientation="vertical"
@@ -321,8 +350,11 @@ export default function PetUser() {
                       <Button onMouseDown={() => handleUpdatePet(value)} variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
                         Đăng ký phòng khám
                       </Button>
-                      <Button onMouseDown={() => handleUpdatePet(value)} variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
-                        Cho nhận nuôi
+                      <Button onClick={(e) => {
+                        e.stopPropagation();
+                        handleAdoptPet(value);
+                      }} variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
+                        {value.forAdoption ? "Cancel Adopt" : "Adopt"}
                       </Button>
                       <Button onMouseDown={() => handleUpdatePet(value)} variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
                         Sửa

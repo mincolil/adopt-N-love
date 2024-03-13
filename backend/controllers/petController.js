@@ -70,7 +70,7 @@ const createPet = async (req, res) => {
 
 const updatePet = async (req, res) => {
   try {
-    const { id, userId, petName, rank, status, categoryId, color, weight, height, petImage, breed, age } = req.body
+    const { id, userId, petName, rank, status, categoryId, color, weight, height, petImage, breed, age, forAdoption } = req.body
     const pet = await Pet.findById(id)
     pet.userId = userId
     pet.petName = petName
@@ -83,6 +83,7 @@ const updatePet = async (req, res) => {
     pet.petImage = petImage
     pet.breed = breed
     pet.age = age
+    pet.forAdoption = forAdoption
 
     await pet.save()
     res.status(201).json({
@@ -104,6 +105,22 @@ const updateStatus = async (req, res) => {
     )
     res.json(updatePet)
   } catch (error) {
+    console.log(error)
+    res.json({ error: "Internal Server Error" })
+  }
+}
+
+const adoptPet = async (req, res) => {
+  try {
+    const { id, forAdoption } = req.body;
+    const updatePet = await Pet.findOneAndUpdate(
+      { _id: id },
+      { $set: { forAdoption: forAdoption } },
+      { new: true }
+    )
+    res.json(updatePet)
+  }
+  catch (error) {
     console.log(error)
     res.json({ error: "Internal Server Error" })
   }
@@ -210,5 +227,6 @@ module.exports = {
   updateStatus,
   uploadPetImage,
   getPetListForServiceBooking,
-  deleteOne
+  deleteOne,
+  adoptPet
 }

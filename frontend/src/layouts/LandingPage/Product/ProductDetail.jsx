@@ -24,6 +24,7 @@ import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import MuiAccordion from "@mui/material/Accordion";
 import MuiAccordionSummary from "@mui/material/AccordionSummary";
@@ -55,49 +56,10 @@ function TabPanel(props) {
   );
 }
 
-
-const Accordion = styled((props) => (
-  <MuiAccordion disableGutters elevation={0} square {...props} />
-))(({ theme }) => ({
-  border: `1px solid ${theme.palette.divider}`,
-  "&:not(:last-child)": {
-    borderBottom: 0,
-  },
-  "&:before": {
-    display: "none",
-  },
-}));
-
-const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
-  padding: theme.spacing(2),
-  borderTop: "1px solid rgba(0, 0, 0, .125)",
-}));
-
-const AccordionSummary = styled((props) => (
-  <MuiAccordionSummary
-    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem" }} />}
-    {...props}
-  />
-))(({ theme }) => ({
-  backgroundColor:
-    theme.palette.mode === "dark"
-      ? "rgba(255, 255, 255, .05)"
-      : "rgba(0, 0, 0, .03)",
-  flexDirection: "row-reverse",
-  "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
-    transform: "rotate(90deg)",
-  },
-  "& .MuiAccordionSummary-content": {
-    marginLeft: theme.spacing(1),
-  },
-}));
-
-
 const ProductDetail = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [quantitySell, setQuantitySell] = useState(1);
-  const [expanded, setExpanded] = useState("panel1");
   const context = useAuth();
   const [tab, setTab] = useState(0);
 
@@ -134,9 +96,19 @@ const ProductDetail = () => {
     );
   }
 
-  const handleChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-  }
+  // ---------------------HANDLE INCREASE AND DECREASE QUANTITY SELL---------------------
+  const handleIncreaseClick = (max) => {
+    if (quantitySell >= max) {
+      toast.error("Quá giới hạn số lượng");
+    } else {
+      setQuantitySell((quantitySell) => quantitySell + 1);
+    }
+  };
+
+  const handleDecreaseClick = () => {
+    setQuantitySell((quantitySell) => Math.max(quantitySell - 1, 1));
+  };
+
 
   const handleAddToCart = async (id) => {
     if (context.auth.token === undefined) {
@@ -171,6 +143,7 @@ const ProductDetail = () => {
 
   return (
     <>
+      <ToastContainer />
       <Header />
 
       <Container sx={{ position: "relative", top: "120px", marginBottom: "150px" }}>
@@ -244,19 +217,19 @@ const ProductDetail = () => {
               </Box>
               <Box className="quantity-add-to-cart">
                 <Box className="control">
-                  <IconButton className="qtyminus quantity-minus" href="#">
+                  <IconButton className="qtyminus quantity-minus" onClick={handleDecreaseClick}>
                     -
                   </IconButton>
                   <input
                     type="text"
                     data-step="1"
                     data-min="0"
-                    value="1"
+                    value={quantitySell}
                     title="Qty"
                     className="input-quantity"
                     size="4"
                   />
-                  <IconButton className="qtyplus quantity-plus" href="#">
+                  <IconButton className="qtyplus quantity-plus" onClick={() => handleIncreaseClick(product.quantity)}>
                     +
                   </IconButton>
                 </Box>

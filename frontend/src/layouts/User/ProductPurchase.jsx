@@ -17,13 +17,14 @@ import {
   Grid,
   DialogActions
 } from "@mui/material";
+import Footer from "../../components/Footer/Footer";
+import Header from "../../components/Header/Header";
 
 import CloseIcon from "@mui/icons-material/Close";
 
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-
 import useAuth from '../../hooks/useAuth';
 import DateFormat from '../../components/DateFormat';
 import { useNavigate } from "react-router-dom";
@@ -164,6 +165,7 @@ export default function ProductPurchase() {
 
   return (
     <>
+      <Header />
       <h1 style={{ textAlign: 'center', marginTop: '100px' }}>ĐƠN HÀNG</h1>
       <Grid container>
         {statusList.map((value) => {

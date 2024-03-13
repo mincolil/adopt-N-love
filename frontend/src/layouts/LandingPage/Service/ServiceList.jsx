@@ -31,10 +31,11 @@ import SearchIcon from "@mui/icons-material/Search";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import HomeIcon from "@mui/icons-material/Home";
 import Grid from "@mui/material/Unstable_Grid2";
-import "./ServiceList.css";
+import "./styled/ServiceList.css";
 import styled from "styled-components";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import useAuth from "../../../hooks/useAuth";
 import { Link as RouterLink } from "react-router-dom";
 
@@ -92,21 +93,14 @@ function ServiceItem({ service }) {
 }
 
 export default function ServiceList() {
-  const [checkedItems, setCheckedItems] = useState({
-    "Khám và điều trị": false,
-    "Thẩm mỹ": false,
-    "Lưu chuồng": false,
-    "Xét nghiệm": false,
-  });
+  const [checkedItems, setCheckedItems] = useState({});
 
   const handleCheckboxChange = (event) => {
-    const { name, checked } = event.target;
-    setCheckedItems({ ...checkedItems, [name]: checked });
+    const { _id, checked } = event.target;
+    setCheckedItems({ ...checkedItems, [_id]: checked });
   };
 
-  const [price, setPrice] = useState([0, 200]);
-  const [services, setServices] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [price, setPrice] = useState([0, 1000000]);
   const [sortBy, setSortBy] = React.useState("price-asc");
 
   const [data, setData] = useState([]);
@@ -115,17 +109,98 @@ export default function ServiceList() {
   const [currentPage, setCurrentPage] = useState(1);
   const context = useAuth();
 
-  const handlePriceChange = (event, newPrice) => {
-    setPrice(newPrice);
+  // ----------------------------------- FILTER BY PRICE --------------------------------
+  const handlePriceChange = (event, newValue) => {
+    if (newValue) {
+      setPrice(newValue);
+      filterServiceByPrice(newValue[0], newValue[1]);
+    }
   };
 
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
+  async function filterServiceByPrice(minPrice, maxPrice) {
+    if (price[0] === 0 && price[1] === 1000000) {
+      loadAllService(currentPage);
+    } else {
+      try {
+        const loadData = await axios.get(
+          `http://localhost:3500/service?page=1&limit=12&minPrice=${minPrice}&maxPrice=${maxPrice}`
+        );
+        if (loadData.error) {
+          toast.error(loadData.error);
+        } else {
+          // console.log("Check loaddata", loadData.data);
+          setTotalPages(loadData.data.pages);
+          // console.log("Check totalPage", totalPages);
+          setData(loadData.data.docs);
+          setTotalServices(loadData.data.limit);
+          setCurrentPage(loadData.data.page);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }
+
+  useEffect(() => {
+    handlePriceChange();
+  }, []);
+
+  // ----------------------------------- API SORT PRODUCT --------------------------------
 
   const handleSortChange = (event) => {
-    setSortBy(event.target.value);
+    if (event && event.target) {
+      const selectedSort = event.target.value;
+      setSortBy(selectedSort);
+      // Gọi hàm để sort sản phẩm với giá trị mới
+      filterServicesBySort(selectedSort);
+    }
   };
+
+  async function filterServicesBySort(sortOption) {
+    let sortParam = "";
+    switch (sortOption) {
+      case "price-asc":
+        sortParam = "asc";
+        break;
+      case "price-desc":
+        sortParam = "desc";
+        break;
+      case "rating":
+        sortParam = "rating";
+        break;
+      case "newest":
+        sortParam = "newest";
+        break;
+      default:
+        sortParam = "";
+    }
+
+    if (sortOption === "" && sortOption === undefined) {
+      loadAllService(currentPage);
+    } else {
+      try {
+        const loadData = await axios.get(
+          `http://localhost:3500/service?sortPrice=${sortParam}`
+        );
+        if (loadData.error) {
+          toast.error(loadData.error);
+        } else {
+          // console.log("Check loaddata", loadData.data);
+          setTotalPages(loadData.data.pages);
+          // console.log("Check totalPage", totalPages);
+          setData(loadData.data.docs);
+          setTotalServices(loadData.data.limit);
+          setCurrentPage(loadData.data.page);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }
+
+  useEffect(() => {
+    handleSortChange();
+  }, []);
 
   // ----------------------------------- API GET ALL SERVICE --------------------------------
   useEffect(() => {
@@ -153,8 +228,8 @@ export default function ServiceList() {
     }
   };
 
-   // --------------------- GET ALL SERVICE BY CATEGORY ID SERVICE -----------------------------
-   async function hanldeClickCategory(page, cateId) {
+  // --------------------- GET ALL SERVICE BY CATEGORY ID SERVICE -----------------------------
+  async function hanldeClickCategory(page, cateId) {
     // console.log("Check data cate ID", cateId);
     setCategoryId(cateId);
     if (cateId === undefined || cateId === "") {
@@ -206,6 +281,13 @@ export default function ServiceList() {
     setKeyword(e.target.value);
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleSearchClick();
+    }
+  };
+
   const handleSearchClick = async () => {
     if (keyword.trim() === "") {
       toast.warning("Hãy nhập kết quả bạn cần tìm");
@@ -215,8 +297,8 @@ export default function ServiceList() {
     }
   };
 
-   // ----------------------------------- GET ALL SERVICE BY SERVICE NAME --------------------------------
-   const searchServiceByName = async (page) => {
+  // ----------------------------------- GET ALL SERVICE BY SERVICE NAME --------------------------------
+  const searchServiceByName = async (page) => {
     try {
       const loadData = await axios.get(
         `${BASE_URL}/service?service=${keyword.trim()}&page=${page}&limit=9`
@@ -242,9 +324,30 @@ export default function ServiceList() {
     }
   };
 
+  // --------------------- GET ALL CATEGORY Service -----------------------------
+  const [category, setCategory] = useState([]);
+  async function loadAllCategoryService() {
+    try {
+      const loadDataCategoryService = await axios.get(
+        `http://localhost:3500/category?categoryName=Dịch vụ`
+      );
+      if (loadDataCategoryService.error) {
+        toast.error(loadDataCategoryService.error);
+      } else {
+        setCategory(loadDataCategoryService.data.docs);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  useEffect(() => {
+    loadAllCategoryService();
+  }, []);
 
   return (
     <>
+      <toastContainer />
       <Header />
       <Container
         sx={{ position: "relative", top: "120px", paddingBottom: "200px" }}
@@ -280,18 +383,18 @@ export default function ServiceList() {
                   Danh mục
                 </Typography>
                 <List className="list-categories">
-                  {Object.keys(checkedItems).map((label) => (
-                    <ListItem key={label} className="list-categories-item">
+                  {category.map((category, _id) => (
+                    <ListItem key={_id} className="list-categories-item">
                       <FormControlLabel
                         control={
                           <DsCheckbox
                             size="small"
-                            checked={checkedItems[label]}
+                            checked={checkedItems[_id]}
                             onChange={handleCheckboxChange}
-                            name={label}
+                            name={category.feature}
                           />
                         }
-                        label={label}
+                        label={category.feature}
                         sx={{
                           fontSize: "12px",
                         }}
@@ -314,7 +417,7 @@ export default function ServiceList() {
                     aria-labelledby="range-slider"
                     getAriaValueText={(value) => `${value}`}
                     min={0}
-                    max={1000}
+                    max={1000000}
                   />
                   <Box className="price-slider-amount">
                     <Typography
@@ -322,10 +425,10 @@ export default function ServiceList() {
                       component="span"
                       className="from"
                     >
-                      ${price[0]}
+                      {price[0]}
                     </Typography>
                     <Typography variant="body1" component="span" className="to">
-                      ${price[1]}
+                      {price[1]}
                     </Typography>
                   </Box>
                 </Box>
@@ -351,10 +454,15 @@ export default function ServiceList() {
                     <InputBase
                       sx={{ ml: 1, flex: 1 }}
                       placeholder="Tìm dịch vụ ... "
-                      value={searchTerm}
-                      onChange={handleSearchChange}
+                      value={keyword}
+                      onChange={handleKeywordChange}
+                      onKeyDown={handleKeyDown}
                     />
-                    <IconButton sx={{ p: "10px" }} aria-label="search">
+                    <IconButton
+                      sx={{ p: "10px" }}
+                      aria-label="search"
+                      onClick={handleSearchClick}
+                    >
                       <SearchIcon />
                     </IconButton>
                   </Paper>

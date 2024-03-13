@@ -13,6 +13,7 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import useAuth from "../../hooks/useAuth";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { styled } from "@mui/material/styles";
@@ -128,6 +129,7 @@ const ChangePassword = () => {
 
   return (
     <>
+      <toastContainer />
       <Header />
       <ThemeProvider theme={defaultTheme}>
         <CustomContainer component="main" maxWidth="false" sx={{ pt: 10, pb: 4, backgroundImage: `url(${Background})`, backgroundRepeat: "no-repeat", backgroundSize: "cover" }}>

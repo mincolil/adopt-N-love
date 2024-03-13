@@ -9,7 +9,11 @@ const CategorySchema = new mongoose.Schema({
     feature: {
         type: String,
         required: true,
-    }
+    },
+    slot: {
+        type: Number,
+        default: 0,
+    },
 })
 
 CategorySchema.plugin(mongoosePaginate)

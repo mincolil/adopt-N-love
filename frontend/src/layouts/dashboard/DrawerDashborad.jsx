@@ -14,6 +14,7 @@ import { useNavigate, NavLink } from "react-router-dom";
 
 import { Link } from "@mui/material";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 // icon
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PersonIcon from "@mui/icons-material/Person";
@@ -41,6 +42,7 @@ const DrawerDashborad = () => {
       text: "Lịch đăng kí dịch vụ",
       path: "/dashboard/booking-list",
     },
+    { text: "Số lượng phòng dịch vụ", path: "/dashboard/category-list" }
   ];
 
   const links3 = [
@@ -49,6 +51,7 @@ const DrawerDashborad = () => {
     //   text: "Lịch sử thanh toán thú cưng",
     //   path: "/dashboard/history-pet-list",
     // },
+    { text: "Danh sách nhận nuôi", path: "/dashboard/adopt-pet-list" }
   ];
 
   const links4 = [
@@ -84,6 +87,7 @@ const DrawerDashborad = () => {
 
   return (
     <>
+      <ToastContainer />
       <Toolbar />
       <Divider />
 

@@ -17,6 +17,7 @@ import { useState, useEffect } from "react";
 // Axios
 import axios from "axios";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 
 //@material-ui/core
 import { styled } from "@mui/material/styles";
@@ -41,6 +42,7 @@ import ContentCus from "../../../components/Typography/ContentCus";
 import DateFormat from "../../../components/DateFormat";
 import SearchIcon from "@mui/icons-material/Search";
 import TitleCus from "../../../components/Typography/TitleCus";
+import Header from "../../../components/Header/Header";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -73,10 +75,7 @@ const StyledBreadcrumb = styled(Chip)(({ theme }) => {
   };
 });
 
-const CustomContainer = styled(Container)({
-  background:
-    "linear-gradient(to bottom, #F4BEB2, #F4BEB2, #ECDAD6, #E5E6E7, #73A1CC)",
-});
+
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
@@ -173,9 +172,11 @@ export default function BlogPage() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
+      <Header />
+      <toastContainer />
       <CssBaseline />
 
-      <CustomContainer component="main" maxWidth="full" sx={{ pt: 12 }}>
+      <Container component="main" maxWidth="full" sx={{ pt: 12 }}>
         {/* <MainPost post={mainPost} /> */}
         <Container
           maxWidth="full"
@@ -249,11 +250,10 @@ export default function BlogPage() {
                             }
                             sx={{
                               border: "none",
-                              backgroundImage: `url(${
-                                isHovered === index
-                                  ? `${value.image}`
-                                  : `${value.image}`
-                              })`,
+                              backgroundImage: `url(${isHovered === index
+                                ? `${value.image}`
+                                : `${value.image}`
+                                })`,
                               backgroundSize: "cover",
                               height: "200px",
                               filter:
@@ -339,7 +339,7 @@ export default function BlogPage() {
             </Stack>
           </Container>
         </Container>
-      </CustomContainer>
+      </Container>
 
       {/* End footer */}
       <Footer />

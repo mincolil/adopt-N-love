@@ -97,8 +97,8 @@ function Home() {
                 fontSize: "4rem",
               }}
             >
-              We Care <br />{" "}
-              <span style={{ fontWeight: "800" }}>Your Pets</span>
+              Chăm sóc<br />{" "}
+              <span style={{ fontWeight: "800" }}>Nhận nuôi</span>
             </Typography>
             <Typography
               sx={{
@@ -107,8 +107,7 @@ function Home() {
                 fontFamily: "'Poppins', sans-serif",
               }}
             >
-              Lorem ipsum dolor sit amet, consectetur <br /> adipiscing elit,
-              sed do eiusmod.
+              Chúng tôi chăm sóc thú cưng của bạn với dịch vụ tốt nhất <br /> Nhận nuôi nhưng chú chó và mèo cần tìm một mái nhà mới
             </Typography>
             <Button
               variant="contained"
@@ -135,10 +134,9 @@ function Home() {
         <Grid container justifyContent="center">
           <Grid item lg={7} md={10}>
             <Box className="section_title">
-              <Typography variant="h3">Services for every dog</Typography>
+              <Typography variant="h3">Trải nhiệm những dịch vụ của chúng tôi</Typography>
               <Typography variant="h4">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna.
+                Việc chăm sóc bệnh nhân là rất quan trọng, bệnh nhân sẽ được bệnh nhân theo dõi, nhưng đó là thời điểm vô cùng đau đớn và khổ sở.
               </Typography>
             </Box>
           </Grid>
@@ -197,41 +195,6 @@ function Home() {
           </Grid>
         </Grid>
       </Container>
-      <Box className="pet_care_area">
-        <Container>
-          <Grid container alignItems="center">
-            <Grid item lg={5} md={5}>
-              <Box className="pet_thumb">
-                <img
-                  src={Cat}
-                  alt=""
-                />
-              </Box>
-            </Grid>
-            <Grid item lg={6} lgOffset={1} mdOffset={1} md={6}>
-              <Box className="pet_info">
-                <Typography variant="h3">
-                  <span>We care your pet </span> <br /> As you care
-                </Typography>
-                <Typography variant="h4">
-                  Lorem ipsum dolor sit, consectetur adipiscing elit, sed do{" "}
-                  <br /> iusmod tempor incididunt ut labore et dolore magna
-                  aliqua. <br /> Quis ipsum suspendisse ultrices gravida. Risus
-                  commodo <br />
-                  viverra maecenas accumsan.
-                </Typography>
-                <Button
-                  href="about.html"
-                  variant="contained"
-                  className="btn-aboutUs"
-                >
-                  About Us
-                </Button>
-              </Box>
-            </Grid>
-          </Grid>
-        </Container>
-      </Box>
       <Box className="adapt_area">
         <Container>
           <Grid container justifyContent={"space-between"}>
@@ -239,20 +202,18 @@ function Home() {
               <Box className="adapt_help">
                 <Box className="section_title">
                   <Typography variant="h3">
-                    <span>We need your</span> <br />
-                    help Adopt Us
+                    <span>Chúng tôi cần bạn</span> <br />
+                    giúp chúng tôi nhận nuôi
                   </Typography>
                   <Typography variant="h4">
-                    Lorem ipsum dolor sit, consectetur adipiscing elit, sed do
-                    iusmod tempor incididunt ut labore et dolore magna aliqua.
-                    Quis ipsum suspendisse ultrices.
+                    Những con vật đáng thương này chưa có gia đình để chăm sóc, chúng xứng đáng có được tình yêu thương. Đó là một điêu tuyệt vời
                   </Typography>
                   <Button
                     href="contact.html"
                     variant="contained"
                     className="btn-aboutUs"
                   >
-                    Contact Us
+                    Liên hệ
                   </Button>
                 </Box>
               </Box>
@@ -295,6 +256,39 @@ function Home() {
                     </Box>
                   </Grid>
                 </Grid>
+              </Box>
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
+      <Box className="pet_care_area">
+        <Container>
+          <Grid container alignItems="center">
+            <Grid item lg={5} md={5}>
+              <Box className="pet_thumb">
+                <img
+                  src={Cat}
+                  alt=""
+                />
+              </Box>
+            </Grid>
+            <Grid item lg={6} lgOffset={1} mdOffset={1} md={6}>
+              <Box className="pet_info">
+                <Typography variant="h3">
+                  <span>Chúng tôi cần các bạn </span> <br /> nhận nuôi chúng
+                </Typography>
+                <Typography variant="h4">
+                  Những con vật đáng thương này chưa có gia đình để chăm sóc{" "}
+                  <br /> chúng xứng đáng có được tình yêu thương. <br /> Đó là một điêu tuyệt vời <br />
+                  viverra maecenas accumsan.
+                </Typography>
+                <Button
+                  href="about.html"
+                  variant="contained"
+                  className="btn-aboutUs"
+                >
+                  Liên hệ
+                </Button>
               </Box>
             </Grid>
           </Grid>

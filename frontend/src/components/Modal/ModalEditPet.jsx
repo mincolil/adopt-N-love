@@ -21,6 +21,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { Grid, Input } from "@mui/material";
 import ButtonCustomize from "../Button/Button";
+import { ToastContainer } from "react-toastify";
 
 const PET_NAME_REGEX =
   /^[ A-Za-zÀ-Ỹà-ỹĂ-Ắă-ằẤ-Ứấ-ứÂ-Ấâ-ấĨ-Ỹĩ-ỹĐđÊ-Ểê-ểÔ-Ốô-ốơ-ởƠ-Ớơ-ớƯ-Ứư-ứỲ-Ỵỳ-ỵ\s]{2,}$/;
@@ -42,6 +43,8 @@ const ModalEditPet = (props) => {
   const [categoryId, setCategoryId] = useState("");
   const [rank, setRank] = useState(0);
   const [color, setColor] = useState("");
+  const [age, setAge] = useState(null);
+  const [breed, setBreed] = useState("");
   const [weight, setWeight] = useState(null);
   const [height, setHeight] = useState(null);
   const [status, setStatus] = useState(false);
@@ -79,6 +82,10 @@ const ModalEditPet = (props) => {
 
   const handleValidationPetWeight = (e) => {
     setWeight(e.target.value);
+  };
+
+  const handleValidationPetAge = (e) => {
+    setAge(e.target.value);
   };
 
   useEffect(() => {
@@ -136,9 +143,12 @@ const ModalEditPet = (props) => {
       setRank(dataEditPet.rank);
       setStatus(dataEditPet.status);
       setColor(dataEditPet.color);
+      setAge(dataEditPet.age);
+      setBreed(dataEditPet.breed);
       setHeight(dataEditPet.height);
       setWeight(dataEditPet.weight);
       setPetImage(dataEditPet.petImage);
+      console.log("Check dataEditPet", dataEditPet);
     }
   }, [dataEditPet]);
 
@@ -175,6 +185,8 @@ const ModalEditPet = (props) => {
           height: height === "" ? null : height,
           weight: weight === "" ? null : weight,
           color: color,
+          age: age === "" ? null : age,
+          breed: breed,
           petImage: petImage,
         });
         if (res.data.error) {
@@ -209,6 +221,7 @@ const ModalEditPet = (props) => {
       onClose={onClose}
       sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
     >
+      <ToastContainer />
       <Box
         sx={{
           bgcolor: "background.paper",
@@ -241,7 +254,7 @@ const ModalEditPet = (props) => {
               value={data}
               sx={{ display: "none" }}
               onChange={(e) => setUserId(e.target.value)}
-              // defaultValue={dataEditPet.userId.fullname}
+            // defaultValue={dataEditPet.userId.fullname}
             />
             <TextField
               required={true}
@@ -268,7 +281,7 @@ const ModalEditPet = (props) => {
                       <MenuItem
                         key={value._id}
                         value={value._id}
-                        // onClick={(e) => hanldeClickCategory(e.target.value)}
+                      // onClick={(e) => hanldeClickCategory(e.target.value)}
                       >
                         {value.feature}
                       </MenuItem>
@@ -299,6 +312,22 @@ const ModalEditPet = (props) => {
               margin="normal"
               value={color}
               onChange={(e) => setColor(e.target.value)}
+            />
+
+            <TextField
+              fullWidth
+              label="Tuổi thú cưng"
+              margin="normal"
+              value={age}
+              onChange={(e) => handleValidationPetAge(e)}
+            />
+
+            <TextField
+              fullWidth
+              label="Giống loài"
+              margin="normal"
+              value={breed}
+              onChange={(e) => setBreed(e.target.value)}
             />
 
             <TextField

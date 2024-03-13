@@ -36,6 +36,7 @@ import "./styled/ProductList.css";
 import styled from "styled-components";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import useAuth from "../../../hooks/useAuth";
 
 const BASE_URL = "http://localhost:3500";
@@ -46,7 +47,6 @@ const DsCheckbox = styled(Checkbox)`
     color: #000 !important;
   }
 `;
-
 
 function ProductItem({ product }) {
   const { _id, productName, quantity, price, productImage } = product;
@@ -127,33 +127,112 @@ function ProductItem({ product }) {
 }
 
 export default function ProductList() {
-  const [checkedItems, setCheckedItems] = useState({
-    "Vệ sinh và chăm sóc": false,
-    Thuốc: false,
-    "Phụ kiện": false,
-    "Thực phẩm dinh dưỡng": false,
-  });
+  const [checkedItems, setCheckedItems] = useState({});
 
   const handleCheckboxChange = (event) => {
-    const { name, checked } = event.target;
-    setCheckedItems({ ...checkedItems, [name]: checked });
+    const { _id, checked } = event.target;
+    setCheckedItems({ ...checkedItems, [_id]: checked });
   };
 
   const [data, setData] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [totalProducts, setTotalProducts] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [price, setPrice] = useState([0, 200]);
+  const [price, setPrice] = useState([0, 1000000]);
   const [sortBy, setSortBy] = React.useState("price-asc");
 
-  const handlePriceChange = (event, newPrice) => {
-    setPrice(newPrice);
+   // ----------------------------------- FILTER BY PRICE --------------------------------
+  const handlePriceChange = (event, newValue) => {
+    if (newValue) {
+      setPrice(newValue);
+      filterProductsByPrice(newValue[0], newValue[1]);
+    }
   };
 
-  const handleSortChange = (event) => {
-    setSortBy(event.target.value);
+  async function filterProductsByPrice(minPrice, maxPrice) {
+    if (price[0] === 0 && price[1] === 1000000) {
+      loadAllProduct(currentPage);
+    } else {
+      try {
+        const loadData = await axios.get(
+          `http://localhost:3500/product?page=1&limit=12&minPrice=${minPrice}&maxPrice=${maxPrice}`
+        );
+        if (loadData.error) {
+          toast.error(loadData.error);
+        } else {
+          // console.log("Check loaddata", loadData.data);
+          setTotalPages(loadData.data.pages);
+          // console.log("Check totalPage", totalPages);
+          setData(loadData.data.docs);
+          setTotalProducts(loadData.data.limit);
+          setCurrentPage(loadData.data.page);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }
+
+  useEffect(() => {
+    handlePriceChange();
+  }, []);
+
+   // ----------------------------------- API SORT PRODUCT --------------------------------
+
+   const handleSortChange = (event) => {
+    if (event && event.target) {
+      const selectedSort = event.target.value;
+      setSortBy(selectedSort);
+      // Gọi hàm để sort sản phẩm với giá trị mới
+      filterProductsBySort(selectedSort);
+    }
   };
+
+  async function filterProductsBySort(sortOption) {
+    let sortParam = '';
+    switch (sortOption) {
+      case 'price-asc':
+        sortParam = 'asc';
+        break;
+      case 'price-desc':
+        sortParam = 'desc';
+        break;
+      case 'rating':
+        sortParam = 'rating';
+        break;
+      case 'newest':
+        sortParam = 'newest';
+        break;
+      default:
+        sortParam = '';
+    }
+
+    if (sortOption === '' && sortOption === undefined) {
+      loadAllProduct(currentPage);
+    } else {
+      try {
+        const loadData = await axios.get(
+          `http://localhost:3500/product?sortPrice=${sortParam}`
+        );
+        if (loadData.error) {
+          toast.error(loadData.error);
+        } else {
+          // console.log("Check loaddata", loadData.data);
+          setTotalPages(loadData.data.pages);
+          // console.log("Check totalPage", totalPages);
+          setData(loadData.data.docs);
+          setTotalProducts(loadData.data.limit);
+          setCurrentPage(loadData.data.page);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }
+
+  useEffect(() => {
+    handleSortChange();
+  }, []);
 
   // ----------------------------------- API GET ALL PRODUCT --------------------------------
 
@@ -170,10 +249,8 @@ export default function ProductList() {
         toast.error(loadData.error);
       } else {
         setTotalPages(loadData.data.pages);
-        // console.log("Check totalPage", totalPages);
         setData(loadData.data.docs);
         setTotalProducts(loadData.data.limit);
-        // console.log(loadData.data.docs);
         setCurrentPage(loadData.data.page);
       }
     } catch (err) {
@@ -205,7 +282,7 @@ export default function ProductList() {
     } else {
       try {
         const loadData = await axios.get(
-          `http://localhost:3500/product?page=${page}&categoryId=${cateId}&limit=9`
+          `http://localhost:3500/product?page=${page}&categoryId=${cateId}&limit=12`
         );
         if (loadData.error) {
           toast.error(loadData.error);
@@ -277,6 +354,28 @@ export default function ProductList() {
     }
   };
 
+  // --------------------- GET ALL CATEGORY PRODUCT -----------------------------
+  const [category, setCategory] = useState([]);
+  async function loadAllCategoryProduct() {
+    try {
+      const loadDataCategoryProduct = await axios.get(
+        `http://localhost:3500/category?categoryName=Sản phẩm`
+      );
+      if (loadDataCategoryProduct.error) {
+        toast.error(loadDataCategoryProduct.error);
+      } else {
+        setCategory(loadDataCategoryProduct.data.docs);
+        // console.log(loadDataCategoryProduct.data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  useEffect(() => {
+    loadAllCategoryProduct();
+  }, []);
+
   return (
     <>
       <Header />
@@ -285,7 +384,7 @@ export default function ProductList() {
       >
         <Breadcrumbs
           aria-label="breadcrumb"
-          sx={{ marginBottom: "30px"}}
+          sx={{ marginBottom: "30px" }}
           separator={<KeyboardDoubleArrowRightIcon fontSize="small" />}
         >
           <Link
@@ -314,18 +413,18 @@ export default function ProductList() {
                   Danh mục
                 </Typography>
                 <List className="list-categories">
-                  {Object.keys(checkedItems).map((label) => (
-                    <ListItem key={label} className="list-categories-item">
+                  {category.map((category, _id) => (
+                    <ListItem key={_id} className="list-categories-item">
                       <FormControlLabel
                         control={
                           <DsCheckbox
                             size="small"
-                            checked={checkedItems[label]}
+                            checked={checkedItems[_id]}
                             onChange={handleCheckboxChange}
-                            name={label}
+                            name={category.feature}
                           />
                         }
-                        label={label}
+                        label={category.feature}
                         sx={{
                           fontSize: "12px",
                         }}
@@ -348,7 +447,7 @@ export default function ProductList() {
                     aria-labelledby="range-slider"
                     getAriaValueText={(value) => `${value}`}
                     min={0}
-                    max={1000}
+                    max={1000000}
                   />
                   <Box className="price-slider-amount">
                     <Typography
@@ -356,10 +455,10 @@ export default function ProductList() {
                       component="span"
                       className="from"
                     >
-                      ${price[0]}
+                      {price[0]}
                     </Typography>
                     <Typography variant="body1" component="span" className="to">
-                      ${price[1]}
+                      {price[1]}
                     </Typography>
                   </Box>
                 </Box>
@@ -389,7 +488,11 @@ export default function ProductList() {
                       onChange={handleKeywordChange}
                       onKeyDown={handleKeyDown}
                     />
-                    <IconButton sx={{ p: "10px" }} aria-label="search" onClick={handleSearchClick}>
+                    <IconButton
+                      sx={{ p: "10px" }}
+                      aria-label="search"
+                      onClick={handleSearchClick}
+                    >
                       <SearchIcon />
                     </IconButton>
                   </Paper>

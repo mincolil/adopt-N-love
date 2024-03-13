@@ -70,7 +70,7 @@ const createPet = async (req, res) => {
 
 const updatePet = async (req, res) => {
   try {
-    const { id, userId, petName, rank, status, categoryId, color, weight, height, petImage } = req.body
+    const { id, userId, petName, rank, status, categoryId, color, weight, height, petImage, breed, age, forAdoption } = req.body
     const pet = await Pet.findById(id)
     pet.userId = userId
     pet.petName = petName
@@ -81,6 +81,9 @@ const updatePet = async (req, res) => {
     pet.weight = weight
     pet.height = height
     pet.petImage = petImage
+    pet.breed = breed
+    pet.age = age
+    pet.forAdoption = forAdoption
 
     await pet.save()
     res.status(201).json({
@@ -107,6 +110,22 @@ const updateStatus = async (req, res) => {
   }
 }
 
+const adoptPet = async (req, res) => {
+  try {
+    const { id, forAdoption } = req.body;
+    const updatePet = await Pet.findOneAndUpdate(
+      { _id: id },
+      { $set: { forAdoption: forAdoption } },
+      { new: true }
+    )
+    res.json(updatePet)
+  }
+  catch (error) {
+    console.log(error)
+    res.json({ error: "Internal Server Error" })
+  }
+}
+
 // route /pet/username?name=
 // GET
 const getPetByUsername = async (req, res) => {
@@ -128,7 +147,8 @@ const getPetByUsername = async (req, res) => {
     const petPaginateResult = await Pet.paginate({ userId: { $in: userIds } }, {
       page, limit, populate: {
         path: 'userId',
-        select: 'fullname',
+        model: 'User',
+        select: 'fullname phone',
       }
     });
 
@@ -207,5 +227,6 @@ module.exports = {
   updateStatus,
   uploadPetImage,
   getPetListForServiceBooking,
-  deleteOne
+  deleteOne,
+  adoptPet
 }

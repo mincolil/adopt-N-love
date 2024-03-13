@@ -21,6 +21,7 @@ import CloseIcon from "@mui/icons-material/Close";
 
 import ButtonCustomize from "../../../components/Button/Button";
 import DateFormat from "../../../components/DateFormat";
+import { ToastContainer } from "react-toastify";
 
 //React
 import { useState } from "react";
@@ -200,17 +201,17 @@ export default function BasicTable() {
         setStatus(option);
         await axios.get(
           `http://localhost:3500/order?status=${option}&page=${page}&limit=${limit}&startDate=${convertDate(startDate) !== "NaN-aN-aN"
-          ? convertDate(startDate)
-          : ""
-        }&endDate=${convertDate(endDate) !== "NaN-aN-aN" ? convertDate(endDate) : ""
-      }`
-      )
-      .then((data) => {
-        // setData(data.data.docs);
-        // console.log(data.data.docs);
-        // const filterData = [];
-        // for (let i = 0; i < data.data.docs.length; i++) {
-          //   if (data.data.docs[i].status === status) {
+            ? convertDate(startDate)
+            : ""
+          }&endDate=${convertDate(endDate) !== "NaN-aN-aN" ? convertDate(endDate) : ""
+          }`
+        )
+          .then((data) => {
+            // setData(data.data.docs);
+            // console.log(data.data.docs);
+            // const filterData = [];
+            // for (let i = 0; i < data.data.docs.length; i++) {
+            //   if (data.data.docs[i].status === status) {
             //     filterData.push(data.data.docs[i]);
             //   }
             // }
@@ -328,6 +329,7 @@ export default function BasicTable() {
 
   return (
     <>
+      <ToastContainer />
       <Grid
         spacing={2}
         container

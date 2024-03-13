@@ -19,6 +19,10 @@ const CartServiceSchema = new mongoose.Schema({
     quantity: {
         type: Number,
         default: 1,
+    },
+    bookingDate: {
+        type: Date,
+        required: true,
     }
 })
 

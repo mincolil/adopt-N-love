@@ -1,16 +1,36 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
-
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import Header from "../../../components/Header/Header";
+import Footer from "../../../components/Footer/Footer";
+import "./styled/CartProduct.css";
+import {
+  Box,
+  Container,
+  Breadcrumbs,
+  Link,
+  Typography,
+  TableContainer,
+  Table,
+  TableRow,
+  TableCell,
+  TableBody,
+  TextField,
+  Button,
+  IconButton,
+} from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-import useAuth from '../../../hooks/useAuth';
+import useAuth from "../../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import HomeIcon from "@mui/icons-material/Home";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import DeleteIcon from "@mui/icons-material/Delete";
+import RemoveIcon from "@mui/icons-material/Remove";
+import AddIcon from "@mui/icons-material/Add";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+
 import dayjs from "dayjs";
-import { useNavigate } from 'react-router-dom';
 
 export default function CartService() {
   // const DEFAULT_PAGE = 1;
@@ -67,71 +87,38 @@ export default function CartService() {
   // ----------------------------------------------------------------
 
   const handleCheckOut = async () => {
-    // if (window.confirm('Bạn có muốn sử dụng dịch vụ này ?') === true) {
-    //   if (data.length === 0) {
-    //     alert('Bạn không có dịch vụ trong giỏ hàng')
-    //   } else {
-    //     try {
-    //       await axios.post(
-    //         `http://localhost:3500/cartService/checkout`,
-    //         {
-    //           totalPrice: total
-    //         },
-    //         {
-    //           headers: { 'Authorization': context.auth.token },
-    //           withCredentials: true
-    //         }
-    //       )
-    //         .then((data) => {
-    //           alert('Đặt dịch vụ thành công')
-    //           context.handleLoadCartService()
-    //           navigate('/service-purchase')
+    if (window.confirm('Bạn có muốn sử dụng dịch vụ này ?') === true) {
+      if (data.length === 0) {
+        alert('Bạn không có dịch vụ trong giỏ hàng')
+      } else {
+        try {
+          await axios.post(
+            `http://localhost:3500/cartService/checkout`,
+            {
+              totalPrice: total
+            },
+            {
+              headers: { 'Authorization': context.auth.token },
+              withCredentials: true
+            }
+          )
+            .then((data) => {
+              alert('Đặt dịch vụ thành công')
+              context.handleLoadCartService()
+              navigate('/service-purchase')
 
-    //         })
+            })
 
-    //     } catch (err) {
-    //       console.log(err);
-    //     }
-    //   }
-    // }
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    }
     console.log(data)
     context.auth.fullname = data[0].userId.fullname
     data[0].userId.phone !== undefined ? context.auth.phone = data[0].userId.phone : context.auth.phone = ""
     navigate('/service-checkout');
   }
-
-  // ----------------------------------------------------------------
-  // const productStyle = {
-  //   padding: '16px 0',
-  //   marginTop: '0',
-  //   border: '1px solid rgba(0, 0, 0, .2)'
-  // }
-
-  // const cartHeader = {
-  //   fontWeight: 'bolder',
-  //   fontSize: '15px'
-  // }
-
-  // const quantityButtonRightStyle = {
-  //   padding: '5px 12px',
-  //   borderLeft: 'none',
-  //   background: 'none'
-  // }
-
-  // const quantityButtonLeftStyle = {
-  //   padding: '5px 12px',
-  //   borderRight: 'none',
-  //   background: 'none'
-  // }
-
-  // const quantityInputStyle = {
-  //   padding: '5px',
-  //   width: '20%',
-  //   textAlign: 'center',
-  //   // borderRight: 'none',
-  //   // borderLeft: 'none'
-  //   border: 'none'
-  // }
 
   const checkout = {
     position: 'fixed',
@@ -150,24 +137,24 @@ export default function CartService() {
       window.confirm("Bạn có chắc muốn xoá dịch vụ này không ?") ===
       true
     ) {
-    try {
-      await axios.delete(
-        `http://localhost:3500/cartService/remove-from-cart/${id}`,
-        {
-          headers: { 'Authorization': context.auth.token },
-          withCredentials: true
-        }
-      )
-        .then((data) => {
-          handleLoadCartService()
-          context.handleLoadCartService()
-          toast.success("Xoá dịch vụ thành công")
-        })
+      try {
+        await axios.delete(
+          `http://localhost:3500/cartService/remove-from-cart/${id}`,
+          {
+            headers: { 'Authorization': context.auth.token },
+            withCredentials: true
+          }
+        )
+          .then((data) => {
+            handleLoadCartService()
+            context.handleLoadCartService()
+            toast.success("Xoá dịch vụ thành công")
+          })
 
-    } catch (err) {
-      console.log(err);
+      } catch (err) {
+        console.log(err);
+      }
     }
-  }
   }
 
   const numberToVND = (number) => {
@@ -179,151 +166,152 @@ export default function CartService() {
 
   return (
     <>
-      <h1 style={{ textAlign: 'center', marginTop: '100px' }}>DANH SÁCH DỊCH VỤ ĐÃ CHỌN</h1>
-      <Card sx={{ minWidth: 275 }} style={{ padding: '20px', margin: '0 50px 200px 50px', boxShadow: 'none' }}>
-        <Box sx={{ flexGrow: 1 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Grid container spacing={2} style={{ border: '1px solid rgba(0, 0, 0, .2)', paddingBottom: '16px' }}>
-                <Grid item xs>
-                  DỊCH VỤ
-                </Grid>
-                <Grid item xs>
-                  TÊN THÚ CƯNG
-                </Grid>
-                <Grid item xs>
-                  GIÁ
-                </Grid>
-                <Grid item xs>
-                  TỔNG
-                </Grid>
-                <Grid item xs>
-                  CHỨC NĂNG
-                </Grid>
-              </Grid>
-              {
-                loged === false
-                  ? <h3 style={{ textAlign: 'center' }}>VUI LÒNG ĐĂNG NHẬP</h3>
-                  : data.length === 0
-                    ? <h3 style={{ textAlign: 'center' }}>BẠN CHƯA ĐẶT DỊCH VỤ NÀO</h3>
-                    : data.map((value, index) => {
-                      return (
-                        <Grid container spacing={2} style={{ padding: '10px 0' }}>
-                          <Grid item xs>
-                            {value.serviceId.serviceName}
-                          </Grid>
-                          <Grid item xs>
-                            {value.petId.petName}
-                          </Grid>
+      <Header />
+      <Container
+        sx={{ position: "relative", top: "120px", marginBottom: "150px" }}
+      >
+        <Breadcrumbs
+          aria-label="breadcrumb"
+          separator={<KeyboardDoubleArrowRightIcon fontSize="small" />}
+        >
+          <Link
+            underline="hover"
+            sx={{ display: "flex", alignItems: "center" }}
+            color="inherit"
+            href="/"
+          >
+            <HomeIcon sx={{ mr: 0.5 }} fontSize="medium" />
+            Trang chủ
+          </Link>
+          <Link
+            underline="hover"
+            sx={{ display: "flex", alignItems: "center" }}
+            color="#000000"
+            href="/cart-service"
+          >
+            Giỏ hàng
+          </Link>
+        </Breadcrumbs>
+        <Box className="main-content-cart">
+          <Typography variant="h3" className="custom_blog_title">
+            Giỏ hàng
+          </Typography>
+          <Box className="shoppingcart-content">
+            <TableContainer>
+              <Table className="shop_table">
+                {/* <TableHead>
+                  <TableRow>
+                    <TableCell className="product-remove"></TableCell>
+                    <TableCell className="product-thumbnail"></TableCell>
+                    <TableCell className="product-name"></TableCell>
+                    <TableCell className="product-price"></TableCell>
+                    <TableCell className="product-quantity"></TableCell>
+                    <TableCell className="product-subtotal"></TableCell>
+                  </TableRow>
+                </TableHead> */}
+                <TableBody sx={{ border: "1px solid #f1f1f1" }}>
+                  {data.map((service, index) => (
+                    <TableRow key={index} className="cart_item">
+                      <TableCell className="product-thumbnail">
+                        <img
+                          src={service.serviceId.serviceImage}
+                          alt={service.serviceId.serviceName}
+                          className="attachment-shop_thumbnail size-shop_thumbnail wp-post-image"
+                        />
+                      </TableCell>
+                      <TableCell className="product-name" data-title="Product">
+                        <Typography variant="body1">
+                          {service.serviceId.serviceName}
+                        </Typography>
+                      </TableCell>
+                      <TableCell
+                        className="product-subtotal"
+                        data-title="Subtotal"
+                      >
+                        {service.serviceId.price}
+                        <span className="woocommerce-Price-currencySymbol">
+                          VND
+                        </span>
+                      </TableCell>
+                      <TableCell className="product-remove">
+                        <DeleteIcon fontSize="large" onClick={(e) => handleDeleteOrder(service.serviceId._id)}/>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  <TableRow>
+                    <TableCell className="actions" colSpan={6}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Box
+                          className="coupon"
+                          sx={{ display: "flex", alignItems: "center" }}
+                        >
+                          <Typography
+                            variant="subtitle1"
+                            className="coupon_code"
+                          >
+                            Nhập mã:
+                          </Typography>
+                          <TextField
+                            type="text"
+                            className="input-text"
+                            placeholder="Promotion code here"
+                            sx={{
+                              marginLeft: "15px",
+                              marginRight: "8px",
+                              "& .MuiOutlinedInput-root": {
+                                borderRadius: "15px",
+                              },
+                            }}
+                            InputProps={{
+                              endAdornment: (
+                                <IconButton>
+                                  <ArrowForwardIcon />
+                                </IconButton>
+                              ),
+                            }}
+                          />
+                        </Box>
 
-                          {
-                            value.serviceId.discount !== 0
-                              &&
-                              dayjs().isBetween(dayjs(value.serviceId.saleStartTime), dayjs(value.serviceId.saleEndTime))
-                              ?
-                              (
-                                <>
-                                  <Grid item xs style={{ display: 'flex' }}>
-                                    <Typography style={{ textDecoration: "line-through" }}>
-                                      {
-                                        value.serviceId === null ? ""
-                                          : value.serviceId.discount === 0 ? ""
-                                            : numberToVND(value.serviceId.price)
-                                      }
-                                    </Typography>
-                                    <Typography style={{ color: 'red' }}>
-                                      {
-                                        value.serviceId === null ? ""
-                                          :
-                                          numberToVND((value.quantity * (value.serviceId.price - (value.serviceId.price * value.serviceId.discount / 100))))
-                                      }
-                                    </Typography>
-                                  </Grid>
-                                  <Grid item xs style={{ display: 'flex' }}>
-                                    <Typography style={{ color: 'red' }}>
-                                      {
-                                        value.serviceId === null ? ""
-                                          :
-                                          numberToVND((value.quantity * (value.serviceId.price - (value.serviceId.price * value.serviceId.discount / 100))))
-                                      }
-                                    </Typography>
-                                  </Grid>
-                                </>
-                              )
-                              :
-                              (
-                                <>
-                                  <Grid item xs style={{ display: 'flex' }}>
-                                    <Typography style={{ color: 'red' }}>
-                                      {
-                                        value.serviceId === null ? ""
-                                          :
-                                          numberToVND(value.quantity * value.serviceId.price)
-                                      }
-                                    </Typography>
-                                  </Grid>
-                                  <Grid item xs style={{ display: 'flex' }}>
-                                    <Typography style={{ color: 'red' }}>
-                                      {
-                                        value.serviceId === null ? ""
-                                          :
-                                          numberToVND(value.quantity * value.serviceId.price)
-                                      }
-                                    </Typography>
-                                  </Grid>
-                                </>
-                              )
-                          }
-
-                          <Grid item xs>
-                            <button
-                              style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-                              onClick={(e) => handleDeleteOrder(value.serviceId._id)}
-                            >
-                              Xoá
-                            </button>
-                          </Grid>
-                        </Grid>
-                      )
-                    })
-              }
-            </Grid>
-          </Grid>
+                        <Box
+                          className="order-total"
+                          sx={{ display: "flex", alignItems: "center" }}
+                        >
+                          <Typography variant="h3">Tổng:</Typography>
+                          <Typography variant="h3" className="total-price">
+                            {total} VND
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <Box className="control-cart">
+              <Button
+                variant="outlined"
+                className="button btn-continue-shopping"
+                sx={{ marginRight: "20px" }}
+              >
+                Tiếp tục mua sắm
+              </Button>
+              <Button
+                variant="outlined"
+                className="button btn-cart-to-checkout"
+                onClick={() => handleCheckOut()}
+              >
+                Thanh toán
+              </Button>
+            </Box>
+          </Box>
         </Box>
-        <Grid item xs={12} style={checkout}>
-          <Grid container spacing={3} style={{ paddingBottom: '20px' }}>
-            <Grid item xs>
-              TẤT CẢ
-            </Grid>
-            <Grid item xs>
-              {numberToVND(total)}
-            </Grid>
-          </Grid>
-          <p>Phí vận chuyển được tính khi thanh toán</p>
-          {
-            data.length === 0
-              ?
-              <button
-                type='button'
-                onClick={() => handleCheckOut()}
-                style={{ color: 'pink', backgroundColor: 'black', width: '100%', padding: '15px 0' }}
-                disabled
-              >
-                ĐẶT DỊCH VỤ
-              </button>
-              :
-              <button
-                type='button'
-                onClick={() => handleCheckOut()}
-                style={{ color: 'pink', backgroundColor: 'black', width: '100%', padding: '15px 0' }}
-              >
-                ĐẶT DỊCH VỤ
-              </button>
-          }
-
-        </Grid>
-        {/* <button onClick={() => handleTest()}>click</button> */}
-      </Card>
+      </Container>
+      <Footer />
     </>
   );
 }

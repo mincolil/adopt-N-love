@@ -24,7 +24,13 @@ const petSchema = new mongoose.Schema({
     color: String,
     weight: Number,
     height: Number,
+    breed: String,
+    age: Number,
     petImage: String,
+    forAdoption: {
+        type: Boolean,
+        default: false,
+    },
 })
 
 petSchema.plugin(mongoosePaginate)

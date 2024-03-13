@@ -11,6 +11,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import useAuth from "../../hooks/useAuth";
 import { Avatar, Box, Container, Grid, Stack, TextField } from "@mui/joy";
 import PetsIcon from "@mui/icons-material/Pets";
@@ -28,6 +29,7 @@ import Header from "../../components/Header/Header";
 import Background from "../../images/background.png";
 import { orange } from '@mui/material/colors';
 import Icon from "../../images/adapt_icon_2.png";
+import ModalDetailPet from "../../components/Modal/ModalDetailPet";
 
 const CustomContainer = styled(Container)({
   background:
@@ -113,6 +115,8 @@ export default function PetUser() {
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [dataEditPet, setDataEditPet] = useState({});
+  const [openDetailModal, setOpenDetailModal] = useState(false);
+  const [dataDetailPet, setDataDetailPet] = useState({});
 
   // --------------------- OPEN MODAL  -----------------------------
   const handleCreateModal = () => {
@@ -125,10 +129,17 @@ export default function PetUser() {
     setOpenEditModal(true);
   };
 
+  const handleDetailPet = (pet) => {
+    // console.log("Check data", pet);
+    setDataDetailPet(pet);
+    setOpenDetailModal(true);
+  };
+
   // --------------------- CLOSE MODAL  -----------------------------
   const handleCloseModal = () => {
     setOpenCreateModal(false);
     setOpenEditModal(false);
+    setOpenDetailModal(false);
   };
 
   // --------------------- GET ALL CATEGORY PET -----------------------------
@@ -153,8 +164,28 @@ export default function PetUser() {
     loadAllCategoryPet();
   }, []);
 
+  //---------------------- HNADLE ADOPT PET -----------------------------
+  const handleAdoptPet = (pet) => {
+    try {
+      const updatePet = axios.patch(`http://localhost:3500/pet/adopt`, {
+        id: pet._id,
+        forAdoption: !pet.forAdoption,
+      });
+      if (updatePet.error) {
+        toast.error(updatePet.error);
+      } else {
+        toast.success("Cập nhật thành công");
+        loadAllPetByUserId(currentPage);
+      }
+    }
+    catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <>
+      <toastContainer />
       <Header />
       <React.Fragment>
         <CustomContainer component="main" maxWidth="false" sx={{ pt: 10, pb: 4 }}>
@@ -169,7 +200,7 @@ export default function PetUser() {
                 const statusColor = value.status ? "primary" : "error";
                 return (
                   <Card
-                    onClick={() => handleUpdatePet(value)}
+                    onClick={() => handleDetailPet(value)}
                     data-resizable
                     sx={{
                       mr: 3,
@@ -237,19 +268,19 @@ export default function PetUser() {
                       </AspectRatio>
                     </CardOverflow>
                     <Typography
-                      level="title-lg"
+                      level="h2"
                       sx={{ mt: "calc(var(--icon-size) / 2)" }}
                     >
                       🎊 {value.petName} 🎊
                     </Typography>
-                    <Typography level="h3" component="div">
+                    {/* <Typography level="h3" component="div">
                       Chủ nhân
                     </Typography>
                     <Typography level="h2" sx={{ maxWidth: "40ch" }}>
                       {value.userId.fullname}
-                    </Typography>
+                    </Typography> */}
                     <Grid container spacing={3}>
-                      <Grid item xs={12} sm={6}>
+                      <Grid item xs={12} sm={4}>
                         <Typography variant="h5" component="h1">
                           Chiều cao
                         </Typography>
@@ -257,7 +288,7 @@ export default function PetUser() {
                           {value.height}cm
                         </Typography>
                       </Grid>
-                      <Grid item xs={12} sm={6}>
+                      <Grid item xs={12} sm={4}>
                         <Typography variant="h5" component="h1">
                           Cân nặng
                         </Typography>
@@ -265,12 +296,28 @@ export default function PetUser() {
                           {value.weight}kg
                         </Typography>
                       </Grid>
-                      <Grid item xs={12} sm={12}>
+                      <Grid item xs={12} sm={4}>
                         <Typography variant="h5" component="h1">
                           Màu lông
                         </Typography>
                         <Typography level="h4" sx={{ maxWidth: "40ch" }}>
-                          {value.color}
+                          {value.color}kg
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="h5" component="h1">
+                          Giống
+                        </Typography>
+                        <Typography level="h4" sx={{ maxWidth: "40ch" }}>
+                          {value.breed}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="h5" component="h1">
+                          Tuổi
+                        </Typography>
+                        <Typography level="h4" sx={{ maxWidth: "40ch" }}>
+                          {value.age}
                         </Typography>
                       </Grid>
                       <Grid item xs={12} sm={12}>
@@ -281,6 +328,16 @@ export default function PetUser() {
                           color={statusColor}
                         />
                       </Grid>
+                      {value.forAdoption && (
+                        <Grid item xs={12} sm={12}>
+                          <Chip
+                            size="small"
+                            variant="outlined"
+                            label="Đã đăng ký nhận nuôi"
+                            color="primary"
+                          />
+                        </Grid>
+                      )}
                     </Grid>
                     <CardActions
                       orientation="vertical"
@@ -290,8 +347,17 @@ export default function PetUser() {
                         width: "clamp(min(100%, 160px), 50%, min(100%, 200px))",
                       }}
                     >
-                      <Button variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
-                        Báo cáo bệnh tình
+                      <Button onMouseDown={() => handleUpdatePet(value)} variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
+                        Đăng ký phòng khám
+                      </Button>
+                      <Button onClick={(e) => {
+                        e.stopPropagation();
+                        handleAdoptPet(value);
+                      }} variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
+                        {value.forAdoption ? "Cancel Adopt" : "Adopt"}
+                      </Button>
+                      <Button onMouseDown={() => handleUpdatePet(value)} variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
+                        Sửa
                       </Button>
                     </CardActions>
                   </Card>
@@ -410,7 +476,15 @@ export default function PetUser() {
           category={category}
           data={context.auth.id}
         />
-      </React.Fragment>
+        <ModalDetailPet
+          open={openDetailModal}
+          onClose={handleCloseModal}
+          dataEditPet={dataDetailPet}
+          page={currentPage}
+          data={context.auth.id}
+          category={category}
+        />
+      </React.Fragment >
     </>
   );
 }

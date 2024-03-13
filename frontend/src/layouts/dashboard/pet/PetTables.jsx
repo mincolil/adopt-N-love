@@ -26,6 +26,7 @@ import SearchIcon from "@mui/icons-material/Search";
 
 import CloseIcon from "@mui/icons-material/Close";
 import { styled } from "@mui/material/styles";
+import { ToastContainer } from "react-toastify";
 
 import ButtonCustomize from "../../../components/Button/Button";
 
@@ -145,6 +146,23 @@ export default function PetTable() {
     }
   };
 
+  // ----------------------------------- DELETE PET BY ID --------------------------------
+  const handleDeletePet = async (id) => {
+    if (window.confirm("Bạn có chắc chắn muốn xóa không?") === false) return;
+    try {
+      const deleteData = await axios.delete(`${BASE_URL}/pet/${id}`);
+      if (deleteData.error) {
+        toast.error(deleteData.error);
+      } else {
+        toast.success(deleteData.data.message);
+        loadAllPet(currentPage);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+
   // ----------------------------------- GET ALL PET BY USER NAME --------------------------------
   const searchPetById = async (page) => {
     try {
@@ -154,10 +172,10 @@ export default function PetTable() {
       if (loadData.data.error) {
         toast.warning(
           "Kết quả " +
-            "[" +
-            keyword +
-            "]" +
-            " bạn vừa tìm không có! Vui lòng nhập lại. "
+          "[" +
+          keyword +
+          "]" +
+          " bạn vừa tìm không có! Vui lòng nhập lại. "
         );
         loadAllPet(currentPage);
       } else {
@@ -229,6 +247,7 @@ export default function PetTable() {
 
   return (
     <>
+      <ToastContainer />
       <Box sx={{ position: "" }}>
         <Grid
           spacing={2}
@@ -305,7 +324,7 @@ export default function PetTable() {
                   return (
                     <TableRow
                       hover
-                      onClick={() => handleUpdatePet(value)}
+                      //onClick={() => handleUpdatePet(value)}
                       key={index}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
@@ -337,13 +356,19 @@ export default function PetTable() {
                         />
                       </TableCell>
                       {/* <TableCell align="center">
-                        <ButtonGroup>
-                          <ButtonCustomize
-                            variant="contained"
-                            // component={RouterLink}
-                            nameButton="Cập nhật"
-                            fullWidth
-                          />
+                        <ButtonGroup variant="text" color="primary">
+                          <Button
+                            onClick={() => handleUpdatePet(value)}
+                            color="primary"
+                          >
+                            Sửa
+                          </Button>
+                          <Button
+                            onClick={() => handleDeletePet(value._id)}
+                            color="error"
+                          >
+                            Xóa
+                          </Button>
                         </ButtonGroup>
                       </TableCell> */}
                     </TableRow>

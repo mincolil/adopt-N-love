@@ -31,6 +31,7 @@ import { ToastContainer } from "react-toastify";
 
 import useAuth from "../../hooks/useAuth";
 import DateFormat from "../../components/DateFormat";
+import DateTimeFormat from "../../components/DateTimeFormat";
 import ButtonCustomize from "../../components/Button/Button";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../components/Footer/Footer";
@@ -137,7 +138,7 @@ export default function ServicePurchase() {
             handleLoadCartServiceById(CANCEL_STATUS);
             handleClose();
           })
-          .catch((error) => {});
+          .catch((error) => { });
       } catch (err) {
         console.log(err);
       }
@@ -310,7 +311,7 @@ export default function ServicePurchase() {
                     <TableCell children>STT</TableCell>
                     <TableCell align="left">Tên thú cưng</TableCell>
                     <TableCell align="left">Tên dịch vụ</TableCell>
-                    <TableCell align="left">Số lượng</TableCell>
+                    <TableCell align="left">Ngày hẹn</TableCell>
                     <TableCell align="left">Giá</TableCell>
                   </TableRow>
                 </TableHead>
@@ -335,7 +336,7 @@ export default function ServicePurchase() {
                               ? value.service.serviceName
                               : ""}
                           </TableCell>
-                          <TableCell align="left">{value.quantity}</TableCell>
+                          <TableCell align="left"><DateFormat date={value.bookingDate} /></TableCell>
                           <TableCell align="left">{value.price}</TableCell>
                           <TableCell align="left">
                             {status === "Hoàn thành" ? (

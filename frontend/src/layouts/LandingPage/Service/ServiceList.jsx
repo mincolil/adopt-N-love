@@ -66,6 +66,7 @@ function ServiceItem({ service }) {
               variant="h5"
               component="div"
               className="product-title"
+              style={{ color: '#ff5722' }}
             >
               {serviceName}
             </Typography>
@@ -306,10 +307,10 @@ export default function ServiceList() {
       if (loadData.data.error) {
         toast.warning(
           "Kết quả " +
-            "[" +
-            keyword +
-            "]" +
-            " bạn vừa tìm không có! Vui lòng nhập lại."
+          "[" +
+          keyword +
+          "]" +
+          " bạn vừa tìm không có! Vui lòng nhập lại."
         );
         loadAllService(currentPage);
       } else {
@@ -418,6 +419,22 @@ export default function ServiceList() {
                     getAriaValueText={(value) => `${value}`}
                     min={0}
                     max={1000000}
+                    sx={{
+                      color: 'orange',
+                      '& .MuiSlider-rail': {
+                        backgroundColor: 'orange',
+                      },
+                      '& .MuiSlider-track': {
+                        backgroundColor: '#ff5722',
+                      },
+                      '& .MuiSlider-thumb': {
+                        backgroundColor: '#ff5722',
+                      },
+                      '& .MuiSlider-valueLabel': {
+                        backgroundColor: '#ff5722',
+                        color: 'black', // You can adjust the color of the value label text
+                      },
+                    }}
                   />
                   <Box className="price-slider-amount">
                     <Typography

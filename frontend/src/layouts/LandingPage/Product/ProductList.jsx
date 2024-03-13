@@ -99,6 +99,7 @@ function ProductItem({ product }) {
               variant="h5"
               component="div"
               className="product-title"
+              style={{ color: '#ff5722' }}
             >
               {productName}
             </Typography>
@@ -141,7 +142,7 @@ export default function ProductList() {
   const [price, setPrice] = useState([0, 1000000]);
   const [sortBy, setSortBy] = React.useState("price-asc");
 
-   // ----------------------------------- FILTER BY PRICE --------------------------------
+  // ----------------------------------- FILTER BY PRICE --------------------------------
   const handlePriceChange = (event, newValue) => {
     if (newValue) {
       setPrice(newValue);
@@ -177,9 +178,9 @@ export default function ProductList() {
     handlePriceChange();
   }, []);
 
-   // ----------------------------------- API SORT PRODUCT --------------------------------
+  // ----------------------------------- API SORT PRODUCT --------------------------------
 
-   const handleSortChange = (event) => {
+  const handleSortChange = (event) => {
     if (event && event.target) {
       const selectedSort = event.target.value;
       setSortBy(selectedSort);
@@ -336,10 +337,10 @@ export default function ProductList() {
       if (loadData.data.error) {
         toast.warning(
           "Kết quả " +
-            "[" +
-            keyword +
-            "]" +
-            " bạn vừa tìm không có! Vui lòng nhập lại. "
+          "[" +
+          keyword +
+          "]" +
+          " bạn vừa tìm không có! Vui lòng nhập lại. "
         );
         loadAllProduct(currentPage);
       } else {
@@ -448,6 +449,22 @@ export default function ProductList() {
                     getAriaValueText={(value) => `${value}`}
                     min={0}
                     max={1000000}
+                    sx={{
+                      color: 'orange',
+                      '& .MuiSlider-rail': {
+                        backgroundColor: 'orange',
+                      },
+                      '& .MuiSlider-track': {
+                        backgroundColor: '#ff5722',
+                      },
+                      '& .MuiSlider-thumb': {
+                        backgroundColor: '#ff5722',
+                      },
+                      '& .MuiSlider-valueLabel': {
+                        backgroundColor: '#ff5722',
+                        color: 'black', // You can adjust the color of the value label text
+                      },
+                    }}
                   />
                   <Box className="price-slider-amount">
                     <Typography

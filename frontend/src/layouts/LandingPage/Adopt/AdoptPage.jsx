@@ -107,6 +107,13 @@ function PetItem({ pet }) {
                         >
                             Giống: {breed}
                         </Typography>
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            className="product-price"
+                        >
+                            Giới tính: { }
+                        </Typography>
                     </CardContent>
                 </CardActionArea>
                 {/* <CardActions sx={{ justifyContent: "center" }}>

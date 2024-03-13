@@ -42,13 +42,64 @@ export default function CartProduct() {
 
   const [quantity, setQuantity] = useState(1);
 
-  const handleIncreaseQuantity = () => {
-    setQuantity(quantity + 1);
+  // -----------------------HANDLE INCREASE QUANTITY-----------------------
+  const handleIncreaseQuantity = async (product) => {
+    if (product.quantity < product.productId.quantity) {
+      try {
+        const increaseCart = await axios.put(
+          `http://localhost:3500/cartProduct/update-cart`,
+          {
+            productId: product.productId._id,
+            quantity: product.quantity + 1,
+          },
+          {
+            headers: { Authorization: context.auth.token },
+            withCredentials: true,
+          }
+        );
+        if (increaseCart.error) {
+          toast.error(increaseCart.error);
+        } else {
+          handleLoadCartProduct();
+          context.handleLoadCartProduct();
+        }
+      }
+      catch (err) {
+        console.log(err);
+      }
+    } else {
+      console.log("Số lượng sản phẩm không đủ");
+      toast.error("Số lượng sản phẩm không đủ");
+    }
   };
 
-  const handleDecreaseQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
+  const handleDecreaseQuantity = async (product) => {
+    if (product.quantity > 1) {
+      try {
+        const descreaseCart = await axios.put(
+          `http://localhost:3500/cartProduct/update-cart`,
+          {
+            productId: product.productId._id,
+            quantity: product.quantity - 1,
+          },
+          {
+            headers: { Authorization: context.auth.token },
+            withCredentials: true,
+          }
+        );
+        if (descreaseCart.error) {
+          toast.error(descreaseCart.error);
+        } else {
+          handleLoadCartProduct();
+          context.handleLoadCartProduct();
+        }
+      }
+      catch (err) {
+        console.log(err);
+      }
+    } else {
+      console.log("Số lượng sản phẩm ko the bang 0");
+      toast.error("Số lượng sản phẩm ko the bang 0");
     }
   };
 
@@ -93,7 +144,7 @@ export default function CartProduct() {
                 (loadData.data[i].productId.price -
                   (loadData.data[i].productId.price *
                     loadData.data[i].productId.discount) /
-                    100);
+                  100);
             } else {
               totalPrice +=
                 loadData.data[i].quantity * loadData.data[i].productId.price;
@@ -198,7 +249,7 @@ export default function CartProduct() {
                         <Box sx={{ width: "120px" }}>
                           <IconButton
                             aria-label="decrease quantity"
-                            onClick={handleDecreaseQuantity}
+                            onClick={() => handleDecreaseQuantity(product)}
                           >
                             <RemoveIcon />
                           </IconButton>
@@ -213,7 +264,7 @@ export default function CartProduct() {
                           />
                           <IconButton
                             aria-label="increase quantity"
-                            onClick={handleIncreaseQuantity}
+                            onClick={() => handleIncreaseQuantity(product)}
                           >
                             <AddIcon />
                           </IconButton>

@@ -6,5 +6,6 @@ router.get('/view-cart', cartProductController.viewCart) //test
     .post('/checkout', cartProductController.checkout) //test
     .post('/add-to-cart', cartProductController.addToCart) //test
     .delete('/remove-from-cart/:productId', cartProductController.removeFromCart)
+    .put('/update-cart', cartProductController.updateCart)
 
 module.exports = router   

@@ -97,7 +97,14 @@ function PetItem({ pet }) {
                             color="text.secondary"
                             className="product-price"
                         >
-                            {age} VND{" "}
+                            Tuổi: {age}
+                        </Typography>
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            className="product-price"
+                        >
+                            Giống: {breed}
                         </Typography>
                     </CardContent>
                 </CardActionArea>

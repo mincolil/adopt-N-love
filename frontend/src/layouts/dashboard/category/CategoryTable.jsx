@@ -91,7 +91,7 @@ export default function CategoryTable() {
 
   const loadAllCategory = async (page) => {
     try {
-      const loadData = await axios.get(`${BASE_URL}/category?page=${page}`);
+      const loadData = await axios.get(`${BASE_URL}/category?categoryName=Dịch vụ`);
       if (loadData.error) {
         toast.error(loadData.error);
       } else {
@@ -127,6 +127,7 @@ export default function CategoryTable() {
                 <TableCell children>STT</TableCell>
                 <TableCell align="left">Loại</TableCell>
                 <TableCell align="left">Tên thể loại</TableCell>
+                <TableCell align="left">Số phòng</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -145,6 +146,7 @@ export default function CategoryTable() {
                       </TableCell>
                       <TableCell align="left">{value.categoryName}</TableCell>
                       <TableCell align="left">{value.feature}</TableCell>
+                      <TableCell align="left">{value.slot}</TableCell>
                     </TableRow>
                   );
                 })}

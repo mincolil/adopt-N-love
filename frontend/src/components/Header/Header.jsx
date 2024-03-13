@@ -96,7 +96,10 @@ const Header = () => {
                   Trang chủ
                 </DsButton>
 
-                <DsButton color="inherit" >
+                <DsButton color="inherit" href="/adopt-homepage" sx={{
+                  fontFamily: "'Poppins', sans-serif !important",
+                  fontSize: "17px",
+                }}>
                   Nhận nuôi
                   {/* <ArrowDropDownIcon /> */}
                 </DsButton>

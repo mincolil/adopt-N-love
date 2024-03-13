@@ -212,7 +212,7 @@ const ChoosePet = ({ open, onClose, service, pet, loadData }) => {
       });
       const total = totalSlots.data.docs.length + cartSlots.data.length;
       console.log(total);
-      if (total >= 2) {
+      if (total >= categorySlot) {
         return false;
       }
       return true;

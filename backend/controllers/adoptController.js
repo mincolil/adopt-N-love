@@ -146,6 +146,32 @@ const getAdoptByUsername = async (req, res) => {
     }
 }
 
+const getAdoptByPetName = async (req, res) => {
+    try {
+        const searchTerm = req.query.name || '';
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
+        const { petName } = req.query
+
+        const result = await Pet.paginate({ petName: { $regex: new RegExp(petName, 'i') }, forAdoption: true }, {
+            page, limit, populate: {
+                path: 'userId',
+                model: 'User',
+                select: 'fullname phone',
+            }
+        });
+        res.status(200).json(result)
+
+    } catch (error) {
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
+    }
+}
+
+
 const getAdoptByUserId = async (req, res) => {
     //get adoptpet by userId
     try {
@@ -250,5 +276,6 @@ module.exports = {
     deleteOne,
     updateAdopt,
     getAdoptById,
-    getAdoptByUsername
+    getAdoptByUsername,
+    getAdoptByPetName
 }

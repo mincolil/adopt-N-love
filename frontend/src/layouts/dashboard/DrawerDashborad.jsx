@@ -42,6 +42,7 @@ const DrawerDashborad = () => {
       text: "Lịch đăng kí dịch vụ",
       path: "/dashboard/booking-list",
     },
+    { text: "Số lượng phòng dịch vụ", path: "/dashboard/category-list" }
   ];
 
   const links3 = [

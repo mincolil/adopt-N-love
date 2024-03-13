@@ -27,6 +27,7 @@ import CategoryTable from "./layouts/dashboard/category/CategoryTable";
 import BlogPage from "./layouts/LandingPage/Blog/BlogPage";
 import BlogDetail from "./layouts/LandingPage/Blog/BlogDetail";
 import ServiceList from "./layouts/LandingPage/Service/ServiceList";
+import AdoptPage from "./layouts/LandingPage/Adopt/AdoptPage";
 import ProductPurchase from "./layouts/User/ProductPurchase";
 import ProductCheckout from "./layouts/User/ProductCheckout";
 import ProductDetail from "./layouts/LandingPage/Product/ProductDetail";
@@ -75,6 +76,7 @@ function App() {
                   path="/dashboard/service-list"
                   element={<ServiceTable />}
                 />
+
                 <Route path="/dashboard/pet-list" element={<PetTable />} />
                 <Route path="/dashboard/adopt-pet-list" element={<AdoptPetTable />} />
                 <Route
@@ -92,6 +94,7 @@ function App() {
             <Route path="/sign-up" element={<Register />} />
             <Route path="/sign-in" element={<Login />} />
             <Route path="/" element={<LandingPage />} />
+            <Route path="adopt-homepage" element={<AdoptPage />} />
             <Route path="service-homepage" element={<ServiceList />} />
             <Route path="product-homepage" element={<ProductList />} />
             <Route

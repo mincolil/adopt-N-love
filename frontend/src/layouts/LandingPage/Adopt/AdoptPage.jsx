@@ -89,6 +89,7 @@ function PetItem({ pet }) {
                             variant="h5"
                             component="div"
                             className="product-title"
+                            style={{ color: '#ff5722' }}
                         >
                             {petName}
                         </Typography>
@@ -97,11 +98,25 @@ function PetItem({ pet }) {
                             color="text.secondary"
                             className="product-price"
                         >
-                            {age} VND{" "}
+                            Tuổi: {age}
+                        </Typography>
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            className="product-price"
+                        >
+                            Giống: {breed}
+                        </Typography>
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            className="product-price"
+                        >
+                            Giới tính: { }
                         </Typography>
                     </CardContent>
                 </CardActionArea>
-                <CardActions sx={{ justifyContent: "center" }}>
+                {/* <CardActions sx={{ justifyContent: "center" }}>
                     <IconButton
                         size="large"
                         color="primary"
@@ -109,7 +124,7 @@ function PetItem({ pet }) {
                     >
                         <AddShoppingCartIcon />
                     </IconButton>
-                </CardActions>
+                </CardActions> */}
             </Card>
         </Grid>
     );

@@ -98,7 +98,7 @@ function Home() {
               }}
             >
               Chăm sóc<br />{" "}
-              <span style={{ fontWeight: "800" }}>Nhận nuôi</span>
+              Nhận nuôi
             </Typography>
             <Typography
               sx={{

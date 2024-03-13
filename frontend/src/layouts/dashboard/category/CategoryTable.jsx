@@ -137,7 +137,7 @@ export default function CategoryTable() {
                   return (
                     <TableRow
                       hover
-                      onClick={() => handleUpdatePet(value)}
+                      // onClick={() => handleUpdatePet(value)}
                       key={index}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >

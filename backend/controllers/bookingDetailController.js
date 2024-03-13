@@ -70,9 +70,11 @@ const getBookingDetailByBookingId = async (req, res) => {
                     service: 1,
                     pet: 1,
                     createdAt: 1,
-                    updatedAt: 1
+                    updatedAt: 1,
+                    bookingDate: 1
                 }
-            }
+            },
+            //bookingDate
         ]);
 
         if (!bookingDetails || bookingDetails.length === 0) {

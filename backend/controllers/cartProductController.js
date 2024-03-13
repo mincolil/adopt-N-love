@@ -145,9 +145,52 @@ const checkout = async (req, res) => {
     }
 }
 
+//update cart's quantity
+const updateCart = async (req, res) => {
+    try {
+        // Lấy thông tin người dùng từ token JWT
+        // const token = req.cookies.token;
+        const token = req.headers.authorization;
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const userId = decoded.id;
+
+        const productId = req.body.productId;
+        const quantity = req.body.quantity;
+
+        const product = await Product.findById(productId);
+
+        if (!product) {
+            return res.json({
+                error: 'Product: ' + productId + ' not found.'
+            });
+        }
+
+        let cartProduct = await CartProduct.findOne({ userId, productId });
+
+        if (cartProduct) {
+            cartProduct.quantity = quantity;
+        } else {
+            cartProduct = new CartProduct({
+                userId: userId,
+                productId: productId,
+                quantity: quantity
+            });
+        }
+        const result = await cartProduct.save();
+        res.json({
+            message: 'Update product ' + productId + ' in cart success!',
+            result
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json(err);
+    }
+}
+
 module.exports = {
     addToCart,
     removeFromCart,
     viewCart,
-    checkout
+    checkout,
+    updateCart
 }

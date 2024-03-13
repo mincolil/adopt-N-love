@@ -234,7 +234,7 @@ export default function CartService() {
                         </span>
                       </TableCell>
                       <TableCell className="product-remove">
-                        <DeleteIcon fontSize="large" onClick={(e) => handleDeleteOrder(service.serviceId._id)}/>
+                        <DeleteIcon fontSize="large" onClick={(e) => handleDeleteOrder(service.serviceId._id)} />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -297,6 +297,7 @@ export default function CartService() {
                 variant="outlined"
                 className="button btn-continue-shopping"
                 sx={{ marginRight: "20px" }}
+                href="/service-homepage"
               >
                 Tiếp tục mua sắm
               </Button>

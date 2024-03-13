@@ -358,6 +358,7 @@ export default function CartProduct() {
                     variant="outlined"
                     className="button btn-continue-shopping"
                     sx={{ marginRight: "20px" }}
+                    href="/product-homepage"
                   >
                     Tiếp tục mua sắm
                   </Button>

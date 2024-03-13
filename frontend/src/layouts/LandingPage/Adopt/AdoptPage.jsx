@@ -89,6 +89,7 @@ function PetItem({ pet }) {
                             variant="h5"
                             component="div"
                             className="product-title"
+                            style={{ color: '#ff5722' }}
                         >
                             {petName}
                         </Typography>
@@ -108,7 +109,7 @@ function PetItem({ pet }) {
                         </Typography>
                     </CardContent>
                 </CardActionArea>
-                <CardActions sx={{ justifyContent: "center" }}>
+                {/* <CardActions sx={{ justifyContent: "center" }}>
                     <IconButton
                         size="large"
                         color="primary"
@@ -116,7 +117,7 @@ function PetItem({ pet }) {
                     >
                         <AddShoppingCartIcon />
                     </IconButton>
-                </CardActions>
+                </CardActions> */}
             </Card>
         </Grid>
     );

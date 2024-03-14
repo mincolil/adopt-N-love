@@ -35,6 +35,8 @@ import { useEffect } from "react";
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
+import DateTimeFormat from "../../../components/DateTimeFormat";
+
 // -------------------------------STYLE MODAL----------------------
 const style = {
   position: "absolute",
@@ -569,7 +571,7 @@ export default function BookingTable() {
                     <TableCell children>STT</TableCell>
                     <TableCell align="left">Tên thú cưng</TableCell>
                     <TableCell align="left">Tên dịch vụ</TableCell>
-                    <TableCell align="left">Số lượng</TableCell>
+                    <TableCell align="left">Ngày hẹn</TableCell>
                     <TableCell align="left">Giá</TableCell>
                   </TableRow>
                 </TableHead>
@@ -594,7 +596,7 @@ export default function BookingTable() {
                               ? value.service.serviceName
                               : ""}
                           </TableCell>
-                          <TableCell align="left">{value.quantity}</TableCell>
+                          <TableCell align="left"> <DateTimeFormat date={value.bookingDate}></DateTimeFormat> </TableCell>
                           <TableCell align="left">{numberToVND(value.price)}</TableCell>
                           {/* <TableCell align="left">
                             {status === "Chờ thanh toán" ? (

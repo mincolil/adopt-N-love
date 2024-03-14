@@ -69,10 +69,6 @@ const ModalDetailPet = (props) => {
 
 
     // --------------------- HANLDE CHANGE STATUS -----------------------------
-    const handleStatusChange = (event) => {
-        setStatus(event.target.value);
-        // console.log(status);
-    };
 
     const numberToVND = (number) => {
         return number.toLocaleString("vi-VN", {

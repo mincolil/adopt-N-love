@@ -165,9 +165,9 @@ const ServiceDetail = () => {
             underline="hover"
             sx={{ display: "flex", alignItems: "center" }}
             color="inherit"
-            href="/product-homepage"
+            href="/service-homepage"
           >
-            Sản phẩm
+            Dịch vụ
           </Link>
           <Typography
             sx={{ display: "flex", alignItems: "center" }}

@@ -40,6 +40,7 @@ import DashboardList from "./layouts/dashboard/DashboardList";
 import Introduce from "./layouts/User/Introduce";
 import ServiceCheckout from "./layouts/User/ServiceCheckout";
 import AdoptPetTable from "./layouts/dashboard/pet/AdoptPetTable";
+import AdoptPageDetail from "./layouts/LandingPage/Adopt/AdoptPageDetail";
 
 // import AdminLayout from "./layouts/dashboard/layouts/Admin"
 
@@ -119,6 +120,7 @@ function App() {
             <Route path="reset-password" element={<ResetPassword />} />
             <Route path="introduce-homepage" element={<Introduce />} />
             <Route path="service-checkout" element={<ServiceCheckout />} />
+            <Route path="adopt-homepage-detail" element={<AdoptPageDetail />} />
           </Routes>
         </BrowserRouter>
       </LocalizationProvider>

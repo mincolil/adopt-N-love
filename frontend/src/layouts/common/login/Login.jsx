@@ -34,6 +34,9 @@ import useAuth from "../../../hooks/useAuth";
 
 import { jwtDecode } from "jwt-decode";
 
+import GoogleLogin from 'react-google-login';
+import { gapi } from 'gapi-script'
+
 const defaultTheme = createTheme();
 const Login = () => {
   // const validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -91,6 +94,8 @@ const Login = () => {
     }
   };
 
+
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -99,6 +104,54 @@ const Login = () => {
     //   password: data.get("password"),
     // });
   };
+
+  //----------------------LOGIN WITH GG---------------------
+  const clientid = "424228344980-l67mummet93pgl903qru8ejvjeoo098s.apps.googleusercontent.com";
+
+  const responseGoogle = async (response) => {
+    const { tokenId, profileObj } = response;
+    const token = tokenId;
+    const email = profileObj.email;
+    const googleId = profileObj.googleId;
+
+    try {
+      const { data } = await axios.post("http://localhost:3500/google", {
+        email,
+        googleId
+      })
+        .then((data) => {
+          if (data.data.error === 'Unverified') {
+            localStorage.setItem("verify-email", email);
+            navigate('/verify', { replace: true });
+          } else {
+            // console.log(data)
+            const dataDecode = jwtDecode(data.data.token);
+
+            localStorage.setItem("token", data.data.token);
+
+            context.setAuth({
+              id: dataDecode.id,
+              email: dataDecode.email,
+              role: dataDecode.role,
+              token: data.data.token,
+            });
+
+            toast.success("Đăng nhập thành công");
+            navigate(from, { replace: true });
+          }
+        })
+        .catch((error) => {
+          toast.error(error.response.data.error);
+        })
+    } catch (err) {
+      // console.log(err)
+    }
+  }
+
+  const onFailure = (res) => {
+    console.log('Login failed: res:', res);
+  }
+
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -205,6 +258,15 @@ const Login = () => {
               >
                 Đăng nhập
               </Button>
+              <GoogleLogin
+                clientId={clientid}
+                buttonText="Login with Google"
+                onSuccess={responseGoogle}
+                onFailure={onFailure}
+                cookiePolicy={'single_host_origin'}
+                isSignedIn={true}
+                prompt="select_account"
+              />
               <Grid container>
                 <Grid item xs>
                   <NavLink to="/reset-password" variant="body2">

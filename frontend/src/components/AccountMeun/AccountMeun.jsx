@@ -46,6 +46,8 @@ export default function AccountMenu() {
       // const response = await axios.post("http://localhost:3500/logout");
       // thông báo logout thành công và chuyển hướng về trang đăng nhập
       // console.log(response);
+      const auth2 = window.gapi.auth2.getAuthInstance();
+      await auth2.signOut();
 
       localStorage.removeItem("token"); // xóa token lưu trữ trong localStorage
       navigate("/sign-in"); // chuyển hướng về trang đăng nhập

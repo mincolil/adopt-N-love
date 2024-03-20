@@ -2,8 +2,11 @@ const express = require('express')
 const router = express.Router()
 const authController = require('../controllers/authController')
 const validateAuth = require('../middleware/validateAuthInput')
+const passport = require('passport');
+const { authenticateGoogle } = require('../middleware/authMiddleware');
 
 router.post('/login', validateAuth.validateLoginData, authController.login)
+    .post('/google', authController.loginGoogle)
     .get('/check', authController.check)
     .post('/register', validateAuth.validateRegisterData, authController.register)
     .put('/changePassword', authController.changePassword)

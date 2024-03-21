@@ -14,6 +14,7 @@ import dayjs from "dayjs";
 import Cards from "react-credit-cards";
 import "react-credit-cards/es/styles-compiled.css";
 import "./styled/ProductCheckout.css";
+import CreditCardIcon from '@mui/icons-material/CreditCard';
 
 import {
   Typography,
@@ -358,7 +359,7 @@ export default function ProductCheckout() {
                 expanded={expanded === "panel2"}
                 onChange={handleAccordionChange("panel2")}
               >
-                <AccordionSummary>
+                <AccordionSummary expandIcon={<CreditCardIcon />}>
                   <Box className="form-check w-100">
                     <RadioGroup
                       value={selectedPayment}

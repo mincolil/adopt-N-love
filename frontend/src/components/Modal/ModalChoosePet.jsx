@@ -328,7 +328,7 @@ const ChoosePet = ({ open, onClose, service, pet, loadData }) => {
             components={['DateTimePicker', 'DateTimePicker', 'DateTimePicker']}
           // Adjust the margin as needed
           >
-            <DatePicker label="Ngày hẹn" onChange={handleEndDateChange} disablePast={true} shouldDisableDate={isWeekend} sx={{
+            <DatePicker label="Ngày hẹn" onChange={handleEndDateChange} disablePast={true} sx={{
               "& .MuiInputLabel-root.Mui-focused": { color: "#ff5722" }, "& .MuiOutlinedInput-root": {
                 "&:hover > fieldset": { borderColor: "#ff5722" },
                 height: "48px",

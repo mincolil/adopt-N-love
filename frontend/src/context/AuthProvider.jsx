@@ -59,7 +59,8 @@ export const AuthProvider = ({ children }) => {
         adoptRequestNumber,
         setAuth,
         handleLoadCartProduct,
-        handleLoadCartService
+        handleLoadCartService,
+        handleLoadAdoptRequest
     }
 
     useEffect(() => {

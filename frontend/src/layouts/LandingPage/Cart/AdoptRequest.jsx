@@ -98,7 +98,12 @@ export default function AdoptRequest() {
     //--------------------------HANDLE REJECT ADOPT REQUEST--------------------------
     const handleRejectAdoptRequest = async (adoptRequest) => {
         try {
-            const deleteAdoptRequest = await axios.delete("http://localhost:3500/adopt/deleteAdoptNotification/" + adoptRequest._id);
+            const deleteAdoptRequest = await axios.delete("http://localhost:3500/adopt/deleteAdoptNotification/" + adoptRequest._id)
+                .then((data) => {
+                    handleLoadAdoptRequest();
+                    context.handleLoadAdoptRequest();
+                    toast.success("Xoá sản phẩm thành công");
+                });
         }
         catch (err) {
             console.log(err);
@@ -185,6 +190,7 @@ export default function AdoptRequest() {
                                                 <DoNotDisturbOnIcon
                                                     fontSize="large"
                                                     color="error"
+                                                    onClick={() => handleRejectAdoptRequest(product)}
                                                 />
                                             </TableCell>
                                         </TableRow>

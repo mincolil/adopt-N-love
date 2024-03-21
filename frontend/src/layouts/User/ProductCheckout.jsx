@@ -15,6 +15,7 @@ import Cards from "react-credit-cards";
 import "react-credit-cards/es/styles-compiled.css";
 import "./styled/ProductCheckout.css";
 import CreditCardIcon from '@mui/icons-material/CreditCard';
+import { loadStripe } from '@stripe/stripe-js';
 
 import {
   Typography,
@@ -63,6 +64,13 @@ export default function ProductCheckout() {
     context.auth.phone
   );
   const [deliveryAddress, setDeliveryAddress] = useState(context.auth.address);
+
+  // const makepayment = () => {
+  //   const stripePromise = await loadStripe('pk_test_51OwZdRP1wqZM1wtKGbFute5ovqh8plumSuDFZZIJLXL7pry6RTfnoavZUyYmS4VrUHT5ZwpP6Wc7Br1742cK2TRo00vG6rJnx6');
+  //   const body = {
+
+  //   }
+  // }
 
   const checkoutProduct = async () => {
     // alert('Phần mềm đang được Hạnh Nguyên cập nhật')
@@ -150,7 +158,7 @@ export default function ProductCheckout() {
                 (loadData.data[i].productId.price -
                   (loadData.data[i].productId.price *
                     loadData.data[i].productId.discount) /
-                    100);
+                  100);
             } else {
               totalPrice +=
                 loadData.data[i].quantity * loadData.data[i].productId.price;

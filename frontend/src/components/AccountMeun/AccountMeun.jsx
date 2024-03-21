@@ -43,10 +43,11 @@ export default function AccountMenu() {
 
   const handleLogout = async () => {
     try {
-      const auth2 = window.gapi.auth2.getAuthInstance();
-      await auth2.signOut();
+
 
       localStorage.removeItem("token"); // xóa token lưu trữ trong localStorage
+      const auth2 = window.gapi.auth2.getAuthInstance();
+      await auth2.signOut();
       navigate("/sign-in"); // chuyển hướng về trang đăng nhập
       toast.success("Đăng xuất thành công!");
     } catch (error) {
@@ -189,7 +190,7 @@ export default function AccountMenu() {
           </ListItemIcon>
           Cài đặt
         </MenuItem> */}
-        <MenuItem onClick={handleLogout}>
+        <MenuItem onMouseDown={handleLogout}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>

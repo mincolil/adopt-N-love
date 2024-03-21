@@ -41,15 +41,15 @@ const AdoptPageDetail = () => {
 
   const showConfirm = () => {
     confirm({
-      title: 'Do you Want to delete these items?',
+      title: 'Bạn chắc chắn muốn nhận nuôi bé?',
       icon: <ExclamationCircleFilled />,
-      content: 'Some descriptions',
+      content: '-------------------',
       onOk() {
-        console.log('OK');
+        console.log('Vâng');
         createAdoptNotification();
       },
       onCancel() {
-        console.log('Cancel');
+        console.log('không');
       },
     });
   };

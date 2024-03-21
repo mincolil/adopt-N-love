@@ -129,7 +129,7 @@ export default function ProductPurchase() {
             handleLoadCartProductById(CANCEL_STATUS);
             handleClose();
           })
-          .catch((error) => {});
+          .catch((error) => { });
       } catch (err) {
         console.log(err);
       }
@@ -173,7 +173,7 @@ export default function ProductPurchase() {
     });
   };
 
-  const statusList = ["Chờ xác nhận", "Đang giao hàng", "Đã nhận hàng", "Huỷ"];
+  const statusList = ["Chờ xác nhận", "Đã thanh toán", "Đang giao hàng", "Đã nhận hàng", "Huỷ"];
 
   return (
     <>

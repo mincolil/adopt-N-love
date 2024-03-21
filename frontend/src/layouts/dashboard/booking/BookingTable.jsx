@@ -297,7 +297,7 @@ export default function BookingTable() {
   //   fontSize: "12px",
   // };
 
-  const statusList = ['Chờ xác nhận', 'Đang xử lý', 'Hoàn thành', 'Huỷ'];
+  const statusList = ['Chờ xác nhận', 'Đã thanh toán', 'Đang xử lý', 'Hoàn thành', 'Huỷ'];
 
   const hanldeClickChangeStatus = async (status, id) => {
     if (

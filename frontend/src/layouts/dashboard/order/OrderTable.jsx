@@ -278,7 +278,7 @@ export default function BasicTable() {
   //   fontSize: "12px",
   // };
 
-  const statusList = ["Chờ xác nhận", "Đang giao hàng", "Đã nhận hàng", "Huỷ"];
+  const statusList = ["Chờ xác nhận", "Đã thanh toán", "Đang giao hàng", "Đã nhận hàng", "Huỷ"];
 
   const hanldeClickChangeStatus = async (status, id) => {
     if (

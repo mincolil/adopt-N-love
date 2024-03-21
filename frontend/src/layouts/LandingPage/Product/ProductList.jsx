@@ -25,6 +25,7 @@ import {
   MenuItem,
   Breadcrumbs,
   Link,
+  Button,
 } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
@@ -190,25 +191,25 @@ export default function ProductList() {
   };
 
   async function filterProductsBySort(sortOption) {
-    let sortParam = '';
+    let sortParam = "";
     switch (sortOption) {
-      case 'price-asc':
-        sortParam = 'asc';
+      case "price-asc":
+        sortParam = "asc";
         break;
-      case 'price-desc':
-        sortParam = 'desc';
+      case "price-desc":
+        sortParam = "desc";
         break;
-      case 'rating':
-        sortParam = 'rating';
+      case "rating":
+        sortParam = "rating";
         break;
-      case 'newest':
-        sortParam = 'newest';
+      case "newest":
+        sortParam = "newest";
         break;
       default:
-        sortParam = '';
+        sortParam = "";
     }
 
-    if (sortOption === '' && sortOption === undefined) {
+    if (sortOption === "" && sortOption === undefined) {
       loadAllProduct(currentPage);
     } else {
       try {
@@ -275,7 +276,7 @@ export default function ProductList() {
   };
 
   // --------------------- GET ALL PRODUCT BY CATEGORY ID PRODUCT -----------------------------
-  async function hanldeClickCategory(page, cateId) {
+  async function hanldeClickCategory(cateId) {
     // console.log("Check data cate ID", cateId);
     setCategoryId(cateId);
     if (cateId === undefined || cateId === "") {
@@ -283,7 +284,7 @@ export default function ProductList() {
     } else {
       try {
         const loadData = await axios.get(
-          `http://localhost:3500/product?page=${page}&categoryId=${cateId}&limit=12`
+          `http://localhost:3500/product?page=1&categoryId=${cateId}&limit=12`
         );
         if (loadData.error) {
           toast.error(loadData.error);
@@ -416,20 +417,14 @@ export default function ProductList() {
                 <List className="list-categories">
                   {category.map((category, _id) => (
                     <ListItem key={_id} className="list-categories-item">
-                      <FormControlLabel
-                        control={
-                          <DsCheckbox
-                            size="small"
-                            checked={checkedItems[_id]}
-                            onChange={handleCheckboxChange}
-                            name={category.feature}
-                          />
-                        }
-                        label={category.feature}
-                        sx={{
-                          fontSize: "12px",
-                        }}
-                      />
+                      <Button
+                        size="small"
+                        onClick={() => hanldeClickCategory(category._id)}
+                        className="list-categories-item"
+                        variant="text"
+                      >
+                        {category.feature}
+                      </Button>
                     </ListItem>
                   ))}
                 </List>

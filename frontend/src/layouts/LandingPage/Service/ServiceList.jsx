@@ -25,6 +25,7 @@ import {
   MenuItem,
   Breadcrumbs,
   Link,
+  Button
 } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import SearchIcon from "@mui/icons-material/Search";
@@ -230,7 +231,7 @@ export default function ServiceList() {
   };
 
   // --------------------- GET ALL SERVICE BY CATEGORY ID SERVICE -----------------------------
-  async function hanldeClickCategory(page, cateId) {
+  async function hanldeClickCategory(cateId) {
     // console.log("Check data cate ID", cateId);
     setCategoryId(cateId);
     if (cateId === undefined || cateId === "") {
@@ -238,7 +239,7 @@ export default function ServiceList() {
     } else {
       try {
         const loadData = await axios.get(
-          `http://localhost:3500/service?page=${page}&categoryId=${cateId}&status=true&limit=9`
+          `http://localhost:3500/service?page=1&categoryId=${cateId}&status=true&limit=9`
         );
         if (loadData.error) {
           toast.error(loadData.error);
@@ -386,20 +387,14 @@ export default function ServiceList() {
                 <List className="list-categories">
                   {category.map((category, _id) => (
                     <ListItem key={_id} className="list-categories-item">
-                      <FormControlLabel
-                        control={
-                          <DsCheckbox
-                            size="small"
-                            checked={checkedItems[_id]}
-                            onChange={handleCheckboxChange}
-                            name={category.feature}
-                          />
-                        }
-                        label={category.feature}
-                        sx={{
-                          fontSize: "12px",
-                        }}
-                      />
+                      <Button
+                        size="small"
+                        onClick={() => hanldeClickCategory(category._id)}
+                        className="list-categories-item"
+                        variant="text"
+                      >
+                        {category.feature}
+                      </Button>
                     </ListItem>
                   ))}
                 </List>

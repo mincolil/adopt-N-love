@@ -45,11 +45,11 @@ const Counter = ({ target }) => {
 
 const testimonials = [
   {
-    name: "Jhon Walker",
+    name: "Minh Du",
     title: "Head of web design",
     testimonial:
       "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exerci.",
-    img: "https://preview.colorlib.com/theme/anipat/img/testmonial/1.png.webp",
+    img: "https://scontent.fhan18-1.fna.fbcdn.net/v/t1.6435-9/171149322_2868980396694590_5496657584718677655_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=5f2048&_nc_ohc=PowdbT7vA94AX9BjArj&_nc_ht=scontent.fhan18-1.fna&oh=00_AfCosvICIsbgK21DzE912hDS6lyixRI0d5Yd3rDtfFEHSg&oe=661A2C3B",
   },
   {
     name: "Nguyen Minh Hieu",

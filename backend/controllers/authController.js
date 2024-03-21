@@ -4,8 +4,76 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const mailer = require('../utils/mailer')
 
+const clientId = "424228344980-l67mummet93pgl903qru8ejvjeoo098s.apps.googleusercontent.com";
+const clientserver = "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"
+const { OAuth2Client } = require('google-auth-library')
+
+const authClient = new OAuth2Client(clientId)
+
 // route 'login'
 //method POST
+const loginGoogle = async (req, res) => {
+    try {
+        const { email, googleId } = req.body;
+        const user = await User.findOne({ email: email })
+        // Generate JWT token
+        if (!user) {
+            let newUser = new User({
+                email: email,
+                role: "user",
+                status: "active",
+                password: googleId + 123456
+            })
+            const docs = await newUser.save()
+            if (docs) {
+                const token = jwt.sign(
+                    {
+                        id: newUser._id,
+                        email: newUser.email,
+                        role: newUser.role,
+                    },
+                    process.env.SECRET_KEY,
+                    {
+                        expiresIn: '24h'
+                    }
+                )
+                res.status(200).cookie('token', token).json({
+                    message: `Xin chào ${newUser.fullname}`,
+                    token: token
+                })
+            }
+        }
+        else if (user.status === "verifying") {
+            return res.json({
+                error: 'Unverified'
+            })
+        } else if (user.status === "inactive") {
+            return res.json({
+                error: 'Tài khoản của bạn đã bị khóa'
+            })
+        }
+        else {
+            const token = jwt.sign(
+                {
+                    id: user._id,
+                    email: user.email,
+                    role: user.role,
+                },
+                process.env.SECRET_KEY,
+                {
+                    expiresIn: '24h'
+                }
+            )
+            res.status(200).cookie('token', token).json({
+                message: `Xin chào ${user.fullname}`,
+                token: token
+            })
+        }
+    } catch (err) {
+        console.log(err)
+    }
+};
+
 const login = async (req, res) => {
     try {
         const { email, password } = req.body
@@ -216,6 +284,7 @@ const newPassword = async (req, res) => {
 
 module.exports = {
     login,
+    loginGoogle,
     register,
     changePassword,
     logout,

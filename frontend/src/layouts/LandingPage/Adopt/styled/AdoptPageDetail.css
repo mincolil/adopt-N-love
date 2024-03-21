@@ -1,0 +1,49 @@
+.content-details {
+    margin-top: 50px;
+    margin-bottom: 100px;
+}
+
+.details-infor {
+    padding-left: 70px !important;
+}
+
+.details-infor .adopt-name {
+    font-family: "Poppins", sans-serif !important;
+    font-size: 30px !important;
+    font-weight: 600 !important;
+    color: #333;
+    text-transform: capitalize;
+    margin-bottom: 10px;
+}
+
+.adopt-detail {
+    font-size: 18px !important;
+    font-weight: bold !important;
+    padding: 10px 0 !important;
+    border-bottom: 1px dashed #cecece;
+}
+
+.adopt-detail span{
+    font-weight: 100 !important;
+}
+
+.adopt-add-to-cart {
+    position: relative;
+    top: 40px;
+}
+
+.single-adopt-add-to-cart {
+    font-size: 13px !important;
+    padding: 15px 50px !important;
+    background-color: #ab8e66 !important;
+    border-radius: 30px !important;
+    font-family: "Poppins", sans-serif !important;
+    margin-right: 20px !important;
+}
+
+.adopt-ask {
+    font-size: 13px !important;
+    padding: 15px 30px !important;
+    border-radius: 30px !important;
+    font-family: "Poppins", sans-serif !important;
+}

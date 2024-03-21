@@ -25,12 +25,53 @@ import SearchIcon from "@mui/icons-material/Search";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import HomeIcon from "@mui/icons-material/Home";
 import "./styled/AdoptPageDetail.css"
+import useAuth from "../../../hooks/useAuth";
+
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { Modal, Space } from 'antd';
+
+const { confirm } = Modal;
 
 const BASE_URL = "http://localhost:3500";
 
 const AdoptPageDetail = () => {
   const { petId } = useParams();
   const [pet, setPet] = useState(null);
+  const context = useAuth();
+
+  const showConfirm = () => {
+    confirm({
+      title: 'Do you Want to delete these items?',
+      icon: <ExclamationCircleFilled />,
+      content: 'Some descriptions',
+      onOk() {
+        console.log('OK');
+        createAdoptNotification();
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  };
+
+  // ---------------------------------- API CREATE ADOPT NOTIFICATION ------------------------------
+  const createAdoptNotification = async () => {
+    try {
+      const result = await axios.post(`${BASE_URL}/adopt/createAdoptNotification`, {
+        userId: context.auth.id,
+        petId: petId,
+        ownerId: pet.userId
+      });
+      if (result.error) {
+        toast.error(result.error);
+      } else {
+        toast.success(result.message);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
 
 
   // ----------------------------------- API GET ADOPT PET BY ID --------------------------------
@@ -166,6 +207,7 @@ const AdoptPageDetail = () => {
                   className="single-adopt-add-to-cart"
                   variant="contained"
                   color="primary"
+                  onClick={showConfirm}
                 >
                   Nhận nuôi
                 </Button>

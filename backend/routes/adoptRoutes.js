@@ -6,6 +6,7 @@ const adoptController = require('../controllers/adoptController');
 router.get('/', adoptController.getAllAdopt)
     .get('/:adoptId', adoptController.getAdoptById)
     .get('/petname', adoptController.getAdoptByPetName)
+    .get('/getAdoptNotification/all', adoptController.getAdoptNotification)
     .post('/createAdoptNotification', adoptController.createAdoptNotification)
     .post('/', adoptController.createNewAdopt) //test
     .patch('/', adoptController.updateAdopt)//test

@@ -17,6 +17,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import LoginIcon from "@mui/icons-material/Login";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
+import MarkEmailUnreadIcon from '@mui/icons-material/MarkEmailUnread';
 import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import Fade from "@mui/material/Fade";
 import Logo from "../../images/RealLogo2.png";
@@ -148,6 +149,23 @@ const Header = () => {
                   textAlign: "center",
                 }}
               >
+
+                {isLoggedIn && (
+                  <Tooltip
+                    title="Đề nghị nhận nuôi thú cưng"
+                    style={{ position: "relative" }}
+                  >
+                    <NavLink to="/adopt-request">
+                      <IconButton size="small" sx={{ ml: 2 }}>
+                        <MarkEmailUnreadIcon
+                          sx={{ width: 32, height: 32 }}
+                        ></MarkEmailUnreadIcon>
+                      </IconButton>
+                    </NavLink>
+                    <div style={reddot}>{context.adoptRequestNumber}</div>
+                  </Tooltip>
+                )}
+
                 {isLoggedIn && (
                   <Tooltip
                     title="Giỏ hàng dịch vụ"

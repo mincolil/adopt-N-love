@@ -41,6 +41,7 @@ import Introduce from "./layouts/User/Introduce";
 import ServiceCheckout from "./layouts/User/ServiceCheckout";
 import AdoptPetTable from "./layouts/dashboard/pet/AdoptPetTable";
 import AdoptPageDetail from "./layouts/LandingPage/Adopt/AdoptPageDetail";
+import AdoptRequest from "./layouts/LandingPage/Cart/AdoptRequest";
 
 // import AdminLayout from "./layouts/dashboard/layouts/Admin"
 
@@ -110,6 +111,7 @@ function App() {
             <Route path="blog-homepage/:blogId" element={<BlogDetail />} />
             <Route path="cart-service" element={<CartService />} />
             <Route path="cart-product" element={<CartProduct />} />
+            <Route path="adopt-request" element={<AdoptRequest />} />
             <Route path="user-profile" element={<UserPRofile />} />
             <Route path="change-password" element={<ChangePassword />} />
             <Route path="pet-user" element={<PetUser />} />

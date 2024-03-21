@@ -24,6 +24,9 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
+  FormControl,
+  InputLabel,
+  Input
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
@@ -173,11 +176,11 @@ export default function ProductCheckout() {
 
   const [expanded, setExpanded] = React.useState("");
   const [selectedPayment, setSelectedPayment] = React.useState("");
-  const [number, SetNumber] = useState("");
-  const [name, SetName] = useState("");
-  const [date, SetDate] = useState("");
-  const [cvv, SetCvv] = useState("");
-  const [focus, SetFocus] = useState("");
+  const [number, setNumber] = useState("");
+  const [name, setName] = useState("");
+  const [date, setDate] = useState("");
+  const [cvv, setCvv] = useState("");
+  const [focus, setFocus] = useState("");
 
   const handleAccordionChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : "");
@@ -364,7 +367,7 @@ export default function ProductCheckout() {
                       <FormControlLabel
                         value="creditCard"
                         control={<Radio />}
-                        label="Credit Card"
+                        label="Thẻ tín dụng / Credit Card"
                       />
                     </RadioGroup>
                   </Box>
@@ -379,55 +382,58 @@ export default function ProductCheckout() {
                   />
                   <br />
                   <form>
-                    <div className="row">
-                      <label for="name"  style={{ display: "block" }}>Card Number</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={number}
-                        onChange={(e) => {
-                          SetNumber(e.target.value);
-                        }}
-                      ></input>
-                    </div>
-                    <br />
-                    <div className="row">
-                        <label for="name" style={{ display: "block" }}>Card Name</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={name}
-                          onChange={(e) => {
-                            SetName(e.target.value);
-                          }}
-                        ></input>
-                      </div>
-                    <br />
-                    <div className="row">
-                      <div className="col-sm-6">
-                        <label for="name"  style={{ display: "block" }}>Expiration Date</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={date}
-                          onChange={(e) => {
-                            SetDate(e.target.value);
-                          }}
-                        ></input>
-                      </div>
-                      <div className="col-sm-5">
-                        <label for="name"  style={{ display: "block" }}>CVV</label>
-                        <input
-                          type="number"
-                          className="card"
-                          value={cvv}
-                          onChange={(e) => {
-                            SetCvv(e.target.value);
-                          }}
-                          onFocus={(e) => SetFocus(e.target.name)}
-                        ></input>
-                      </div>
-                    </div>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <FormControl fullWidth>
+                          <InputLabel htmlFor="number">Card Number</InputLabel>
+                          <Input
+                            id="number"
+                            type="text"
+                            value={number}
+                            onChange={(e) => setNumber(e.target.value)}
+                            onFocus={(e) => setFocus(e.target.name)}
+                          />
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <FormControl fullWidth>
+                          <InputLabel htmlFor="name">Card Name</InputLabel>
+                          <Input
+                            id="name"
+                            type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            onFocus={(e) => setFocus(e.target.name)}
+                          />
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <FormControl fullWidth>
+                          <InputLabel htmlFor="date">
+                            Expiration Date
+                          </InputLabel>
+                          <Input
+                            id="date"
+                            type="text"
+                            value={date}
+                            onChange={(e) => setDate(e.target.value)}
+                            onFocus={(e) => setFocus(e.target.name)}
+                          />
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <FormControl fullWidth>
+                          <InputLabel htmlFor="cvv">CVV</InputLabel>
+                          <Input
+                            id="cvv"
+                            type="number"
+                            value={cvv}
+                            onChange={(e) => setCvv(e.target.value)}
+                            onFocus={(e) => setFocus(e.target.name)}
+                          />
+                        </FormControl>
+                      </Grid>
+                    </Grid>
                   </form>
                 </AccordionDetails>
               </Accordion>

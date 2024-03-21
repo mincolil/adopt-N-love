@@ -2,6 +2,7 @@ const { ca } = require('date-fns/locale')
 const AdoptPet = require('../models/AdoptPet')
 const Pet = require('../models/Pet')
 const User = require('../models/User')
+const AdoptNotification = require('../models/AdoptNotification')
 
 const createNewAdopt = async (req, res) => {
     try {
@@ -271,6 +272,32 @@ const getAdoptById = async (req, res) => {
     }
 }
 
+const createAdoptNotification = async (req, res) => {
+    try {
+        const { userId, petId } = req.body
+        const adoptNotification = new AdoptNotification({
+            userId,
+            petId,
+            status: "PENDING"
+        })
+        const result = await adoptNotification.save()
+        if (result) {
+            res.status(201).json({
+                message: `Created adopt notification`
+            })
+        } else {
+            res.status(400).json({
+                error: "Create fail"
+            })
+        }
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
+    }
+}
+
 module.exports = {
     createNewAdopt,
     getAllAdopt,
@@ -280,5 +307,6 @@ module.exports = {
     updateAdopt,
     getAdoptById,
     getAdoptByUsername,
-    getAdoptByPetName
+    getAdoptByPetName,
+    createAdoptNotification
 }

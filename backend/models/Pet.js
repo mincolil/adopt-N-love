@@ -27,6 +27,8 @@ const petSchema = new mongoose.Schema({
     breed: String,
     age: Number,
     petImage: String,
+    facebook: String,
+    adoptDescription: String,
     forAdoption: {
         type: Boolean,
         default: false,

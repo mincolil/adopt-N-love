@@ -69,6 +69,42 @@ export default function AdoptRequest() {
         handleLoadAdoptRequest();
     }, []);
 
+    //--------------------------HANDLE ACCEPT ADOPT REQUEST--------------------------
+    const handleAcceptAdoptRequest = async (adoptRequest) => {
+        try {
+            const changeOwner = await axios.patch("http://localhost:3500/pet/", {
+                id: adoptRequest.petId._id,
+                userId: adoptRequest.userId._id,
+                petName: adoptRequest.petId.petName,
+                rank: adoptRequest.petId.rank,
+                status: adoptRequest.petId.status,
+                categoryId: adoptRequest.petId.categoryId,
+                color: adoptRequest.petId.color,
+                weight: adoptRequest.petId.weight,
+                height: adoptRequest.petId.height,
+                petImage: adoptRequest.petId.petImage,
+                breed: adoptRequest.petId.breed,
+                age: adoptRequest.petId.age,
+                forAdoption: false,
+            });
+
+            const deleteAdoptRequest = await axios.delete("http://localhost:3500/adopt/deleteAdoptNotification/" + adoptRequest._id);
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+
+    //--------------------------HANDLE REJECT ADOPT REQUEST--------------------------
+    const handleRejectAdoptRequest = async (adoptRequest) => {
+        try {
+            const deleteAdoptRequest = await axios.delete("http://localhost:3500/adopt/deleteAdoptNotification/" + adoptRequest._id);
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+
     return (
         <>
             <toastContainer />
@@ -142,6 +178,7 @@ export default function AdoptRequest() {
                                                 <CheckCircleIcon
                                                     fontSize="large"
                                                     color="success"
+                                                    onClick={() => handleAcceptAdoptRequest(product)}
                                                 />
                                             </TableCell>
                                             <TableCell className="product-remove">

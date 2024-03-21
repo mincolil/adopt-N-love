@@ -43,9 +43,6 @@ export default function AccountMenu() {
 
   const handleLogout = async () => {
     try {
-      // const response = await axios.post("http://localhost:3500/logout");
-      // thông báo logout thành công và chuyển hướng về trang đăng nhập
-      // console.log(response);
       const auth2 = window.gapi.auth2.getAuthInstance();
       await auth2.signOut();
 

@@ -324,6 +324,23 @@ const getAdoptNotification = async (req, res) => {
     }
 }
 
+const deleteAdoptNotification = async (req, res) => {
+    try {
+        const { id } = req.params
+        const result = await AdoptNotification.findByIdAndDelete(id)
+        if (!result) return res.json({
+            error: "No adopt notification found"
+        })
+        res.status(200).json({
+            message: `Deleted adopt notification`
+        })
+    } catch (error) {
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
+    }
+}
 
 module.exports = {
     createNewAdopt,
@@ -336,5 +353,6 @@ module.exports = {
     getAdoptByUsername,
     getAdoptByPetName,
     createAdoptNotification,
-    getAdoptNotification
+    getAdoptNotification,
+    deleteAdoptNotification
 }

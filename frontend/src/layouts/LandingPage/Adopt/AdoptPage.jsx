@@ -18,6 +18,7 @@ import Avatar1 from "../../../images/avatar1.png";
 import { ToastContainer } from "react-toastify";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Link as RouterLink } from "react-router-dom";
 import {
     List,
     ListItem,
@@ -76,7 +77,7 @@ function PetItem({ pet }) {
         <Grid item xs={12} sm={6} md={4} lg={3}>
             <Card className="product-card">
                 {/* <CardActionArea component={RouterLink} to={`/service-homepage/${_id}`}> */}
-                <CardActionArea>
+                <CardActionArea component={RouterLink} to={`/adopt-homepage/${_id}`}>
                     <CardMedia
                         component="img"
                         height="200"
@@ -397,7 +398,7 @@ const AdoptPage = () => {
                                     >
                                         <InputBase
                                             sx={{ ml: 1, flex: 1 }}
-                                            placeholder="Tìm dịch vụ ... "
+                                            placeholder="Tìm kiếm bé ... "
                                             value={keyword}
                                             onChange={handleKeywordChange}
                                         // onKeyDown={handleKeyDown}

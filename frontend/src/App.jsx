@@ -120,7 +120,7 @@ function App() {
             <Route path="reset-password" element={<ResetPassword />} />
             <Route path="introduce-homepage" element={<Introduce />} />
             <Route path="service-checkout" element={<ServiceCheckout />} />
-            <Route path="adopt-homepage-detail" element={<AdoptPageDetail />} />
+            <Route path="adopt-homepage/:petId" element={<AdoptPageDetail />} />
           </Routes>
         </BrowserRouter>
       </LocalizationProvider>

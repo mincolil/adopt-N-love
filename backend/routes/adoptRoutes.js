@@ -4,6 +4,7 @@ const adoptController = require('../controllers/adoptController');
 
 
 router.get('/', adoptController.getAllAdopt)
+    .get('/:adoptId', adoptController.getAdoptById)
     .get('/petname', adoptController.getAdoptByPetName)
     .post('/', adoptController.createNewAdopt) //test
     .patch('/', adoptController.updateAdopt)//test
@@ -11,7 +12,6 @@ router.get('/', adoptController.getAllAdopt)
     .get('/userid', adoptController.getAdoptByUserId)
     .put('/updateStatus', adoptController.updateStatus)
     .delete('/:id', adoptController.deleteOne)
-    .get('/:adoptId', adoptController.getAdoptById)
 
 
 module.exports = router;

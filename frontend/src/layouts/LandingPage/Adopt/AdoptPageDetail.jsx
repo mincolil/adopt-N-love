@@ -7,27 +7,91 @@ import Avatar1 from "../../../images/avatar1.png";
 import { ToastContainer } from "react-toastify";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Typography, 
-    Container, 
-    Button, 
-    Box, 
-    Avatar,
-    Breadcrumbs,
-    Link } from "@mui/material";
+import { useParams, NavLink } from "react-router-dom";
+import Banner from "../../../images/bradcam.png";
+import {
+  Typography,
+  Container,
+  Button,
+  Box,
+  Avatar,
+  Breadcrumbs,
+  Backdrop,
+  CircularProgress,
+  Link
+} from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import SearchIcon from "@mui/icons-material/Search";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import HomeIcon from "@mui/icons-material/Home";
 import "./styled/AdoptPageDetail.css"
 
+const BASE_URL = "http://localhost:3500";
+
 const AdoptPageDetail = () => {
+  const { petId } = useParams();
+  const [pet, setPet] = useState(null);
+
+
+  // ----------------------------------- API GET ADOPT PET BY ID --------------------------------
+  useEffect(() => {
+    loadPetById();
+  }, []);
+
+  const loadPetById = async () => {
+    try {
+      const loadData = await axios.get(`${BASE_URL}/adopt/${petId}`);
+      if (loadData.error) {
+        toast.error(loadData.error);
+      } else {
+        setPet(loadData.data);
+        console.log(loadData.data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  if (!pet) {
+    return (
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    );
+  }
+
   return (
     <>
       <ToastContainer />
+      <Grid
+        className="banner"
+        container
+        sx={{
+          backgroundImage: `url(${Banner})`,
+          backgroundSize: "cover",
+          backgroundRepeat: "round",
+          height: "150px",
+          position: "relative",
+          top: "80px",
+        }}
+      >
+        <Container
+          sx={{ display: "flex", flexWrap: "wrap", alignContent: "center" }}
+        >
+          <Grid item lg={12} md={12}>
+            <Box className="banner_content" sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
+              <Typography variant="h4" sx={{ color: "#ffffff" }}>Thông tin từng bé</Typography>
+            </Box>
+          </Grid>
+        </Container>
+      </Grid>
       <Header />
 
       <Container sx={{ position: "relative", top: "120px", marginBottom: "150px" }}>
-      <Breadcrumbs
+
+        <Breadcrumbs
           aria-label="breadcrumb"
           separator={<KeyboardDoubleArrowRightIcon fontSize="small" />}
         >
@@ -62,8 +126,7 @@ const AdoptPageDetail = () => {
                 <img
                   className="img_zoom"
                   src={
-                    "https://previews.123rf.com/images/bybochka/bybochka1510/bybochka151000200/46365274-pet-care-flat-icon-set-pet-care-banner-background-poster-concept-flat-design-vector-illustration.jpg?fj=1"
-                  }
+                    pet.petImage}
                   alt="img"
                   style={{ width: "-webkit-fill-available" }}
                 />
@@ -71,33 +134,33 @@ const AdoptPageDetail = () => {
             </Grid>
             <Grid item xl={7} lg={7} className="details-infor">
               <Typography variant="h1" className="adopt-name">
-                Buu
+                {pet.petName}
               </Typography>
               <Typography variant="h3" className="adopt-detail">
                 Giống:
-                <span> Mèo ta</span>
+                <span> {pet.breed} </span>
               </Typography>
               <Typography variant="h3" className="adopt-detail">
                 Màu sắc:
-                <span> Trắng</span>
+                <span> {pet.color} </span>
               </Typography>
               <Typography variant="h3" className="adopt-detail">
                 Tuổi:
-                <span> Nhí</span>
+                <span> {pet.age} </span>
               </Typography>
               <Typography variant="h3" className="adopt-detail">
                 Cân nặng:
-                <span> 1.5</span>
+                <span> {pet.weight} </span>
               </Typography>
               <Typography variant="h3" className="adopt-detail">
                 Giới tính:
-                <span> Cái</span>
+                <span> {pet.sex} </span>
               </Typography>
               <Typography variant="h3" className="adopt-detail">
                 Mã:
                 <span> B4311</span>
               </Typography>
-              
+
               <Box className="adopt-add-to-cart">
                 <Button
                   className="single-adopt-add-to-cart"
@@ -117,8 +180,42 @@ const AdoptPageDetail = () => {
             </Grid>
           </Grid>
         </Box>
-      </Container>
 
+
+      </Container>
+      <Container className="service" sx={{ padding: "100px 24px 0px 24px" }}>
+        <Grid container justifyContent="center">
+          <Grid item lg={7} md={10}>
+            <Box className="section_title" sx={{ marginBottom: "0" }}>
+              <Typography variant="h3">Quy trình nhận nuôi</Typography>
+              <Typography variant="h4" style={{ margin: "20px 0" }}>
+                Trước khi quyết định nhận nuôi bé chó hay mèo nào, bạn hãy tự hỏi bản thân rằng mình đã sẵn sàng để chịu trách nhiệm cả đời cho bé chưa, cả về tài chính, nơi ở cũng như tinh thần.
+                Việc nhận nuôi cần được sự đồng thuận lớn từ bản thân bạn cũng như gia đình và những người liên quan.
+                Xin cân nhắc kỹ trước khi liên hệ với ANL về việc nhận nuôi.
+              </Typography>
+              <Typography variant="h4" style={{ margin: "20px 0" }}>
+                Bạn đã sẵn sàng? Hãy thực hiện các bước sau đây nhé:
+              </Typography>
+              <Typography variant="h4" style={{ margin: "1px 0 " }}>
+                1️⃣ Tìm hiểu về thú cưng bạn muốn nhận nuôi trên trang web của HPA
+              </Typography>
+              <Typography variant="h4" style={{ margin: "1px 0 " }}>
+                2️⃣ Liên hệ với Tình nguyện viên phụ trách bé để tìm hiểu thêm về bé.
+              </Typography>
+              <Typography variant="h4" style={{ margin: "1px 0 " }}>
+                3️⃣ Tham gia phỏng vấn nhận nuôi.
+              </Typography>
+              <Typography variant="h4" style={{ margin: "1px 0 " }}>
+                4️⃣ Chuẩn bị cơ sở vật chất, ký giấy tờ nhận nuôi và đóng tiền vía để đón bé về.
+              </Typography>
+              <Typography variant="h4" style={{ margin: "1px 0 " }}>
+                5️⃣ Thường xuyên cập nhật về tình hình của bé, đặc biệt là khi có sự cố để được tư vấn kịp thời.
+              </Typography>
+            </Box>
+          </Grid>
+        </Grid>
+      </Container >
+      <Footer />
     </>
   );
 };

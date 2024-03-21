@@ -86,6 +86,10 @@ export default function AdoptRequest() {
                 breed: adoptRequest.petId.breed,
                 age: adoptRequest.petId.age,
                 forAdoption: false,
+            }).then((data) => {
+                handleLoadAdoptRequest();
+                context.handleLoadAdoptRequest();
+                toast.success("Chấp nhận đề nghị thành công");
             });
 
             const deleteAdoptRequest = await axios.delete("http://localhost:3500/adopt/deleteAdoptNotification/" + adoptRequest._id);

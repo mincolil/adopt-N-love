@@ -410,7 +410,7 @@ const BasicTable = () => {
             ...getColumnSearchProps('fullname'),
             width: '30%',
             key: 'fullname',
-            sorter: (a, b) => a.userId.fullname.length - b.userId.fullname.length,
+            sorter: (a, b) => a.fullname.length - b.fullname.length,
             sortOrder: sortedInfo.columnKey === 'fullname' ? sortedInfo.order : null,
         },
         {
@@ -426,9 +426,9 @@ const BasicTable = () => {
             dataIndex: 'email',
             ...getColumnSearchProps('email'),
             width: '30%',
-            key: 'petName',
-            sorter: (a, b) => a.petName.length - b.petName.length,
-            sortOrder: sortedInfo.columnKey === 'petName' ? sortedInfo.order : null,
+            key: 'email',
+            sorter: (a, b) => a.email.length - b.email.length,
+            sortOrder: sortedInfo.columnKey === 'email' ? sortedInfo.order : null,
         },
         {
             title: 'Lọai toài khoản',

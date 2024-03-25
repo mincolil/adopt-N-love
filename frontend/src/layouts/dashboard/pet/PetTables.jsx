@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import {
-  Table,
+  //Table
   TableBody,
   TableCell,
   TableContainer,
@@ -8,7 +8,7 @@ import {
   TableRow,
   Paper,
   Box,
-  Button,
+  // Button,
   Typography,
   Modal,
   DialogTitle,
@@ -40,6 +40,11 @@ import ModalEditPet from "../../../components/Modal/ModalEditPet";
 import useAuth from "../../../hooks/useAuth";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DropDownService from "../../../components/DropDown/DropDownService";
+
+import { Table, Tag } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
+import { Button, Input, Space } from 'antd';
+import Highlighter from 'react-highlight-words';
 
 // -------------------------------STYLE MODAL----------------------
 const style = {
@@ -245,6 +250,172 @@ export default function PetTable() {
     hanldeClickCategory();
   }, []);
 
+  // --------------------- ANT TABLE -----------------------------
+  const [searchText, setSearchText] = useState('');
+  const [searchedColumn, setSearchedColumn] = useState('');
+  const searchInput = useRef(null);
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText('');
+  };
+  const getColumnSearchProps = (dataIndex, field) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Reset
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({
+                closeDropdown: false,
+              });
+              setSearchText(selectedKeys[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Filter
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            close
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1677ff' : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) => {
+      if (field == 'name') {
+        return record.userId.fullname.toLowerCase().includes(value.toLowerCase());
+      } else if (field == 'phone') {
+        return record.userId.phone.toLowerCase().includes(value.toLowerCase());
+      } else {
+        if (record[dataIndex]) return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
+      }
+
+    },
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{
+            backgroundColor: '#ffc069',
+            padding: 0,
+          }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ''}
+        />
+      ) : (
+        text
+      ),
+  });
+
+  const columns = [
+    {
+      title: 'Chủ thú cưng',
+      dataIndex: ['userId', 'fullname'],
+      ...getColumnSearchProps('fullname', 'name'),
+      width: '30%',
+    },
+    {
+      title: 'SĐT',
+      dataIndex: 'age',
+      dataIndex: ['userId', 'phone'],
+      ...getColumnSearchProps('phone', 'phone'),
+      width: '20%',
+    },
+
+    {
+      title: 'Tên thú cưng',
+      dataIndex: 'petName',
+      ...getColumnSearchProps('petName'),
+      width: '30%',
+    },
+    {
+      title: 'Giống loại',
+      dataIndex: 'breed',
+      width: '40%',
+    },
+    {
+      title: 'Trạng thái',
+      dataIndex: 'status',
+      width: '40%',
+      render: (status) => (
+        <span>
+          {
+            status ? (
+              <Tag color="green">Sức khoẻ tốt</Tag>
+            ) : (
+              <Tag color="red">Sức khoẻ xấu</Tag>
+            )
+          }
+        </span>
+      )
+    },
+  ];
+
+  const onChange = (pagination, filters, sorter, extra) => {
+    console.log('params', pagination, filters, sorter, extra);
+  };
+
+
+
   return (
     <>
       <ToastContainer />
@@ -296,97 +467,8 @@ export default function PetTable() {
           </Grid>
         </Grid>
       </Box>
-      <Paper sx={{ width: "100%", overflow: "hidden" }}>
-        <TableContainer sx={{ maxHeight: 440 }}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead
-            // sx={{
-            //   position: "-webkit-sticky",
-            //   position: "sticky",
-            // }}
-            >
-              <TableRow>
-                <TableCell children>ID</TableCell>
-                <TableCell align="left">Chủ thú cưng</TableCell>
-                <TableCell align="left">SĐT</TableCell>
-                <TableCell align="left">Tên thú cưng</TableCell>
-                <TableCell align="left">Cân nặng</TableCell>
-                <TableCell align="left">Chiều cao</TableCell>
-                <TableCell align="left">Loại thú cưng</TableCell>
-                <TableCell align="left">Trạng thái</TableCell>
-                {/* <TableCell align="center">Chức năng</TableCell> */}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data &&
-                data.map((value, index) => {
-                  const statusColor = value.status ? "primary" : "error";
-                  return (
-                    <TableRow
-                      hover
-                      onClick={() => handleUpdatePet(value)}
-                      key={index}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {(currentPage - 1) * 10 + (index + 1)}
-                      </TableCell>
-                      <TableCell align="left">
-                        {value.userId !== null ? value.userId.fullname : ""}
-                      </TableCell>
-                      <TableCell align="left">
-                        {value.userId !== null ? value.userId.phone : ""}
-                      </TableCell>
-                      <TableCell align="left">{value.petName}</TableCell>
-                      <TableCell align="left">{value.weight}kg</TableCell>
-                      <TableCell align="left">{value.height}cm</TableCell>
-                      <TableCell align="left">
-                        {category.map((valueCategory, Cid) => {
-                          if (value.categoryId === valueCategory._id) {
-                            return valueCategory.feature;
-                          }
-                        })}
-                      </TableCell>
-                      <TableCell align="left">
-                        <Chip
-                          size="small"
-                          variant="outlined"
-                          label={value.status ? "Sức khoẻ tốt" : "Sức khoẻ xấu"}
-                          color={statusColor}
-                        />
-                      </TableCell>
-                      {/* <TableCell align="center">
-                        <ButtonGroup variant="text" color="primary">
-                          <Button
-                            onClick={() => handleUpdatePet(value)}
-                            color="primary"
-                          >
-                            Sửa
-                          </Button>
-                          <Button
-                            onClick={() => handleDeletePet(value._id)}
-                            color="error"
-                          >
-                            Xóa
-                          </Button>
-                        </ButtonGroup>
-                      </TableCell> */}
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
-      {/* Paging */}
-      <Stack spacing={2} mt={2} sx={{ float: "right" }}>
-        <Pagination
-          count={totalPages}
-          onChange={handlePageClick}
-          page={currentPage}
-          color="primary"
-        />
-      </Stack>
+
+      <Table columns={columns} dataSource={data} onChange={onChange} />;
       {/* Modal create */}
       <ModalAddPet
         open={openCreateModal}

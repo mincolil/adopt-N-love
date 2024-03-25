@@ -40,6 +40,7 @@ import ModalEditPet from "../../../components/Modal/ModalEditPet";
 import useAuth from "../../../hooks/useAuth";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DropDownService from "../../../components/DropDown/DropDownService";
+import ModalDetailPet from "../../../components/Modal/ModalDetailPet";
 
 import { Table, Tag } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
@@ -73,6 +74,8 @@ export default function PetTable() {
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [dataEditPet, setDataEditPet] = useState({});
+  const [openDetailModal, setOpenDetailModal] = useState(false);
+  const [dataDetailPet, setDataDetailPet] = useState({});
 
   const context = useAuth();
 
@@ -87,9 +90,16 @@ export default function PetTable() {
     setOpenEditModal(true);
   };
 
+  const handleDetailPet = (pet) => {
+    // console.log("Check data", pet);
+    setDataDetailPet(pet);
+    setOpenDetailModal(true);
+  };
+
   // --------------------- CLOSE MODAL  -----------------------------
   const handleCloseModal = () => {
     setOpenCreateModal(false);
+    setOpenDetailModal(false);
     setOpenEditModal(false);
   };
 
@@ -253,6 +263,7 @@ export default function PetTable() {
   // --------------------- ANT TABLE -----------------------------
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
+  const [sortedInfo, setSortedInfo] = useState({});
   const searchInput = useRef(null);
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -372,6 +383,9 @@ export default function PetTable() {
       dataIndex: ['userId', 'fullname'],
       ...getColumnSearchProps('fullname', 'name'),
       width: '30%',
+      key: 'fullname',
+      sorter: (a, b) => a.userId.fullname.length - b.userId.fullname.length,
+      sortOrder: sortedInfo.columnKey === 'fullname' ? sortedInfo.order : null,
     },
     {
       title: 'SĐT',
@@ -386,6 +400,9 @@ export default function PetTable() {
       dataIndex: 'petName',
       ...getColumnSearchProps('petName'),
       width: '30%',
+      key: 'petName',
+      sorter: (a, b) => a.petName.length - b.petName.length,
+      sortOrder: sortedInfo.columnKey === 'petName' ? sortedInfo.order : null,
     },
     {
       title: 'Giống loại',
@@ -408,10 +425,21 @@ export default function PetTable() {
         </span>
       )
     },
+    //button edit
+    {
+      title: 'Action',
+      key: 'action',
+      render: (text, record) => (
+        <Space size="middle">
+          <Button onClick={() => handleUpdatePet(record)}>Edit</Button>
+        </Space>
+      ),
+    },
   ];
 
   const onChange = (pagination, filters, sorter, extra) => {
     console.log('params', pagination, filters, sorter, extra);
+    setSortedInfo(sorter);
   };
 
 
@@ -438,7 +466,7 @@ export default function PetTable() {
               // sx={{ position: "fixed" }}
               InputProps={{
                 endAdornment: (
-                  <IconButton onClick={handleSearchClick}>
+                  <IconButton onClick={onChange}>
                     <SearchIcon />
                   </IconButton>
                 ),
@@ -468,7 +496,22 @@ export default function PetTable() {
         </Grid>
       </Box>
 
-      <Table columns={columns} dataSource={data} onChange={onChange} />;
+      <Table columns={columns} dataSource={data} onChange={onChange}
+        onRow={(record, rowIndex) => {
+          return {
+            onClick: event => {
+              console.log(record)
+              handleDetailPet(record)
+            }, // click row
+            // onDoubleClick: event => { }, // double click row
+            // onContextMenu: event => { }, // right button click row
+            // onMouseEnter: event => { }, // mouse enter row
+            // onMouseLeave: event => { }, // mouse leave row
+          };
+        }}
+      />;
+
+
       {/* Modal create */}
       <ModalAddPet
         open={openCreateModal}
@@ -483,6 +526,15 @@ export default function PetTable() {
         open={openEditModal}
         onClose={handleCloseModal}
         dataEditPet={dataEditPet}
+        handUpdateEditTable={loadAllPet}
+        page={currentPage}
+        data={context.auth.id}
+        category={category}
+      />
+      <ModalDetailPet
+        open={openDetailModal}
+        onClose={handleCloseModal}
+        dataEditPet={dataDetailPet}
         handUpdateEditTable={loadAllPet}
         page={currentPage}
         data={context.auth.id}

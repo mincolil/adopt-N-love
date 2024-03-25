@@ -1,6 +1,5 @@
 import * as React from "react";
 import {
-    Table,
     TableBody,
     TableCell,
     TableContainer,
@@ -8,7 +7,6 @@ import {
     TableRow,
     Paper,
     Box,
-    Button,
     Modal,
     DialogTitle,
     DialogContent,
@@ -34,12 +32,17 @@ import CloseIcon from "@mui/icons-material/Close";
 import ButtonCustomize from "../../../components/Button/Button";
 
 //React
-import { useState } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import useAuth from "../../../hooks/useAuth";
 // Axios
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useEffect } from "react";
+
+//ant
+import { Table, Tag } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
+import { Button, Input, Space } from 'antd';
+import Highlighter from 'react-highlight-words'
 
 // -------------------------------STYLE MODAL----------------------
 const style = {
@@ -221,11 +224,10 @@ const BasicTable = () => {
         try {
             const row = [];
             const loadData = await axios.get(
-                `http://localhost:3500/user?page=${page}&limit=${limit}`
+                `http://localhost:3500/user`
             )
                 .then((data) => {
-                    setData(data.data.docs);
-                    setPages(data.data.pages);
+                    setData(data.data);
                     // console.log(data.data);
                 })
         } catch (err) {
@@ -234,7 +236,7 @@ const BasicTable = () => {
     }
 
     useEffect(() => {
-        loadAllUser(DEFAULT_PAGE, DEFAULT_LIMIT);
+        loadAllUser();
     }, []);
     // ----------------------------------------------------------------
 
@@ -284,6 +286,194 @@ const BasicTable = () => {
         loadAllUser(value, DEFAULT_LIMIT);
     }
 
+    // --------------------- ANT TABLE -----------------------------
+    const [searchText, setSearchText] = useState('');
+    const [searchedColumn, setSearchedColumn] = useState('');
+    const [sortedInfo, setSortedInfo] = useState({});
+    const searchInput = useRef(null);
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+        setSearchText(selectedKeys[0]);
+        setSearchedColumn(dataIndex);
+    };
+    const handleReset = (clearFilters) => {
+        clearFilters();
+        setSearchText('');
+    };
+    const getColumnSearchProps = (dataIndex, field) => ({
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+            <div
+                style={{
+                    padding: 8,
+                }}
+                onKeyDown={(e) => e.stopPropagation()}
+            >
+                <Input
+                    ref={searchInput}
+                    placeholder={`Search ${dataIndex}`}
+                    value={selectedKeys[0]}
+                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    style={{
+                        marginBottom: 8,
+                        display: 'block',
+                    }}
+                />
+                <Space>
+                    <Button
+                        type="primary"
+                        onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                        icon={<SearchOutlined />}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        Search
+                    </Button>
+                    <Button
+                        onClick={() => clearFilters && handleReset(clearFilters)}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        Reset
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            confirm({
+                                closeDropdown: false,
+                            });
+                            setSearchText(selectedKeys[0]);
+                            setSearchedColumn(dataIndex);
+                        }}
+                    >
+                        Filter
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            close();
+                        }}
+                    >
+                        close
+                    </Button>
+                </Space>
+            </div>
+        ),
+        filterIcon: (filtered) => (
+            <SearchOutlined
+                style={{
+                    color: filtered ? '#1677ff' : undefined,
+                }}
+            />
+        ),
+        onFilter: (value, record) => {
+            if (field == 'name') {
+                return record.userId.fullname.toLowerCase().includes(value.toLowerCase());
+            } else if (field == 'phone') {
+                return record.userId.phone.toLowerCase().includes(value.toLowerCase());
+            } else {
+                if (record[dataIndex]) return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
+            }
+
+        },
+        onFilterDropdownOpenChange: (visible) => {
+            if (visible) {
+                setTimeout(() => searchInput.current?.select(), 100);
+            }
+        },
+        render: (text) =>
+            searchedColumn === dataIndex ? (
+                <Highlighter
+                    highlightStyle={{
+                        backgroundColor: '#ffc069',
+                        padding: 0,
+                    }}
+                    searchWords={[searchText]}
+                    autoEscape
+                    textToHighlight={text ? text.toString() : ''}
+                />
+            ) : (
+                text
+            ),
+    });
+
+    const columns = [
+        {
+            title: 'Họ và tên',
+            dataIndex: 'fullname',
+            ...getColumnSearchProps('fullname'),
+            width: '30%',
+            key: 'fullname',
+            sorter: (a, b) => a.userId.fullname.length - b.userId.fullname.length,
+            sortOrder: sortedInfo.columnKey === 'fullname' ? sortedInfo.order : null,
+        },
+        {
+            title: 'SĐT',
+            dataIndex: 'age',
+            dataIndex: 'phone',
+            ...getColumnSearchProps('phone'),
+            width: '20%',
+        },
+
+        {
+            title: 'Email',
+            dataIndex: 'email',
+            ...getColumnSearchProps('email'),
+            width: '30%',
+            key: 'petName',
+            sorter: (a, b) => a.petName.length - b.petName.length,
+            sortOrder: sortedInfo.columnKey === 'petName' ? sortedInfo.order : null,
+        },
+        {
+            title: 'Lọai toài khoản',
+            dataIndex: 'role',
+            width: '40%',
+        },
+        {
+            title: 'Trạng thái',
+            dataIndex: 'status',
+            width: '40%',
+            render: (status) => (
+                <span>
+                    {
+                        status === 'active' ? (
+                            <Tag color="green">Hoạt động</Tag>
+                        ) : status === 'verifying' ? (
+                            <Tag color="yellow">Chưa kích hoạt</Tag>
+                        ) : (
+                            status === 'inactive' ? (
+                                <Tag color="red">Khoá</Tag>
+                            ) : (""
+
+                            )
+                        )
+                    }
+                </span>
+            )
+        },
+        //button edit
+        {
+            title: 'Action',
+            key: 'action',
+            render: (text, record) => (
+                <Space size="middle">
+                    <Button onClick={(e) => handleLoadUserbId(record._id, record.password)}>Edit</Button>
+                </Space>
+            ),
+        },
+    ];
+
+    const onChange = (pagination, filters, sorter, extra) => {
+        console.log('params', pagination, filters, sorter, extra);
+        setSortedInfo(sorter);
+    };
+
     return (
         context.auth.role === 'staff'
             ?
@@ -301,62 +491,9 @@ const BasicTable = () => {
                     startIcon={<AddCircleOutlineIcon />}
                 />
 
-                <Paper sx={{ width: "100%", overflow: "hidden", marginTop: "20px" }}>
-                    <TableContainer sx={{ maxHeight: 550 }}>
-                        <Table stickyHeader aria-label="sticky table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell children>STT</TableCell>
-                                    <TableCell align="right">Họ và tên</TableCell>
-                                    <TableCell align="right">Số điện thoại</TableCell>
-                                    <TableCell align="right">Loại tài khoản</TableCell>
-                                    <TableCell align="right">Email</TableCell>
-                                    <TableCell align="right">Trạng thái</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {data &&
-                                    data.map((value, index) => {
-                                        return (
-                                            <TableRow
-                                                key={index}
-                                                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                                                onClick={(e) => handleLoadUserbId(value._id, value.password)}
-                                            >
-                                                <TableCell component="th" scope="row">
-                                                    {index + 1}
-                                                </TableCell>
-                                                <TableCell align="right">{value.fullname}</TableCell>
-                                                <TableCell align="right">{value.phone}</TableCell>
-                                                <TableCell align="right">
-                                                    {(value.role === 'admin' ? "Quản lý"
-                                                        : value.role === 'staff' ? 'Nhân viên'
-                                                            : value.role === 'customer' ? 'Khách hàng' : ""
-                                                    )}
-                                                </TableCell>
-                                                <TableCell align="right">{value.email}</TableCell>
-                                                <TableCell align="right">
-                                                    {value.status === 'active' ? "Hoạt động"
-                                                        : value.status === 'inactive' ? "Khoá"
-                                                            : value.status === "verifying" ? "Đang xác nhận"
-                                                                : ""}
-                                                </TableCell>
-                                            </TableRow>
-                                        );
-                                    })}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    <hr style={{ opacity: '0.5' }} />
-                    <Stack spacing={2} sx={{ float: "right" }} style={{ margin: '10px 0', justifyContent: 'center' }}>
-                        <Pagination
-                            count={pages}
-                            page={currentPage}
-                            onChange={handlePaging}
-                            color="primary"
-                        />
-                    </Stack>
-                </Paper>
+
+
+                <Table columns={columns} dataSource={data} onChange={onChange} />;
 
                 <Modal
                     open={open}
@@ -572,6 +709,8 @@ const BasicTable = () => {
                         </DialogActions>
                     </Box>
                 </Modal>
+
+
             </>
     );
 }

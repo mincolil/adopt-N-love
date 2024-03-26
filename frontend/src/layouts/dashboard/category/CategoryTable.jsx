@@ -217,6 +217,7 @@ export default function CategoryTable() {
     {
       title: 'Số phòng',
       key: 'action',
+      width: '15%',
       render: (text, record) => (
         <InputNumber min={1} defaultValue={record.slot}
           onChange={(value) => {

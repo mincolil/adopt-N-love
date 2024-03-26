@@ -215,18 +215,59 @@ const getRevenueStatisticsByPetType = async (req, res) => {
             }
         ]);
 
-
-        // Tạo mảng kết quả chứa doanh thu cho từng tháng
-        const revenueByMonth = Array.from({ length: 12 }, (_, i) => {
-            const monthData = result.find((item) => item._id.month === i + 1);
-            return {
-                month: i + 1,
-                total: monthData ? monthData.totalPrice : 0,
-            };
-        });
         // Tạo mảng kết quả chứa doanh thu cho từng loài
 
-        return res.status(200).json(revenueByMonth);
+        return res.status(200).json(result);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+const getRevenuePetMonth = async (req, res) => {
+    try {
+        const result = await BookingDetail.aggregate([
+            {
+                $lookup: {
+                    from: "pets",
+                    localField: "petId",
+                    foreignField: "_id",
+                    as: "pet"
+                }
+            },
+            {
+                $unwind: "$pet"
+            },
+            {
+                $lookup: {
+                    from: "service",
+                    localField: "serviceId",
+                    foreignField: "_id",
+                    as: "service"
+                }
+            },
+            {
+                $unwind: "$service"
+            },
+            {
+                $addFields: {
+                    bookingMonth: { $month: "$bookingDate" }
+                }
+            },
+            {
+                $group: {
+                    _id: { categoryId: "$pet.categoryId", month: "$bookingMonth" },
+                    totalPrice: { $sum: "$service.price" }
+                }
+            },
+            {
+                $sort: {
+                    "_id.categoryId": 1,
+                    "_id.month": 1
+                }
+            }
+        ])
+
+        return res.status(200).json(result);
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
     }
@@ -240,4 +281,5 @@ module.exports = {
     // getTotalProductsSoldByDate,
     getRevenueStatistics,
     getRevenueStatisticsByPetType,
+    getRevenuePetMonth
 }

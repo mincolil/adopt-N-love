@@ -84,7 +84,8 @@ export default function PetTable() {
     setOpenCreateModal(true);
   };
 
-  const handleUpdatePet = (pet) => {
+  const handleUpdatePet = (pet, e) => {
+    e.stopPropagation();
     // console.log("Check data", pet);
     setDataEditPet(pet);
     setOpenEditModal(true);
@@ -431,7 +432,7 @@ export default function PetTable() {
       key: 'action',
       render: (text, record) => (
         <Space size="middle">
-          <Button onClick={() => handleUpdatePet(record)}>Edit</Button>
+          <Button onMouseDown={(e) => handleUpdatePet(record, e)}>Edit</Button>
         </Space>
       ),
     },

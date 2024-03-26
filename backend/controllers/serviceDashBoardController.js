@@ -215,12 +215,20 @@ const getRevenueStatisticsByPetType = async (req, res) => {
             }
         ]);
 
+
+        // Tạo mảng kết quả chứa doanh thu cho từng tháng
+        const revenueByMonth = Array.from({ length: 12 }, (_, i) => {
+            const monthData = result.find((item) => item._id.month === i + 1);
+            return {
+                month: i + 1,
+                total: monthData ? monthData.totalPrice : 0,
+            };
+        });
         // Tạo mảng kết quả chứa doanh thu cho từng loài
 
-        return res.status(200).json(result);
+        return res.status(200).json(revenueByMonth);
     } catch (error) {
-        console.error("Error:", error);
-        throw error;
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 }
 
@@ -231,5 +239,5 @@ module.exports = {
     getTotalCustomer,
     // getTotalProductsSoldByDate,
     getRevenueStatistics,
-    getRevenueStatisticsByPetType
+    getRevenueStatisticsByPetType,
 }

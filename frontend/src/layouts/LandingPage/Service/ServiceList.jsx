@@ -69,6 +69,41 @@ function ServiceItem({ service }) {
             image={serviceImage}
             alt={serviceName}
           />
+          {discount !== 0 &&
+            dayjs().isBetween(
+              dayjs(saleStartTime),
+              dayjs(saleEndTime)
+            ) ? (
+            <Card
+              style={{
+                position: "absolute",
+                top: "0px",
+                right: "0px",
+                fontSize: "18px",
+                alignItems: "center",
+              }}
+            >
+              <Typography
+                variant="h6"
+                component="h2"
+                sx={{
+                  color: "#fff",
+                  backgroundColor: "#ee4d2d",
+                  fontSize: "1rem",
+                  borderRadius: "2px",
+                  padding: "2px 4px",
+                  fontWeight: "800",
+                  whiteSpace: "nowrap",
+                  textTransform: "uppercase",
+                }}
+              >
+                {discount}%
+              </Typography>
+            </Card>
+          ) : (
+            ""
+          )}
+
           <CardContent sx={{ textAlign: "center" }}>
             <Typography
               gutterBottom

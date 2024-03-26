@@ -151,6 +151,15 @@ export default function AdoptRequest() {
                         <TableContainer>
                             <Table className="shop_table">
                                 <TableBody sx={{ border: "1px solid #f1f1f1" }}>
+                                    {data.length === 0 && (
+                                        <TableRow>
+                                            <TableCell colSpan={6}>
+                                                <Typography variant="body1">
+                                                    Không có đề nghị nhận nuôi nào
+                                                </Typography>
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
                                     {data.map((product, index) => (
                                         <TableRow key={index} className="cart_item">
 

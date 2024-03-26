@@ -39,6 +39,7 @@ import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 import useAuth from "../../../hooks/useAuth";
 import { Link as RouterLink } from "react-router-dom";
+import dayjs from "dayjs";
 
 const BASE_URL = "http://localhost:3500";
 
@@ -49,8 +50,15 @@ const DsCheckbox = styled(Checkbox)`
   }
 `;
 
+const numberToVND = (number) => {
+  return number.toLocaleString("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  });
+};
+
 function ServiceItem({ service }) {
-  const { _id, serviceName, price, serviceImage } = service;
+  const { _id, serviceName, price, serviceImage, discount, saleEndTime, saleStartTime } = service;
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
       <Card className="product-card">
@@ -67,17 +75,66 @@ function ServiceItem({ service }) {
               variant="h5"
               component="div"
               className="product-title"
-              style={{ color: '#ff5722' }}
+              style={{ color: '#838b8b' }}
             >
               {serviceName}
             </Typography>
+
             <Typography
               variant="body2"
               color="text.secondary"
               className="product-price"
             >
-              {price} VND{" "}
+              {discount !== 0 &&
+                dayjs().isBetween(
+                  dayjs(saleStartTime),
+                  dayjs(saleEndTime)
+                ) ? (
+                <Box
+                  display="flex"
+                  flexGrow={1}
+                  sx={{
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    component="h2"
+                    sx={{
+                      textDecoration: "line-through",
+                      marginRight: "8px",
+                      color: "gray",
+                    }}
+                  >
+                    {numberToVND(price)}
+                  </Typography>
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    component="h2"
+                    style={{ color: '#ff5722' }}
+                  >
+                    {numberToVND(
+                      price -
+                      (price * discount) / 100
+                    )}
+                  </Typography>
+                </Box>
+              ) : (
+                <Typography
+                  gutterBottom
+                  variant="h6"
+                  component="h2"
+                  style={{ color: '#ff5722' }}
+                >
+                  {numberToVND(price)}
+                </Typography>
+              )}
+
             </Typography>
+
           </CardContent>
         </CardActionArea>
         <CardActions sx={{ justifyContent: "center" }}>

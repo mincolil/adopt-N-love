@@ -233,10 +233,55 @@ export default function CartService() {
                         className="product-subtotal"
                         data-title="Subtotal"
                       >
-                        {service.serviceId.price}
-                        <span className="woocommerce-Price-currencySymbol">
-                          VND
-                        </span>
+                        {
+                          service.serviceId.discount !== 0
+                            &&
+                            dayjs().isBetween(dayjs(service.serviceId.saleStartTime), dayjs(service.serviceId.saleEndTime))
+                            ?
+                            (
+                              <>
+                                <Grid item xs style={{ display: 'flex' }}>
+                                  <Typography style={{ textDecoration: "line-through" }}>
+                                    {
+                                      service.serviceId === null ? ""
+                                        : service.serviceId.discount === 0 ? ""
+                                          : numberToVND(service.serviceId.price)
+                                    }
+                                  </Typography>
+                                  <Typography style={{ color: '#ff5722' }}>
+                                    {
+                                      service.serviceId === null ? ""
+                                        :
+                                        numberToVND((service.quantity * (service.serviceId.price - (service.serviceId.price * service.serviceId.discount / 100))))
+                                    }
+                                  </Typography>
+                                </Grid>
+                              </>
+                            )
+                            :
+                            (
+                              <>
+                                <Grid item xs style={{ display: 'flex' }}>
+                                  <Typography style={{ color: 'red' }}>
+                                    {
+                                      service.serviceId === null ? ""
+                                        :
+                                        numberToVND(service.quantity * service.serviceId.price)
+                                    }
+                                  </Typography>
+                                </Grid>
+                                <Grid item xs style={{ display: 'flex' }}>
+                                  <Typography style={{ color: 'red' }}>
+                                    {
+                                      service.serviceId === null ? ""
+                                        :
+                                        numberToVND(service.quantity * service.serviceId.price)
+                                    }
+                                  </Typography>
+                                </Grid>
+                              </>
+                            )
+                        }
                       </TableCell>
                       <TableCell className="product-remove">
                         <DeleteIcon fontSize="large" onClick={(e) => handleDeleteOrder(service.serviceId._id)} />

@@ -6,8 +6,17 @@ const path = require('path')
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const session = require('express-session');
+const passport = require('passport');
+const OAuth2Strategy = require('passport-google-oauth2').Strategy;
 const PORT = process.env.PORT || 3500;
 const MONGO_URI = process.env.MONGO_URI;
+const userdb = require('./models/User');
+const { ca } = require('date-fns/locale');
+const jwt = require('jsonwebtoken')
+
+const clientid = "424228344980-l67mummet93pgl903qru8ejvjeoo098s.apps.googleusercontent.com";
+const clientserver = "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"
 
 app.use(express.json());
 app.use(cookieParser());
@@ -21,6 +30,62 @@ app.use(
         origin: ["http://localhost:3000", "http://localhost:3001"]
     })
 )
+
+app.use(session({
+    secret: "17092002minhdule",
+    resave: false,
+    saveUninitialized: true,
+}))
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new OAuth2Strategy({
+    clientID: clientid,
+    clientSecret: clientserver,
+    callbackURL: "http://localhost:3500/auth/google/callback",
+    scope: ["profile", "email"],
+    passReqToCallback: true
+},
+    async (request, accessToken, refreshToken, profile, done) => {
+        try {
+            let user = await userdb.findOne({ email: profile.email });
+            if (!user) {
+                user = new userdb({
+                    googleId: profile.id,
+                    displayName: profile.displayName,
+                    email: profile.emails[0].value,
+                    image: profile.photos[0].value
+                });
+                await user.save();
+            }
+            // Send token back to client
+            return done(null, user);
+        } catch (error) {
+            return done(error, null);
+        }
+    }
+))
+
+passport.serializeUser((user, done) => {
+    done(null, user);
+})
+
+passport.deserializeUser((id, done) => {
+    done(null, user);
+})
+
+app.get('/auth/google', passport.authenticate('google', { scope: ["profile", "email"] }));
+app.get('/auth/google/callback', passport.authenticate('google', { successRedirect: 'http://localhost:3000', failureRedirect: 'http://localhost:3000/login' }));
+
+app.get("/login/sucess", async (req, res) => {
+
+    if (req.user) {
+        res.status(200).json({ message: "user Login", user: req.user })
+    } else {
+        res.status(400).json({ message: "Not Authorized" })
+    }
+})
 
 app.get('/', (req, res) => {
     return res.send('Hello World')

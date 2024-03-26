@@ -29,6 +29,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import DateTimeFormat from "../../../components/DateTimeFormat";
 
 import dayjs from "dayjs";
 
@@ -223,6 +224,10 @@ export default function CartService() {
                         <Typography variant="body1">
                           {service.serviceId.serviceName}
                         </Typography>
+                      </TableCell>
+                      <TableCell data-title="Price">
+                        {/* datetime format for booking date */}
+                        <DateTimeFormat date={service.bookingDate} />
                       </TableCell>
                       <TableCell
                         className="product-subtotal"

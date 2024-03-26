@@ -1,3 +1,4 @@
+const { ca } = require('date-fns/locale')
 const AdoptPet = require('../models/AdoptPet')
 const Pet = require('../models/Pet')
 const User = require('../models/User')
@@ -254,14 +255,16 @@ const updateAdopt = async (req, res) => {
 
 const getAdoptById = async (req, res) => {
     try {
-        const { id } = req.params
-        const result = await AdoptPet.findById(id)
+        const { adoptId } = req.params
+        //find the result that id = adoptId and forAdoption = true
+        const result = await Pet.findOne({ _id: adoptId, forAdoption: true })
+
         if (!result) return res.json({
             error: "No adopt pet found"
         })
         res.status(200).json(result)
-    } catch (error) {
-        console.log(err)
+    }
+    catch (err) {
         res.status(500).json({
             error: err
         })

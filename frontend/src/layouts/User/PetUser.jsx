@@ -18,7 +18,7 @@ import PetsIcon from "@mui/icons-material/Pets";
 import { Breadcrumbs, Pagination } from "@mui/material";
 import ModalAddPet from "../../components/Modal/ModalAddPet";
 import ModalEditPet from "../../components/Modal/ModalEditPet";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import Chip from "@mui/material/Chip";
 import HomeIcon from "@mui/icons-material/Home";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -200,7 +200,6 @@ export default function PetUser() {
                 const statusColor = value.status ? "primary" : "error";
                 return (
                   <Card
-                    onClick={() => handleDetailPet(value)}
                     data-resizable
                     sx={{
                       mr: 3,
@@ -239,6 +238,7 @@ export default function PetUser() {
                         }}
                       >
                         <Avatar
+                          onClick={() => handleDetailPet(value)}
                           src={
                             value.petImage !== undefined
                               ? `${value.petImage}`
@@ -320,7 +320,7 @@ export default function PetUser() {
                           {value.age}
                         </Typography>
                       </Grid>
-                      <Grid item xs={12} sm={12}>
+                      <Grid item xs={12} sm={6}>
                         <Chip
                           size="small"
                           variant="outlined"
@@ -329,7 +329,7 @@ export default function PetUser() {
                         />
                       </Grid>
                       {value.forAdoption && (
-                        <Grid item xs={12} sm={12}>
+                        <Grid item xs={12} sm={6}>
                           <Chip
                             size="small"
                             variant="outlined"
@@ -347,9 +347,11 @@ export default function PetUser() {
                         width: "clamp(min(100%, 160px), 50%, min(100%, 200px))",
                       }}
                     >
-                      <Button onMouseDown={() => handleUpdatePet(value)} variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
-                        Đăng ký phòng khám
-                      </Button>
+                      <Link to="/service-homepage">
+                        <Button href="/service-homepage" variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
+                          Đăng ký phòng khám
+                        </Button>
+                      </Link>
                       <Button onClick={(e) => {
                         e.stopPropagation();
                         handleAdoptPet(value);
@@ -480,6 +482,7 @@ export default function PetUser() {
           open={openDetailModal}
           onClose={handleCloseModal}
           dataEditPet={dataDetailPet}
+          handUpdateEditTable={loadAllPetByUserId}
           page={currentPage}
           data={context.auth.id}
           category={category}

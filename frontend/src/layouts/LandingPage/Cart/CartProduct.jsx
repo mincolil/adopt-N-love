@@ -17,7 +17,6 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
@@ -30,6 +29,7 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import dayjs from "dayjs";
+import Grid from "@mui/material/Unstable_Grid2";
 
 export default function CartProduct() {
   const navigate = useNavigate();
@@ -41,6 +41,13 @@ export default function CartProduct() {
   const context = useAuth();
 
   const [quantity, setQuantity] = useState(1);
+
+  const numberToVND = (number) => {
+    return number.toLocaleString("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    });
+  };
 
   // -----------------------HANDLE INCREASE QUANTITY-----------------------
   const handleIncreaseQuantity = async (product) => {
@@ -274,7 +281,46 @@ export default function CartProduct() {
                         className="product-subtotal"
                         data-title="Subtotal"
                       >
-                        {product.productId.price}
+                        {
+                          product.productId.discount !== 0
+                            &&
+                            dayjs().isBetween(dayjs(product.productId.saleStartTime), dayjs(product.productId.saleEndTime))
+                            ?
+                            (
+                              <>
+                                <Grid item xs style={{ display: 'flex' }}>
+                                  <Typography style={{ textDecoration: "line-through" }}>
+                                    {
+                                      product.productId === null ? ""
+                                        : product.productId.discount === 0 ? ""
+                                          : numberToVND(product.productId.price)
+                                    }
+                                  </Typography>
+                                  <Typography style={{ color: '#ff5722' }}>
+                                    {
+                                      product.productId === null ? ""
+                                        :
+                                        numberToVND((product.quantity * (product.productId.price - (product.productId.price * product.productId.discount / 100))))
+                                    }
+                                  </Typography>
+                                </Grid>
+                              </>
+                            )
+                            :
+                            (
+                              <>
+                                <Grid item xs style={{ display: 'flex' }}>
+                                  <Typography style={{ color: '#ff5722' }}>
+                                    {
+                                      product.productId === null ? ""
+                                        :
+                                        numberToVND(product.quantity * product.productId.price)
+                                    }
+                                  </Typography>
+                                </Grid>
+                              </>
+                            )
+                        }
                         <span className="woocommerce-Price-currencySymbol">
                           VND
                         </span>

@@ -262,16 +262,7 @@ export default function CartService() {
                             (
                               <>
                                 <Grid item xs style={{ display: 'flex' }}>
-                                  <Typography style={{ color: 'red' }}>
-                                    {
-                                      service.serviceId === null ? ""
-                                        :
-                                        numberToVND(service.quantity * service.serviceId.price)
-                                    }
-                                  </Typography>
-                                </Grid>
-                                <Grid item xs style={{ display: 'flex' }}>
-                                  <Typography style={{ color: 'red' }}>
+                                  <Typography style={{ color: '#ff5722' }}>
                                     {
                                       service.serviceId === null ? ""
                                         :

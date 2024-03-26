@@ -43,13 +43,6 @@ import dayjs from "dayjs";
 
 const BASE_URL = "http://localhost:3500";
 
-const DsCheckbox = styled(Checkbox)`
-  color: #eeeeee !important;
-  &.Mui-checked {
-    color: #000 !important;
-  }
-`;
-
 const numberToVND = (number) => {
   return number.toLocaleString("vi-VN", {
     style: "currency",

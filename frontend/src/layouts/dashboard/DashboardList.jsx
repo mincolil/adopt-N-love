@@ -45,6 +45,7 @@ export default function DashboardList() {
   const [revenueService, setRevenueService] = useState();
   const [revenueRaw, setRevenueRaw] = useState();
   const [serviceRaw, setServiceRaw] = useState();
+  const [revenueServiceByPetType, setRevenueServiceByPetType] = useState();
 
   async function loadAllOrder() {
     try {
@@ -140,6 +141,18 @@ export default function DashboardList() {
     }
   }
 
+  async function loadRevenueServiceByPetType() {
+    try {
+      await axios.get(`http://localhost:3500/serviceDashboard/revenue-statistics-by-pet-type`)
+        .then((data) => {
+          console.log(data)
+          setRevenueServiceByPetType(data.data)
+        })
+    } catch (err) {
+    }
+  }
+
+
   useEffect(() => {
     loadAllOrder();
     loadAllBooking()
@@ -148,6 +161,7 @@ export default function DashboardList() {
     revenueStatistics()
     loadRevenueService()
     revenueServiceStatistics()
+    loadRevenueServiceByPetType()
   }, []);
 
 
@@ -179,6 +193,19 @@ export default function DashboardList() {
                 }}
               >
                 <DepositsDashboard raw={revenueRaw} />
+              </Paper>
+            </Grid>
+
+            <Grid item xs={12} md={4} lg={3}>
+              <Paper
+                sx={{
+                  p: 2,
+                  display: "flex",
+                  flexDirection: "column",
+                  height: 240,
+                }}
+              >
+                <DepositsDashboard petTypeRaw={revenueServiceByPetType} />
               </Paper>
             </Grid>
 

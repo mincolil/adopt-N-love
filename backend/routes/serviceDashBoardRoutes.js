@@ -7,6 +7,7 @@ router.get('/booking', serviceDashBoardController.getTotalBookingByDate)
     .get('/customer', serviceDashBoardController.getTotalCustomer)
     // .get('/product-sold', dashBoardController.getTotalProductsSoldByDate)
     .get('/revenue-statistics', serviceDashBoardController.getRevenueStatistics)
+    .get('/revenue-statistics-by-pet-type', serviceDashBoardController.getRevenueStatisticsByPetType)
 
 
 module.exports = router    

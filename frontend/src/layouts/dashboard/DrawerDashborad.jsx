@@ -42,7 +42,7 @@ const DrawerDashborad = () => {
       text: "Lịch đăng kí dịch vụ",
       path: "/dashboard/booking-list",
     },
-    { text: "Số lượng phòng dịch vụ", path: "/dashboard/category-list" }
+    { text: "Số lượng phòng dịch vụ", path: "/dashboard/category-list" },
   ];
 
   const links3 = [
@@ -51,7 +51,7 @@ const DrawerDashborad = () => {
     //   text: "Lịch sử thanh toán thú cưng",
     //   path: "/dashboard/history-pet-list",
     // },
-    { text: "Danh sách nhận nuôi", path: "/dashboard/adopt-pet-list" }
+    { text: "Danh sách nhận nuôi", path: "/dashboard/adopt-pet-list" },
   ];
 
   const links4 = [
@@ -98,7 +98,15 @@ const DrawerDashborad = () => {
           </ListSubheader>
           {links.map((link, index) => (
             <ListItem key={link.text} disablePadding>
-              <ListItemButton component={NavLink} to={link.path}>
+              <ListItemButton
+                component={NavLink}
+                to={link.path}
+                sx={{
+                  "&.active": {
+                    bgcolor: "#efab9161",
+                  },
+                }}
+              >
                 <ListItemIcon>
                   {index % 2 === 0 ? <DashboardIcon /> : <PersonIcon />}
                 </ListItemIcon>
@@ -119,7 +127,15 @@ const DrawerDashborad = () => {
         </ListSubheader>
         {links2.map((link, index) => (
           <ListItem key={link.text} disablePadding>
-            <ListItemButton component={NavLink} to={link.path}>
+            <ListItemButton
+              component={NavLink}
+              to={link.path}
+              sx={{
+                "&.active": {
+                  bgcolor: "#efab9161",
+                },
+              }}
+            >
               <ListItemIcon>
                 {index % 2 === 0 ? (
                   <MedicalServicesIcon />
@@ -140,7 +156,15 @@ const DrawerDashborad = () => {
         </ListSubheader>
         {links3.map((link, index) => (
           <ListItem key={link.text} disablePadding>
-            <ListItemButton component={NavLink} to={link.path}>
+            <ListItemButton
+              component={NavLink}
+              to={link.path}
+              sx={{
+                "&.active": {
+                  bgcolor: "#efab9161",
+                },
+              }}
+            >
               <ListItemIcon>
                 {index % 2 === 0 ? <PetsIcon /> : <SpaIcon />}
               </ListItemIcon>
@@ -157,7 +181,15 @@ const DrawerDashborad = () => {
         </ListSubheader>
         {links4.map((link, index) => (
           <ListItem key={link.text} disablePadding>
-            <ListItemButton component={NavLink} to={link.path}>
+            <ListItemButton
+              component={NavLink}
+              to={link.path}
+              sx={{
+                "&.active": {
+                  bgcolor: "#efab9161",
+                },
+              }}
+            >
               <ListItemIcon>
                 {index % 2 === 0 ? <InventoryIcon /> : <ClassIcon />}
               </ListItemIcon>
@@ -174,7 +206,15 @@ const DrawerDashborad = () => {
         </ListSubheader>
         {links5.map((link, index) => (
           <ListItem key={link.text} disablePadding>
-            <ListItemButton component={NavLink} to={link.path}>
+            <ListItemButton
+              component={NavLink}
+              to={link.path}
+              sx={{
+                "&.active": {
+                  bgcolor: "#efab9161",
+                },
+              }}
+            >
               <ListItemIcon>
                 {index % 2 === 0 ? <NewspaperIcon /> : <CategoryIcon />}
               </ListItemIcon>

@@ -43,7 +43,7 @@ export default function CartService() {
   const [total, setTotal] = useState(0)
 
   const context = useAuth();
-  // console.log(context.auth)
+  console.log(context.auth)
   const navigate = useNavigate();
 
   const handleLoadCartService = async () => {

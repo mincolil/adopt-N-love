@@ -293,14 +293,14 @@ export default function CartProduct() {
                                     {
                                       product.productId === null ? ""
                                         : product.productId.discount === 0 ? ""
-                                          : numberToVND(product.productId.price)
+                                          : numberToVND(product.quantity * product.productId.price)
                                     }
                                   </Typography>
                                   <Typography style={{ color: '#ff5722' }}>
                                     {
                                       product.productId === null ? ""
                                         :
-                                        numberToVND((product.quantity * (product.productId.price - (product.productId.price * product.productId.discount / 100))))
+                                        numberToVND(product.quantity * (product.productId.price - (product.productId.price * product.productId.discount) / 100))
                                     }
                                   </Typography>
                                 </Grid>

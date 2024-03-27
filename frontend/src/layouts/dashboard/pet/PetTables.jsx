@@ -426,7 +426,6 @@ export default function PetTable() {
     },
     {
       title: 'SĐT',
-      dataIndex: 'age',
       dataIndex: ['userId', 'phone'],
       ...getColumnSearchProps('phone', 'phone'),
       width: '15%',

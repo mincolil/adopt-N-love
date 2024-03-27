@@ -96,6 +96,7 @@ export default function CartService() {
     if (window.confirm('Bạn có muốn sử dụng dịch vụ này ?') === true) {
       if (data.length === 0) {
         alert('Bạn không có dịch vụ trong giỏ hàng')
+        return false
       } else {
         try {
           console.log(total)
@@ -196,12 +197,12 @@ export default function CartService() {
             color="#000000"
             href="/cart-service"
           >
-            Giỏ hàng
+            Đặt lịch
           </Link>
         </Breadcrumbs>
         <Box className="main-content-cart">
           <Typography variant="h3" className="custom_blog_title">
-            Giỏ hàng
+            Đặt lịch
           </Typography>
           <Box className="shoppingcart-content">
             <TableContainer>
@@ -386,21 +387,37 @@ export default function CartService() {
               </Table>
             </TableContainer>
             <Box className="control-cart">
-              <Button
-                variant="outlined"
-                className="button btn-continue-shopping"
-                sx={{ marginRight: "20px" }}
-                href="/service-homepage"
-              >
-                Tiếp tục mua sắm
-              </Button>
-              <Button
-                variant="outlined"
-                className="button btn-cart-to-checkout"
-                onClick={() => handleCheckOut()}
-              >
-                Thanh toán
-              </Button>
+              {data.length === 0 ? (
+                <Button
+                  variant="outlined"
+                  className="button btn-continue-shopping"
+                  sx={{
+                    marginRight: "20px",
+                    backgroundColor: "#ffcdd2"
+                  }}
+                >
+                  Không có sản phẩm trong giỏ hàng
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    variant="outlined"
+                    className="button btn-continue-shopping"
+                    sx={{ marginRight: "20px" }}
+                    href="/product-homepage"
+                  >
+                    Tiếp tục mua sắm
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    className="button btn-cart-to-checkout"
+                    onClick={() => handleCheckOut()}
+                    sx={{ backgroundColor: "#a5d6a7" }}
+                  >
+                    Thanh toán
+                  </Button>
+                </>
+              )}
             </Box>
           </Box>
         </Box>

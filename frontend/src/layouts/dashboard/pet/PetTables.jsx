@@ -20,18 +20,12 @@ import {
   Pagination,
   ButtonGroup,
 } from "@mui/material";
-import Stack from "@mui/material/Stack";
-import Chip from "@mui/material/Chip";
 import SearchIcon from "@mui/icons-material/Search";
 
-import CloseIcon from "@mui/icons-material/Close";
-import { styled } from "@mui/material/styles";
 import { ToastContainer } from "react-toastify";
 
 import ButtonCustomize from "../../../components/Button/Button";
 
-//React
-import { useNavigate } from "react-router-dom";
 // Axios
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -44,7 +38,7 @@ import ModalDetailPet from "../../../components/Modal/ModalDetailPet";
 
 import { Table, Tag } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Space } from 'antd';
+import { Button, Input, Space, InputNumber } from 'antd';
 import Highlighter from 'react-highlight-words';
 
 // -------------------------------STYLE MODAL----------------------
@@ -65,6 +59,7 @@ const BASE_URL = "http://localhost:3500";
 
 export default function PetTable() {
   const [data, setData] = useState([]);
+  const [originalData, setOriginalData] = useState([]);
 
   const [totalPets, setTotalPets] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -118,6 +113,7 @@ export default function PetTable() {
         setTotalPages(loadData.data.pages);
         // console.log("Check totalPage", totalPages);
         setData(loadData.data.docs);
+        setOriginalData(loadData.data.docs);
         setTotalPets(loadData.data.limit);
         // console.log(loadData.data.docs);
         setCurrentPage(loadData.data.page);
@@ -248,6 +244,7 @@ export default function PetTable() {
           setTotalPages(loadData.data.pages);
           // console.log("Check totalPage", totalPages);
           setData(loadData.data.docs);
+          setOriginalData(loadData.data.docs);
           setTotalPets(loadData.data.limit);
           setCurrentPage(loadData.data.page);
         }
@@ -265,6 +262,36 @@ export default function PetTable() {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const [sortedInfo, setSortedInfo] = useState({});
+
+
+  const handleSave = async (record, e) => {
+    e.stopPropagation();
+    try {
+      const updateSlot = await axios.patch(`${BASE_URL}/pet`, {
+        id: record._id,
+        userId: record.userId._id,
+        petName: record.petName,
+        rank: record.rank,
+        status: record.status,
+        categoryId: record.categoryId,
+        color: record.color,
+        weight: record.weight,
+        height: record.height,
+        petImage: record.petImage,
+        breed: record.breed,
+        age: record.age,
+        forAdoption: record.forAdoption,
+        facebook: record.facebook,
+        adoptDes: record.adoptDes,
+        discount: record.discount,
+      });
+      toast.success("Data saved successfully!");
+      setOriginalData(data);
+    } catch (error) {
+      toast.error("Failed to save data!");
+    }
+  };
+
   const searchInput = useRef(null);
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -380,10 +407,19 @@ export default function PetTable() {
 
   const columns = [
     {
+      title: 'Tên thú cưng',
+      dataIndex: 'petName',
+      ...getColumnSearchProps('petName'),
+      width: '20%',
+      key: 'petName',
+      sorter: (a, b) => a.petName.length - b.petName.length,
+      sortOrder: sortedInfo.columnKey === 'petName' ? sortedInfo.order : null,
+    },
+    {
       title: 'Chủ thú cưng',
       dataIndex: ['userId', 'fullname'],
       ...getColumnSearchProps('fullname', 'name'),
-      width: '30%',
+      width: '20%',
       key: 'fullname',
       sorter: (a, b) => a.userId.fullname.length - b.userId.fullname.length,
       sortOrder: sortedInfo.columnKey === 'fullname' ? sortedInfo.order : null,
@@ -393,22 +429,38 @@ export default function PetTable() {
       dataIndex: 'age',
       dataIndex: ['userId', 'phone'],
       ...getColumnSearchProps('phone', 'phone'),
-      width: '20%',
-    },
-
-    {
-      title: 'Tên thú cưng',
-      dataIndex: 'petName',
-      ...getColumnSearchProps('petName'),
-      width: '30%',
-      key: 'petName',
-      sorter: (a, b) => a.petName.length - b.petName.length,
-      sortOrder: sortedInfo.columnKey === 'petName' ? sortedInfo.order : null,
+      width: '15%',
     },
     {
       title: 'Giống loại',
       dataIndex: 'breed',
-      width: '40%',
+      width: '20%',
+    },
+    {
+      title: 'Giảm giá',
+      key: 'action',
+      width: '15%',
+      render: (text, record) => (
+        <Space size="middle">
+          <InputNumber min={0} max={100} value={record.discount}
+            onChange={(value) => {
+              const newData = data.map((item) =>
+                item._id === record._id ? { ...item, discount: value } : item
+              );
+              setData(newData);
+            }}
+            onClick={(e) => e.stopPropagation()} />
+          <Button
+            type="primary"
+            disabled={record.discount === originalData.find((item) => item._id === record._id)?.discount}
+            onClick={(e) => handleSave(record, e)}
+          >
+            Save
+          </Button>
+        </Space>
+
+      ),
+
     },
     {
       title: 'Trạng thái',
@@ -504,10 +556,6 @@ export default function PetTable() {
               console.log(record)
               handleDetailPet(record)
             }, // click row
-            // onDoubleClick: event => { }, // double click row
-            // onContextMenu: event => { }, // right button click row
-            // onMouseEnter: event => { }, // mouse enter row
-            // onMouseLeave: event => { }, // mouse leave row
           };
         }}
       />;

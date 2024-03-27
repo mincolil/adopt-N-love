@@ -316,6 +316,9 @@ export default function BookingTable() {
           // console.log(loadData.data);
           loadBooking(status);
           handleClose();
+          toast.success("Cập nhật trạng thái đơn hàng thành công");
+          //re load data
+          loadAllBooking(DEFAULT_PAGE, DEFAULT_LIMIT);
         }
       } catch (err) {
         console.log(err);
@@ -323,21 +326,6 @@ export default function BookingTable() {
     }
   };
 
-  // const handleDeleteOrder = async (id, bookingId, option, status) => {
-  //   try {
-  //     const loadData = await axios
-  //       .delete(`http://localhost:3500/bookingDetail/${id}`, {
-  //         headers: { Authorization: context.auth.token },
-  //         withCredentials: true,
-  //       })
-  //       .then((data) => {
-  //         console.log(data);
-  //         handleViewOrderDetail(bookingId, option);
-  //       });
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
 
   const numberToVND = (number) => {
     return number.toLocaleString("vi-VN", {

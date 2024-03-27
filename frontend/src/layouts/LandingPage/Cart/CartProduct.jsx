@@ -394,7 +394,10 @@ export default function CartProduct() {
                 <Button
                   variant="outlined"
                   className="button btn-continue-shopping"
-                  sx={{ marginRight: "20px" }}
+                  sx={{
+                    marginRight: "20px",
+                    backgroundColor: "#ffcdd2"
+                  }}
                 >
                   Không có sản phẩm trong giỏ hàng
                 </Button>
@@ -412,6 +415,7 @@ export default function CartProduct() {
                     variant="outlined"
                     className="button btn-cart-to-checkout"
                     onClick={() => handleCheckOut()}
+                    sx={{ backgroundColor: "#a5d6a7" }}
                   >
                     Thanh toán
                   </Button>

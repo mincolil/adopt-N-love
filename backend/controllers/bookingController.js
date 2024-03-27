@@ -201,6 +201,9 @@ const updateStatus = async (req, res) => {
                         const pet = await Pet.findById(bookingDetail.petId);
                         if (pet != null) {
                             pet.rank = pet.rank + 1;
+                            if (pet.rank % 10 === 0) {
+                                pet.discount = 10;
+                            } else pet.discount = 0;
                             await pet.save();
                         }
                     })

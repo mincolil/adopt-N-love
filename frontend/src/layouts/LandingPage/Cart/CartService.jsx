@@ -43,7 +43,7 @@ export default function CartService() {
   const [total, setTotal] = useState(0)
 
   const context = useAuth();
-  console.log(context.auth)
+  // console.log(context.auth)
   const navigate = useNavigate();
 
   const handleLoadCartService = async () => {
@@ -65,12 +65,17 @@ export default function CartService() {
           // console.log(loadData.data);
           let totalPrice = 0;
           for (let i = 0; i < loadData.data.length; i++) {
-            if (loadData.data[i].serviceId.discount !== 0
+            if ((loadData.data[i].serviceId.discount !== 0
               &&
-              dayjs().isBetween(dayjs(loadData.data[i].serviceId.saleStartTime), dayjs(loadData.data[i].serviceId.saleEndTime))) {
+              dayjs().isBetween(dayjs(loadData.data[i].serviceId.saleStartTime), dayjs(loadData.data[i].serviceId.saleEndTime))) && loadData.data[i].petId.discount !== 0) {
+              totalPrice += loadData.data[i].quantity * (loadData.data[i].serviceId.price - (loadData.data[i].serviceId.price * loadData.data[i].serviceId.discount / 100) - (loadData.data[i].serviceId.price * loadData.data[i].petId.discount / 100))
+            } else if (loadData.data[i].serviceId.discount !== 0 && dayjs().isBetween(dayjs(loadData.data[i].serviceId.saleStartTime), dayjs(loadData.data[i].serviceId.saleEndTime))) {
               totalPrice += loadData.data[i].quantity * (loadData.data[i].serviceId.price - (loadData.data[i].serviceId.price * loadData.data[i].serviceId.discount / 100))
-            } else {
-              totalPrice += loadData.data[i].quantity * loadData.data[i].serviceId.price
+            } else if (loadData.data[i].petId.discount !== 0) {
+              totalPrice += loadData.data[i].quantity * (loadData.data[i].serviceId.price - (loadData.data[i].serviceId.price * loadData.data[i].petId.discount / 100))
+            }
+            else {
+              totalPrice += loadData.data[i].quantity * loadData.data[i].serviceId.price;
             }
           }
           setTotal(totalPrice);
@@ -93,6 +98,7 @@ export default function CartService() {
         alert('Bạn không có dịch vụ trong giỏ hàng')
       } else {
         try {
+          console.log(total)
           await axios.post(
             `http://localhost:3500/cartService/checkout`,
             {
@@ -200,16 +206,6 @@ export default function CartService() {
           <Box className="shoppingcart-content">
             <TableContainer>
               <Table className="shop_table">
-                {/* <TableHead>
-                  <TableRow>
-                    <TableCell className="product-remove"></TableCell>
-                    <TableCell className="product-thumbnail"></TableCell>
-                    <TableCell className="product-name"></TableCell>
-                    <TableCell className="product-price"></TableCell>
-                    <TableCell className="product-quantity"></TableCell>
-                    <TableCell className="product-subtotal"></TableCell>
-                  </TableRow>
-                </TableHead> */}
                 <TableBody sx={{ border: "1px solid #f1f1f1" }}>
                   {data.map((service, index) => (
                     <TableRow key={index} className="cart_item">
@@ -234,9 +230,9 @@ export default function CartService() {
                         data-title="Subtotal"
                       >
                         {
-                          service.serviceId.discount !== 0
+                          (service.serviceId.discount !== 0
                             &&
-                            dayjs().isBetween(dayjs(service.serviceId.saleStartTime), dayjs(service.serviceId.saleEndTime))
+                            dayjs().isBetween(dayjs(service.serviceId.saleStartTime), dayjs(service.serviceId.saleEndTime))) && service.petId.discount !== 0
                             ?
                             (
                               <>
@@ -252,26 +248,82 @@ export default function CartService() {
                                     {
                                       service.serviceId === null ? ""
                                         :
-                                        numberToVND((service.quantity * (service.serviceId.price - (service.serviceId.price * service.serviceId.discount / 100))))
+                                        (numberToVND((service.quantity * (service.serviceId.price - (service.serviceId.price * service.serviceId.discount / 100) - (service.serviceId.price * service.petId.discount / 100)))))
+
                                     }
+                                    <br />
+                                    {service.petId.discount !== 0 ? `  (pet: -${service.petId.discount}%)` : ""}
+                                    {service.serviceId.discount !== 0 && dayjs().isBetween(dayjs(service.serviceId.saleStartTime), dayjs(service.serviceId.saleEndTime)) ? `  (service: -${service.serviceId.discount}%)` : ""}
                                   </Typography>
                                 </Grid>
                               </>
                             )
                             :
-                            (
-                              <>
-                                <Grid item xs style={{ display: 'flex' }}>
-                                  <Typography style={{ color: '#ff5722' }}>
-                                    {
-                                      service.serviceId === null ? ""
-                                        :
-                                        numberToVND(service.quantity * service.serviceId.price)
-                                    }
-                                  </Typography>
-                                </Grid>
-                              </>
-                            )
+                            (service.serviceId.discount !== 0 && dayjs().isBetween(dayjs(service.serviceId.saleStartTime), dayjs(service.serviceId.saleEndTime)))
+                              ?
+                              (
+                                <>
+                                  <Grid item xs style={{ display: 'flex' }}>
+                                    <Typography style={{ textDecoration: "line-through" }}>
+                                      {
+                                        service.serviceId === null ? ""
+                                          : service.serviceId.discount === 0 ? ""
+                                            : numberToVND(service.serviceId.price)
+                                      }
+                                    </Typography>
+                                    <Typography style={{ color: '#ff5722' }}>
+                                      {
+                                        service.serviceId === null ? ""
+                                          :
+                                          (numberToVND((service.quantity * (service.serviceId.price - (service.serviceId.price * service.serviceId.discount / 100))))
+                                          )
+                                      }
+                                      <br />
+                                      {service.serviceId.discount !== 0 && dayjs().isBetween(dayjs(service.serviceId.saleStartTime), dayjs(service.serviceId.saleEndTime)) ? `  (service: -${service.serviceId.discount}%)` : ""}
+                                    </Typography>
+                                  </Grid>
+                                </>
+                              )
+                              :
+                              service.petId.discount !== 0
+                                ?
+                                (
+                                  <>
+                                    <Grid item xs style={{ display: 'flex' }}>
+                                      <Typography style={{ textDecoration: "line-through" }}>
+                                        {
+                                          service.serviceId === null ? ""
+                                            : service.serviceId.discount === 0 ? ""
+                                              : numberToVND(service.serviceId.price)
+                                        }
+                                      </Typography>
+                                      <Typography style={{ color: '#ff5722' }}>
+                                        {
+                                          service.serviceId === null ? ""
+                                            :
+                                            (numberToVND((service.quantity * (service.serviceId.price - (service.serviceId.price * service.petId.discount / 100))))
+                                            )
+                                        }
+                                        <br />
+                                        {service.petId.discount !== 0 ? `  (pet: -${service.petId.discount}%)` : ""}
+                                      </Typography>
+                                    </Grid>
+                                  </>
+                                )
+                                :
+                                (
+                                  <>
+                                    <Grid item xs style={{ display: 'flex' }}>
+                                      <Typography style={{ color: '#ff5722' }}>
+                                        {
+                                          service.serviceId === null ? ""
+                                            :
+                                            numberToVND(service.quantity * service.serviceId.price)
+                                        }
+                                      </Typography>
+                                    </Grid>
+                                  </>
+                                )
                         }
                       </TableCell>
                       <TableCell className="product-remove">

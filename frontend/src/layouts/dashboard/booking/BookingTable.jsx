@@ -598,27 +598,6 @@ export default function BookingTable() {
                           </TableCell>
                           <TableCell align="left"> <DateTimeFormat date={value.bookingDate}></DateTimeFormat> </TableCell>
                           <TableCell align="left">{numberToVND(value.price)}</TableCell>
-                          {/* <TableCell align="left">
-                            {status === "Chờ thanh toán" ? (
-                            <Button
-                              variant="contained"
-                              margin="normal"
-                              color="primary"
-                              onClick={(e) =>
-                                handleDeleteOrder(
-                                  value._id,
-                                  value.bookingId,
-                                  OPTION_VIEW_ORDER_BY_ID,
-                                  status
-                                )
-                              }
-                            >
-                              Xoá
-                            </Button>
-                            ) : (
-                              ""
-                            )}
-                          </TableCell> */}
                         </TableRow>
                       );
                     })}

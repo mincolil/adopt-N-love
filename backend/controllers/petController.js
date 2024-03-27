@@ -70,7 +70,7 @@ const createPet = async (req, res) => {
 
 const updatePet = async (req, res) => {
   try {
-    const { id, userId, petName, rank, status, categoryId, color, weight, height, petImage, breed, age, forAdoption, facebook, adoptDes } = req.body
+    const { id, userId, petName, rank, status, categoryId, color, weight, height, petImage, breed, age, forAdoption, facebook, adoptDes, discount } = req.body
     const pet = await Pet.findById(id)
     pet.userId = userId
     pet.petName = petName
@@ -86,6 +86,7 @@ const updatePet = async (req, res) => {
     pet.forAdoption = forAdoption
     pet.facebook = facebook
     pet.adoptDescription = adoptDes
+    pet.discount = discount
 
     await pet.save()
     res.status(201).json({

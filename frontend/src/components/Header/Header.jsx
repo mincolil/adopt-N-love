@@ -81,7 +81,7 @@ const Header = () => {
                 sx={{
                   color: "#000",
                   "& > button": {
-                    fontSize: "17px",
+                    fontSize: "20px",
                     fontFamily: "'Poppins', sans-serif !important",
                   },
                 }}
@@ -91,7 +91,7 @@ const Header = () => {
                   href="/"
                   sx={{
                     fontFamily: "'Poppins', sans-serif !important",
-                    fontSize: "17px",
+                    fontSize: "20px",
                   }}
                 >
                   Trang chủ
@@ -99,7 +99,7 @@ const Header = () => {
 
                 <DsButton color="inherit" href="/adopt-homepage" sx={{
                   fontFamily: "'Poppins', sans-serif !important",
-                  fontSize: "17px",
+                  fontSize: "20px",
                 }}>
                   Nhận nuôi
                   {/* <ArrowDropDownIcon /> */}
@@ -110,7 +110,7 @@ const Header = () => {
                   href="/service-homepage"
                   sx={{
                     fontFamily: "'Poppins', sans-serif !important",
-                    fontSize: "17px",
+                    fontSize: "20px",
                   }}
                 >
                   Dịch vụ
@@ -121,7 +121,7 @@ const Header = () => {
                   href="/product-homepage"
                   sx={{
                     fontFamily: "'Poppins', sans-serif !important",
-                    fontSize: "17px",
+                    fontSize: "20px",
                   }}
                 >
                   Sản phẩm
@@ -129,7 +129,7 @@ const Header = () => {
 
                 <DsButton color="inherit" href="/blog-homepage" sx={{
                   fontFamily: "'Poppins', sans-serif !important",
-                  fontSize: "17px",
+                  fontSize: "20px",
                 }}>Blog</DsButton>
               </Box>
             </Grid>

@@ -45,6 +45,7 @@ export default function DashboardList() {
   const [revenueService, setRevenueService] = useState();
   const [revenueRaw, setRevenueRaw] = useState();
   const [serviceRaw, setServiceRaw] = useState();
+  const [revenueServiceByPetType, setRevenueServiceByPetType] = useState();
 
   async function loadAllOrder() {
     try {
@@ -87,7 +88,7 @@ export default function DashboardList() {
     } catch (err) {
     }
   }
-  
+
   async function revenueServiceStatistics() {
     try {
       await axios
@@ -140,6 +141,18 @@ export default function DashboardList() {
     }
   }
 
+  async function loadRevenueServiceByPetType() {
+    try {
+      await axios.get(`http://localhost:3500/serviceDashboard/revenue-statistics-by-pet-type`)
+        .then((data) => {
+          console.log(data)
+          setRevenueServiceByPetType(data.data)
+        })
+    } catch (err) {
+    }
+  }
+
+
   useEffect(() => {
     loadAllOrder();
     loadAllBooking()
@@ -148,6 +161,7 @@ export default function DashboardList() {
     revenueStatistics()
     loadRevenueService()
     revenueServiceStatistics()
+    loadRevenueServiceByPetType()
   }, []);
 
 
@@ -191,6 +205,19 @@ export default function DashboardList() {
                   height: 240,
                 }}
               >
+                <DepositsDashboard petTypeRaw={revenueServiceByPetType} />
+              </Paper>
+            </Grid>
+
+            <Grid item xs={12} md={4} lg={3}>
+              <Paper
+                sx={{
+                  p: 2,
+                  display: "flex",
+                  flexDirection: "column",
+                  height: 240,
+                }}
+              >
                 <DepositsDashboard dataRaw={serviceRaw} />
               </Paper>
             </Grid>
@@ -204,46 +231,9 @@ export default function DashboardList() {
                   height: 240,
                 }}
               >
-                <DepositsDashboard sold={{serviceSold: dataBooking.length, productSold: data.length}} />
+                <DepositsDashboard sold={{ serviceSold: dataBooking.length, productSold: data.length }} />
               </Paper>
             </Grid>
-
-            {/* <Grid container spacing={1} style={{ margin: '20px 0' }}>
-              <Grid item xs={6}>
-                <PieChart
-                  series={[
-                    {
-                      data: [
-                        { id: 0, value: totalPrice, label: 'DT sản phẩm' },
-                        { id: 1, value: revenue, label: 'DT dịch vụ' },
-                        // { id: 2, value: 20, label: 'series C' },
-                      ],
-                    },
-                  ]}
-                  width={400}
-                  height={200}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <PieChart
-                  series={[
-                    {
-                      data: [
-                        { id: 0, value: 10, label: 'series A' },
-                        { id: 1, value: 15, label: 'series B' },
-                        { id: 2, value: 20, label: 'series C' },
-                      ],
-                    },
-                  ]}
-                  width={400}
-                  height={200}
-                />
-              </Grid>
-            </Grid> */}
-
-            {/* Recent Orders */}
-
-
             <ChartDashBroad />
 
           </Grid>

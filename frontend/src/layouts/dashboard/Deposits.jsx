@@ -28,9 +28,12 @@ function DepositsDashboard(props) {
   const [selectedMonth, setSelectedMonth] = React.useState(null);
   const [previousMonth, setPreviousMonth] = React.useState(null);
 
+  const [selectedPetType, setSelectedPetType] = React.useState(null);
+  const [previousPetType, setPreviousPetType] = React.useState(null);
+
   const handleSelectChange = (event) => {
     const currentValue = parseInt(event.target.value, 10);
-  
+
     // Lưu giá trị trước đó vào previousValue
     setPreviousValue(selectedValue);
 
@@ -40,12 +43,18 @@ function DepositsDashboard(props) {
 
   const handleSelectServiceMonthChange = (event) => {
     const currentValue = parseInt(event.target.value, 10);
-  
+
     // Lưu giá trị trước đó vào previousValue
     setPreviousMonth(selectedMonth);
 
     // Cập nhật giá trị hiện tại
     setSelectedMonth(currentValue);
+  };
+
+  const handleSelectChangePetType = (event) => {
+    const currentValue = parseInt(event.target.value, 10);
+
+    setSelectedPetType(currentValue);
   };
 
   const selectStyle = {
@@ -112,7 +121,7 @@ function DepositsDashboard(props) {
 
       {props.dataRaw !== undefined ? (
         <>
-        {console.log(props.dataRaw)}
+          {console.log(props.dataRaw)}
           <Title>Doanh thu dịch vụ theo tháng</Title>
           <div>
             <select style={selectStyle} onChange={handleSelectServiceMonthChange} value={selectedMonth !== null ? selectedMonth : ''}>
@@ -129,16 +138,37 @@ function DepositsDashboard(props) {
       ) : ''
       }
 
-      {props.dataBooking !== undefined ? 
-      (
+      {props.petTypeRaw !== undefined ? (
         <>
-          <Title>Dịch vụ được sử dụng</Title>
-          <Typography component="p" variant="h4">
-            {props.dataBooking !== undefined ? Number(props.dataBooking) : ''}
-          </Typography>
+          {console.log(props.dataRaw)}
+          <Title>Doanh thu dịch vụ theo tháng</Title>
+          <div>
+            <select style={selectStyle} onChange={handleSelectChangePetType} value={selectedPetType !== null ? selectedPetType : ''}>
+              <option value={0} disabled>Mèo </option>
+              {props.petTypeRaw.map((value) => (
+                <option value={value.totalPrice}>
+                  {value._id === '654c892a49de3af51bdaa32c' ? 'Mèo' :
+                    value._id === '6570b9a3e87b4feefedef514' ? 'Chó' : 'Khác'
+                  }
+                </option>
+              ))}
+            </select>
+            <p>Doanh thu: {selectedPetType === null ? numberToVND(0) : numberToVND(selectedPetType)}</p>
+          </div>
         </>
-      ) 
-      : ''
+      ) : ''
+      }
+
+      {props.dataBooking !== undefined ?
+        (
+          <>
+            <Title>Dịch vụ được sử dụng</Title>
+            <Typography component="p" variant="h4">
+              {props.dataBooking !== undefined ? Number(props.dataBooking) : ''}
+            </Typography>
+          </>
+        )
+        : ''
       }
 
       <Typography color="text.secondary" sx={{ flex: 1 }}>

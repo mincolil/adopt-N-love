@@ -13,7 +13,6 @@ import {
   Tab,
   TextField,
   Rating,
-  Chip,
   Backdrop,
   CircularProgress,
 } from "@mui/material";
@@ -33,6 +32,7 @@ import { styled } from "@mui/material/styles";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
 import Comments from "../../../components/Comments/Comments";
+import dayjs from "dayjs";
 
 const BASE_URL = "http://localhost:3500";
 
@@ -55,6 +55,13 @@ function TabPanel(props) {
     </div>
   );
 }
+
+const numberToVND = (number) => {
+  return number.toLocaleString("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  });
+};
 
 const ProductDetail = () => {
   const { productId } = useParams();
@@ -208,7 +215,71 @@ const ProductDetail = () => {
                 <Link href="#"> {product && product.quantity}</Link>
               </Typography>
               <Typography variant="body1" className="price">
-                <span>{product && product.price} VND</span>
+                {product.discount !== 0 &&
+                  dayjs().isBetween(
+                    dayjs(product.saleStartTime),
+                    dayjs(product.saleEndTime)
+                  ) ? (
+                  <Box
+                    display="flex"
+                    flexGrow={1}
+                    sx={{
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography
+                      gutterBottom
+                      variant="h6"
+                      component="h2"
+                      sx={{
+                        textDecoration: "line-through",
+                        marginRight: "8px",
+                        color: "gray",
+                      }}
+                    >
+                      {numberToVND(product.price)}
+                    </Typography>
+                    <Typography
+                      gutterBottom
+                      variant="h6"
+                      component="h2"
+                      style={{ color: '#ff5722' }}
+                    >
+                      {numberToVND(
+                        product.price -
+                        (product.price * product.discount) / 100
+                      )}
+                    </Typography>
+                    <Typography
+                      gutterBottom
+                      variant="h6"
+                      component="h2"
+                      sx={{
+                        color: "#fff",
+                        backgroundColor: "#ee4d2d",
+                        marginLeft: "10px",
+                        fontSize: ".75rem",
+                        borderRadius: "2px",
+                        padding: "2px 4px",
+                        fontWeight: "600",
+                        whiteSpace: "nowrap",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      {product.discount}% Giảm
+                    </Typography>
+                  </Box>
+                ) : (
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    component="h2"
+                    style={{ color: '#ff5722' }}
+                  >
+                    {numberToVND(product.price)}
+                  </Typography>
+                )}
               </Typography>
               <Box className="product-details-description">
                 <Typography variant="body2">

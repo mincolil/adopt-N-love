@@ -181,7 +181,7 @@ export default function ServicePurchase() {
     backgroundColor: "rgb(255 87 34 / 22%)",
   };
 
-  const statusList = ["Chờ xác nhận", "Đang xử lý", "Hoàn thành", "Huỷ"];
+  const statusList = ["Chờ xác nhận", "Đã thanh toán", "Đang xử lý", "Hoàn thành", "Huỷ"];
 
   const numberToVND = (number) => {
     return number.toLocaleString("vi-VN", {

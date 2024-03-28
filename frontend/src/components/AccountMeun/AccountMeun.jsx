@@ -19,6 +19,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
+import { useGoogleLogout } from 'react-google-login';
 
 import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -43,14 +44,13 @@ export default function AccountMenu() {
 
   const handleLogout = async () => {
     try {
-      // const response = await axios.post("http://localhost:3500/logout");
-      // thông báo logout thành công và chuyển hướng về trang đăng nhập
-      // console.log(response);
+      localStorage.removeItem("token");
       const auth2 = window.gapi.auth2.getAuthInstance();
-      await auth2.signOut();
-
-      localStorage.removeItem("token"); // xóa token lưu trữ trong localStorage
-      navigate("/sign-in"); // chuyển hướng về trang đăng nhập
+      if (auth2 != null) {
+        await auth2.signOut(); // Wait for sign-out to complete
+      }
+      // Navigate after sign-out is complete
+      window.location.href = "/sign-in";
       toast.success("Đăng xuất thành công!");
     } catch (error) {
       console.error(error);
@@ -186,13 +186,7 @@ export default function AccountMenu() {
           Thú cưng của tôi
         </MenuItem>
 
-        {/* <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          Cài đặt
-        </MenuItem> */}
-        <MenuItem onClick={handleLogout}>
+        <MenuItem onMouseDown={handleLogout}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>

@@ -10,8 +10,23 @@ import useAuth from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { Toast } from "bootstrap";
 import dayjs from "dayjs";
-import { Typography } from "@mui/material";
+import {
+  Typography,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  TextField,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  FormControl,
+  InputLabel,
+  Input,
+} from "@mui/material";
 import Header from "../../components/Header/Header";
+import "./styled/ProductCheckout.css";
+import CreditCardIcon from '@mui/icons-material/CreditCard';
+import Cards from "react-credit-cards";
 
 const inputStyle = {
   width: "100%",
@@ -34,7 +49,6 @@ export default function ServiceCheckout() {
 
   const navigate = useNavigate();
   const context = useAuth();
-  console.log(context.auth);
 
   const [data, setData] = useState([]);
   // const [quantity, setQuantity] = useState(0)
@@ -106,8 +120,21 @@ export default function ServiceCheckout() {
           // console.log(loadData.data);
           let totalPrice = 0;
           for (let i = 0; i < loadData.data.length; i++) {
-            if (
+            if ((
               loadData.data[i].serviceId.discount !== 0 &&
+              dayjs().isBetween(
+                dayjs(loadData.data[i].serviceId.saleStartTime),
+                dayjs(loadData.data[i].serviceId.saleEndTime)
+              )) && loadData.data[i].petId.discount !== 0
+            ) {
+              totalPrice +=
+                loadData.data[i].quantity *
+                (loadData.data[i].serviceId.price -
+                  (loadData.data[i].serviceId.price *
+                    loadData.data[i].serviceId.discount) /
+                  100
+                  - (loadData.data[i].serviceId.price * loadData.data[i].petId.discount / 100));
+            } else if (loadData.data[i].serviceId.discount !== 0 &&
               dayjs().isBetween(
                 dayjs(loadData.data[i].serviceId.saleStartTime),
                 dayjs(loadData.data[i].serviceId.saleEndTime)
@@ -118,8 +145,15 @@ export default function ServiceCheckout() {
                 (loadData.data[i].serviceId.price -
                   (loadData.data[i].serviceId.price *
                     loadData.data[i].serviceId.discount) /
-                    100);
-            } else {
+                  100);
+
+            }
+            else if (loadData.data[i].petId.discount !== 0) {
+              totalPrice +=
+                loadData.data[i].quantity *
+                (loadData.data[i].serviceId.price - (loadData.data[i].serviceId.price * loadData.data[i].petId.discount / 100));
+            }
+            else {
               totalPrice +=
                 loadData.data[i].quantity * loadData.data[i].serviceId.price;
             }
@@ -143,6 +177,23 @@ export default function ServiceCheckout() {
     });
   };
 
+  const [expanded, setExpanded] = React.useState("");
+  const [selectedPayment, setSelectedPayment] = React.useState("");
+  const [number, setNumber] = useState("");
+  const [name, setName] = useState("");
+  const [date, setDate] = useState("");
+  const [cvv, setCvv] = useState("");
+  const [focus, setFocus] = useState("");
+
+  const handleAccordionChange = (panel) => (event, newExpanded) => {
+    setExpanded(newExpanded ? panel : "");
+  };
+
+  const handlePaymentChange = (event) => {
+    setSelectedPayment(event.target.value);
+  };
+
+
   return (
     <>
       <Header />
@@ -155,110 +206,246 @@ export default function ServiceCheckout() {
         }}
       >
         <Grid container spacing={5}>
-          <Grid item xs={7}>
-            <h6
-              style={{
-                marginTop: "30px",
-                fontWeight: "bolder",
-                fontSize: "18px",
-              }}
-            >
-              THÔNG TIN THANH TOÁN
-            </h6>
+          <Grid item xs={8}>
+            <Grid item xs={12}>
+              <h6
+                style={{
+                  marginTop: "30px",
+                  fontWeight: "bolder",
+                  fontSize: "18px",
+                }}
+              >
+                THÔNG TIN THANH TOÁN
+              </h6>
 
-            <p style={tagPStyle}>Họ và Tên *</p>
-            <input
-              type="text"
-              placeholder="Họ và tên"
-              style={inputStyle}
-              onChange={(e) => setRecipientName(e.target.value)}
-              defaultValue={recipientName}
-            ></input>
+              <p style={tagPStyle}>Họ và Tên *</p>
+              <input
+                type="text"
+                placeholder="Họ và tên"
+                style={inputStyle}
+                onChange={(e) => setRecipientName(e.target.value)}
+                defaultValue={recipientName}
+              ></input>
 
-            <p style={tagPStyle}>Số điện thoại *</p>
-            <input
-              type="text"
-              placeholder="Số điện thoại"
-              style={inputStyle}
-              onChange={(e) => setRecipientPhoneNumber(e.target.value)}
-              defaultValue={recipientPhoneNumber}
-            ></input>
+              <p style={tagPStyle}>Số điện thoại *</p>
+              <input
+                type="text"
+                placeholder="Số điện thoại"
+                style={inputStyle}
+                onChange={(e) => setRecipientPhoneNumber(e.target.value)}
+                defaultValue={recipientPhoneNumber}
+              ></input>
+            </Grid>
+            <Grid item xs={12}>
+              <h6
+                style={{
+                  marginTop: "30px",
+                  fontWeight: "bolder",
+                  fontSize: "18px",
+                }}
+              >
+                ĐƠN ĐĂNG KÍ CỦA BẠN
+              </h6>
+              {/* <p>Mã giỏ hàng: <span></span></p> */}
+
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <p
+                    style={{
+                      marginTop: "10px",
+                      fontWeight: "bolder",
+                      fontSize: "15px",
+                    }}
+                  >
+                    DỊCH VỤ
+                  </p>
+                </Grid>
+                <Grid item xs={6}>
+                  <p style={{ textAlign: "right" }}>TỔNG</p>
+                </Grid>
+              </Grid>
+              <hr />
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <p style={{ fontWeight: "bolder" }}>Tạm tính</p>
+                </Grid>
+                <Grid item xs={6}>
+                  <p style={{ color: "#cc2121", textAlign: "right" }}>
+                    {numberToVND(total)}
+                  </p>
+                </Grid>
+              </Grid>
+              <hr />
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <p style={{ fontWeight: "bolder" }}>Tổng</p>
+                </Grid>
+                <Grid item xs={6}>
+                  <p style={{ color: "#cc2121", textAlign: "right" }}>
+                    {numberToVND(total)}
+                  </p>
+                </Grid>
+              </Grid>
+              <hr />
+              {/* <input type="checkbox" /> */}
+              {/* <label style={{ fontWeight: 'bolder' }}>Trả tiền mặt khi nhận hàng</label><br /> */}
+              <Typography>
+                {" "}
+                <strong>* Lưu ý:</strong> Xin vui lòng kiểm tra điện thoại của
+                bạn sau khi đặt dịch vụ. Nhân viên của cửa hàng chúng tôi sẽ sớm
+                liên lạc để chốt lại thời gian.
+              </Typography>
+              <button
+                style={{
+                  cursor: "pointer",
+                  height: "40px",
+                  border: "none",
+                  width: "30%",
+                  backgroundColor: "black",
+                  color: "white",
+                  fontWeight: "bolder",
+                  marginTop: "20px",
+                }}
+                onClick={checkoutProduct}
+              >
+                ĐẶT DỊCH VỤ
+              </button>
+            </Grid>
           </Grid>
-          <Grid item xs={5}>
-            <h6
-              style={{
-                marginTop: "30px",
-                fontWeight: "bolder",
-                fontSize: "18px",
-              }}
-            >
-              ĐƠN ĐĂNG KÍ CỦA BẠN
-            </h6>
-            {/* <p>Mã giỏ hàng: <span></span></p> */}
+          <Grid item xs={4}>
+            <Box sx={{ paddingTop: "125px" }}>
+              <Accordion
+                expanded={expanded === "panel1"}
+                onChange={handleAccordionChange("panel1")}
+              >
+                <AccordionSummary>
+                  <Box className="form-check w-100">
+                    <RadioGroup
+                      value={selectedPayment}
+                      onChange={handlePaymentChange}
+                    >
+                      <FormControlLabel
+                        value="other"
+                        control={<Radio />}
+                        label="Thanh toán khi nhận hàng"
+                      />
+                    </RadioGroup>
+                  </Box>
+                </AccordionSummary>
+                {/* No AccordionDetails */}
+              </Accordion>
+              <Accordion
+                expanded={expanded === "panel2"}
+                onChange={handleAccordionChange("panel2")}
+              >
+                <AccordionSummary expandIcon={<CreditCardIcon />}>
+                  <Box className="form-check w-100">
+                    <RadioGroup
+                      value={selectedPayment}
+                      onChange={handlePaymentChange}
+                    >
+                      <FormControlLabel
+                        value="creditCard"
+                        control={<Radio />}
+                        label="Thẻ tín dụng / Credit Card"
+                      />
+                    </RadioGroup>
+                  </Box>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Cards
+                    number={number}
+                    name={name}
+                    expiry={date}
+                    cvv={cvv}
+                    focus={focus}
+                  />
+                  <br />
+                  <form className="credit-form">
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <FormControl fullWidth>
+                          <InputLabel htmlFor="number">Card Number</InputLabel>
+                          <Input
+                            id="number"
+                            type="text"
+                            value={number}
+                            onChange={(e) => setNumber(e.target.value)}
+                            onFocus={(e) => setFocus(e.target.name)}
+                          />
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <FormControl fullWidth>
+                          <InputLabel htmlFor="name">Card Name</InputLabel>
+                          <Input
+                            id="name"
+                            type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            onFocus={(e) => setFocus(e.target.name)}
+                          />
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <FormControl fullWidth>
+                          <InputLabel htmlFor="date">
+                            Expiration Date
+                          </InputLabel>
+                          <Input
+                            id="date"
+                            type="text"
+                            value={date}
+                            onChange={(e) => setDate(e.target.value)}
+                            onFocus={(e) => setFocus(e.target.name)}
+                          />
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <FormControl fullWidth>
+                          <InputLabel htmlFor="cvv">CVV</InputLabel>
+                          <Input
+                            id="cvv"
+                            type="number"
+                            value={cvv}
+                            onChange={(e) => setCvv(e.target.value)}
+                            onFocus={(e) => setFocus(e.target.name)}
+                          />
+                        </FormControl>
+                      </Grid>
+                    </Grid>
+                  </form>
+                </AccordionDetails>
+              </Accordion>
 
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <p
-                  style={{
-                    marginTop: "10px",
-                    fontWeight: "bolder",
-                    fontSize: "15px",
-                  }}
-                >
-                  DỊCH VỤ
-                </p>
-              </Grid>
-              <Grid item xs={6}>
-                <p style={{ textAlign: "right" }}>TỔNG</p>
-              </Grid>
-
-            </Grid>
-            <hr />
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <p style={{ fontWeight: "bolder" }}>Tạm tính</p>
-              </Grid>
-              <Grid item xs={6}>
-                <p style={{ color: "#cc2121", textAlign: "right" }}>
-                  {numberToVND(total)}
-                </p>
-              </Grid>
-            </Grid>
-            <hr />
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <p style={{ fontWeight: "bolder" }}>Tổng</p>
-              </Grid>
-              <Grid item xs={6}>
-                <p style={{ color: "#cc2121", textAlign: "right" }}>
-                  {numberToVND(total)}
-                </p>
-              </Grid>
-            </Grid>
-            <hr />
-            {/* <input type="checkbox" /> */}
-            {/* <label style={{ fontWeight: 'bolder' }}>Trả tiền mặt khi nhận hàng</label><br /> */}
-            <Typography>
-              {" "}
-              <strong>* Lưu ý:</strong> Xin vui lòng kiểm tra điện thoại của bạn
-              sau khi đặt dịch vụ. Nhân viên của cửa hàng chúng tôi sẽ sớm liên
-              lạc để chốt lại thời gian.
-            </Typography>
-            <button
-              style={{
-                cursor: "pointer",
-                height: "40px",
-                border: "none",
-                width: "30%",
-                backgroundColor: "black",
-                color: "white",
-                fontWeight: "bolder",
-                marginTop: "20px",
-              }}
-              onClick={checkoutProduct}
-            >
-              ĐẶT DỊCH VỤ
-            </button>
+              {/* <Accordion
+                expanded={expanded === "panel3"}
+                onChange={handleAccordionChange("panel3")}
+              >
+                <AccordionSummary>
+                  <div className="form-check w-100">
+                    <RadioGroup
+                      value={selectedPayment}
+                      onChange={handlePaymentChange}
+                    >
+                      <FormControlLabel
+                        value="paypal"
+                        control={<Radio />}
+                        label="PayPal"
+                      />
+                    </RadioGroup>
+                  </div>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <div className="card-body">
+                    <Typography>
+                      Email address:{" "}
+                      <input type="email" className="form-control" />
+                    </Typography>
+                  </div>
+                </AccordionDetails>
+              </Accordion> */}
+            </Box>
           </Grid>
         </Grid>
       </Box>

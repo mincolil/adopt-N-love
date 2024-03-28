@@ -17,12 +17,20 @@ const jwt = require('jsonwebtoken')
 
 const clientid = "424228344980-l67mummet93pgl903qru8ejvjeoo098s.apps.googleusercontent.com";
 const clientserver = "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"
+const bookingController = require('../backend/controllers/bookingController');
+const router = require('./routes/bookingRoutes');
 
-app.use(express.json());
+app.use(express.json({
+    limit: '5mb',
+    verify: (req, res, buf) => {
+        req.rawBody = buf.toString();
+    }
+}));
 app.use(cookieParser());
 // tell nodejs to access static file in public folder
 app.use('/', express.static(path.join(__dirname, '/public')));
 app.use(express.urlencoded({ extended: false }));
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 app.use(
     cors({

@@ -39,18 +39,66 @@ import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 import useAuth from "../../../hooks/useAuth";
 import { Link as RouterLink } from "react-router-dom";
+import dayjs from "dayjs";
+import ChoosePet from "../../../components/Modal/ModalChoosePet";
 
 const BASE_URL = "http://localhost:3500";
 
-const DsCheckbox = styled(Checkbox)`
-  color: #eeeeee !important;
-  &.Mui-checked {
-    color: #000 !important;
-  }
-`;
+const numberToVND = (number) => {
+  return number.toLocaleString("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  });
+};
+
 
 function ServiceItem({ service }) {
-  const { _id, serviceName, price, serviceImage } = service;
+  const [dataPet, setDataPet] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState({});
+  const context = useAuth();
+
+  const handleAddToCartClick = async (serviceId) => {
+    if (context.auth.token === undefined) {
+      toast.warning("Bạn chưa đăng nhập, vui lòng đăng nhập !");
+    } else {
+      try {
+        const loadDataPet = await axios.post(
+          `http://localhost:3500/pet/booking`,
+          {
+            userId: context.auth.id,
+            serviceId: serviceId,
+          }
+        );
+        if (loadDataPet.error) {
+          toast.error(loadDataPet.error);
+        } else {
+          // setData(loadDataPet.data.docs);
+
+          setDataPet(loadDataPet.data);
+          setIsModalOpen(true);
+          setSelectedService(serviceId);
+          if (serviceId !== undefined) {
+            context.auth.serviceId = serviceId;
+          }
+
+          // console.log("Kiểm tra pet của người dùng", loadDataPet.data);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+      // console.log("Check data id", serviceId);
+      // setSelectedService(serviceId);
+    }
+  };
+
+  const handleCloseEditModal = () => {
+    setIsModalOpen(false);
+    setSelectedService(null);
+  };
+
+
+  const { _id, serviceName, price, serviceImage, discount, saleEndTime, saleStartTime } = service;
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
       <Card className="product-card">
@@ -61,23 +109,107 @@ function ServiceItem({ service }) {
             image={serviceImage}
             alt={serviceName}
           />
+          {discount !== 0 &&
+            dayjs().isBetween(
+              dayjs(saleStartTime),
+              dayjs(saleEndTime)
+            ) ? (
+            <Card
+              style={{
+                position: "absolute",
+                top: "0px",
+                right: "0px",
+                fontSize: "18px",
+                alignItems: "center",
+              }}
+            >
+              <Typography
+                variant="h6"
+                component="h2"
+                sx={{
+                  color: "#fff",
+                  backgroundColor: "#ee4d2d",
+                  fontSize: "1rem",
+                  borderRadius: "2px",
+                  padding: "2px 4px",
+                  fontWeight: "800",
+                  whiteSpace: "nowrap",
+                  textTransform: "uppercase",
+                }}
+              >
+                {discount}%
+              </Typography>
+            </Card>
+          ) : (
+            ""
+          )}
+
           <CardContent sx={{ textAlign: "center" }}>
             <Typography
               gutterBottom
               variant="h5"
               component="div"
               className="product-title"
-              style={{ color: '#ff5722' }}
+              style={{ color: '#838b8b' }}
             >
               {serviceName}
             </Typography>
+
             <Typography
               variant="body2"
               color="text.secondary"
               className="product-price"
             >
-              {price} VND{" "}
+              {discount !== 0 &&
+                dayjs().isBetween(
+                  dayjs(saleStartTime),
+                  dayjs(saleEndTime)
+                ) ? (
+                <Box
+                  display="flex"
+                  flexGrow={1}
+                  sx={{
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    component="h2"
+                    sx={{
+                      textDecoration: "line-through",
+                      marginRight: "8px",
+                      color: "gray",
+                    }}
+                  >
+                    {numberToVND(price)}
+                  </Typography>
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    component="h2"
+                    style={{ color: '#ff5722' }}
+                  >
+                    {numberToVND(
+                      price -
+                      (price * discount) / 100
+                    )}
+                  </Typography>
+                </Box>
+              ) : (
+                <Typography
+                  gutterBottom
+                  variant="h6"
+                  component="h2"
+                  style={{ color: '#ff5722' }}
+                >
+                  {numberToVND(price)}
+                </Typography>
+              )}
+
             </Typography>
+
           </CardContent>
         </CardActionArea>
         <CardActions sx={{ justifyContent: "center" }}>
@@ -85,11 +217,20 @@ function ServiceItem({ service }) {
             size="large"
             color="primary"
             aria-label="add to shopping cart"
+            onClick={() => handleAddToCartClick(service._id)}
           >
             <AddShoppingCartIcon />
           </IconButton>
         </CardActions>
       </Card>
+      {/* Choose Pet */}
+      <ChoosePet
+        open={isModalOpen}
+        onClose={handleCloseEditModal}
+        service={selectedService}
+        pet={dataPet}
+        loadData={handleAddToCartClick}
+      />
     </Grid>
   );
 }

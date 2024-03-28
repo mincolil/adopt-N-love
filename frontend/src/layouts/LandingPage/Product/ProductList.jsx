@@ -39,6 +39,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 import useAuth from "../../../hooks/useAuth";
+import dayjs from "dayjs";
 
 const BASE_URL = "http://localhost:3500";
 
@@ -49,8 +50,15 @@ const DsCheckbox = styled(Checkbox)`
   }
 `;
 
+const numberToVND = (number) => {
+  return number.toLocaleString("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  });
+};
+
 function ProductItem({ product }) {
-  const { _id, productName, quantity, price, productImage } = product;
+  const { _id, productName, quantity, price, productImage, discount, saleEndTime, saleStartTime } = product;
   const [quantitySell, setQuantitySell] = useState(1);
   const context = useAuth();
 
@@ -94,13 +102,47 @@ function ProductItem({ product }) {
             image={productImage}
             alt={productName}
           />
+          {discount !== 0 &&
+            dayjs().isBetween(
+              dayjs(saleStartTime),
+              dayjs(saleEndTime)
+            ) ? (
+            <Card
+              style={{
+                position: "absolute",
+                top: "0px",
+                right: "0px",
+                fontSize: "18px",
+                alignItems: "center",
+              }}
+            >
+              <Typography
+                variant="h6"
+                component="h2"
+                sx={{
+                  color: "#fff",
+                  backgroundColor: "#ee4d2d",
+                  fontSize: "1rem",
+                  borderRadius: "2px",
+                  padding: "2px 4px",
+                  fontWeight: "800",
+                  whiteSpace: "nowrap",
+                  textTransform: "uppercase",
+                }}
+              >
+                {discount}%
+              </Typography>
+            </Card>
+          ) : (
+            ""
+          )}
           <CardContent sx={{ textAlign: "center" }}>
             <Typography
               gutterBottom
               variant="h5"
               component="div"
               className="product-title"
-              style={{ color: '#ff5722' }}
+              style={{ color: '#838b8b' }}
             >
               {productName}
             </Typography>
@@ -109,7 +151,53 @@ function ProductItem({ product }) {
               color="text.secondary"
               className="product-price"
             >
-              {price} VND{" "}
+              {discount !== 0 &&
+                dayjs().isBetween(
+                  dayjs(saleStartTime),
+                  dayjs(saleEndTime)
+                ) ? (
+                <Box
+                  display="flex"
+                  flexGrow={1}
+                  sx={{
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    component="h2"
+                    sx={{
+                      textDecoration: "line-through",
+                      marginRight: "8px",
+                      color: "gray",
+                    }}
+                  >
+                    {numberToVND(price)}
+                  </Typography>
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    component="h2"
+                    style={{ color: '#ff5722' }}
+                  >
+                    {numberToVND(
+                      price -
+                      (price * discount) / 100
+                    )}
+                  </Typography>
+                </Box>
+              ) : (
+                <Typography
+                  gutterBottom
+                  variant="h6"
+                  component="h2"
+                  style={{ color: '#ff5722' }}
+                >
+                  {numberToVND(price)}
+                </Typography>
+              )}
             </Typography>
           </CardContent>
         </CardActionArea>

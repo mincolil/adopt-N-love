@@ -7,13 +7,11 @@ import {
   Link,
   Button,
   Box,
-  IconButton,
   Breadcrumbs,
   Tabs,
   Tab,
   TextField,
   Rating,
-  Chip,
   Backdrop,
   CircularProgress,
 } from "@mui/material";
@@ -26,8 +24,16 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import ChoosePet from "../../../components/Modal/ModalChoosePet";
+import dayjs from "dayjs";
 
 const BASE_URL = "http://localhost:3500";
+
+const numberToVND = (number) => {
+  return number.toLocaleString("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  });
+};
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -204,9 +210,71 @@ const ServiceDetail = () => {
                 (7)
               </Typography>
             </Box> */}
-              <Typography variant="body1" className="price">
-                <span>{service && service.price} VND</span>
-              </Typography>
+              {service.discount !== 0 &&
+                dayjs().isBetween(
+                  dayjs(service.saleStartTime),
+                  dayjs(service.saleEndTime)
+                ) ? (
+                <Box
+                  display="flex"
+                  flexGrow={1}
+                  sx={{
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    component="h2"
+                    sx={{
+                      textDecoration: "line-through",
+                      marginRight: "8px",
+                      color: "gray",
+                    }}
+                  >
+                    {numberToVND(service.price)}
+                  </Typography>
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    component="h2"
+                    style={{ color: '#ff5722' }}
+                  >
+                    {numberToVND(
+                      service.price -
+                      (service.price * service.discount) / 100
+                    )}
+                  </Typography>
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    component="h2"
+                    sx={{
+                      color: "#fff",
+                      backgroundColor: "#ee4d2d",
+                      marginLeft: "10px",
+                      fontSize: ".75rem",
+                      borderRadius: "2px",
+                      padding: "2px 4px",
+                      fontWeight: "600",
+                      whiteSpace: "nowrap",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {service.discount}% Giảm
+                  </Typography>
+                </Box>
+              ) : (
+                <Typography
+                  gutterBottom
+                  variant="h6"
+                  component="h2"
+                  style={{ color: '#ff5722' }}
+                >
+                  {numberToVND(service.price)}
+                </Typography>
+              )}
               <Box className="product-details-description">
                 <Typography variant="body2">
                   {service && service.description}

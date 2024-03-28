@@ -2,6 +2,8 @@ const { ca } = require('date-fns/locale')
 const AdoptPet = require('../models/AdoptPet')
 const Pet = require('../models/Pet')
 const User = require('../models/User')
+const jwt = require('jsonwebtoken');
+const AdoptNotification = require('../models/AdoptNotification')
 
 const createNewAdopt = async (req, res) => {
     try {
@@ -271,6 +273,75 @@ const getAdoptById = async (req, res) => {
     }
 }
 
+const createAdoptNotification = async (req, res) => {
+    try {
+        const { userId, petId, ownerId } = req.body
+        //check if the user has already created the adopt notification in one pet
+        const check = await AdoptNotification.findOne({ userId: userId, petId: petId })
+        if (check) {
+            return res.status(400).json({
+                error: "You have already created the adopt notification for this pet"
+            })
+        } else {
+            const adoptNotification = new AdoptNotification({
+                userId,
+                petId,
+                ownerId,
+                status: "PENDING"
+            })
+            const result = await adoptNotification.save()
+            if (result) {
+                res.status(201).json({
+                    message: `Created adopt notification`
+                })
+            } else {
+                res.status(400).json({
+                    error: "Create fail"
+                })
+            }
+        }
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
+    }
+}
+
+const getAdoptNotification = async (req, res) => {
+    try {
+        const token = req.headers.authorization;
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const userId = decoded.id;
+
+        // const { userId } = req.body
+
+        const adoptNotifications = await AdoptNotification.find({ ownerId: userId }).populate('petId').populate('ownerId').populate('userId');
+        res.status(200).json(adoptNotifications);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json(err);
+    }
+}
+
+const deleteAdoptNotification = async (req, res) => {
+    try {
+        const { id } = req.params
+        const result = await AdoptNotification.findByIdAndDelete(id)
+        if (!result) return res.json({
+            error: "No adopt notification found"
+        })
+        res.status(200).json({
+            message: `Deleted adopt notification`
+        })
+    } catch (error) {
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
+    }
+}
+
 module.exports = {
     createNewAdopt,
     getAllAdopt,
@@ -280,5 +351,8 @@ module.exports = {
     updateAdopt,
     getAdoptById,
     getAdoptByUsername,
-    getAdoptByPetName
+    getAdoptByPetName,
+    createAdoptNotification,
+    getAdoptNotification,
+    deleteAdoptNotification
 }

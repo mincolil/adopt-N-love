@@ -17,6 +17,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import LoginIcon from "@mui/icons-material/Login";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
+import MarkEmailUnreadIcon from '@mui/icons-material/MarkEmailUnread';
 import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import Fade from "@mui/material/Fade";
 import Logo from "../../images/RealLogo2.png";
@@ -80,7 +81,7 @@ const Header = () => {
                 sx={{
                   color: "#000",
                   "& > button": {
-                    fontSize: "17px",
+                    fontSize: "20px",
                     fontFamily: "'Poppins', sans-serif !important",
                   },
                 }}
@@ -90,7 +91,7 @@ const Header = () => {
                   href="/"
                   sx={{
                     fontFamily: "'Poppins', sans-serif !important",
-                    fontSize: "17px",
+                    fontSize: "20px",
                   }}
                 >
                   Trang chủ
@@ -98,7 +99,7 @@ const Header = () => {
 
                 <DsButton color="inherit" href="/adopt-homepage" sx={{
                   fontFamily: "'Poppins', sans-serif !important",
-                  fontSize: "17px",
+                  fontSize: "20px",
                 }}>
                   Nhận nuôi
                   {/* <ArrowDropDownIcon /> */}
@@ -109,7 +110,7 @@ const Header = () => {
                   href="/service-homepage"
                   sx={{
                     fontFamily: "'Poppins', sans-serif !important",
-                    fontSize: "17px",
+                    fontSize: "20px",
                   }}
                 >
                   Dịch vụ
@@ -120,7 +121,7 @@ const Header = () => {
                   href="/product-homepage"
                   sx={{
                     fontFamily: "'Poppins', sans-serif !important",
-                    fontSize: "17px",
+                    fontSize: "20px",
                   }}
                 >
                   Sản phẩm
@@ -128,7 +129,7 @@ const Header = () => {
 
                 <DsButton color="inherit" href="/blog-homepage" sx={{
                   fontFamily: "'Poppins', sans-serif !important",
-                  fontSize: "17px",
+                  fontSize: "20px",
                 }}>Blog</DsButton>
               </Box>
             </Grid>
@@ -148,6 +149,23 @@ const Header = () => {
                   textAlign: "center",
                 }}
               >
+
+                {isLoggedIn && (
+                  <Tooltip
+                    title="Đề nghị nhận nuôi thú cưng"
+                    style={{ position: "relative" }}
+                  >
+                    <NavLink to="/adopt-request">
+                      <IconButton size="small" sx={{ ml: 2 }}>
+                        <MarkEmailUnreadIcon
+                          sx={{ width: 32, height: 32 }}
+                        ></MarkEmailUnreadIcon>
+                      </IconButton>
+                    </NavLink>
+                    <div style={reddot}>{context.adoptRequestNumber}</div>
+                  </Tooltip>
+                )}
+
                 {isLoggedIn && (
                   <Tooltip
                     title="Giỏ hàng dịch vụ"

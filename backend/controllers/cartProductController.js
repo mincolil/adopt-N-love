@@ -239,7 +239,7 @@ const handleStripePayment = async (req, res) => {
         const order = new Order({
             userId: session.metadata.userId,
             totalPrice: session.amount_total,
-            status: 'Chờ xác nhận',
+            status: 'Đã thanh toán',
             recipientName: session.metadata.recipientName,
             recipientPhoneNumber: session.metadata.recipientPhoneNumber,
             deliveryAddress: session.metadata.deliveryAddress,

@@ -2,7 +2,8 @@ import "./LandingPage.css";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
 import React, { useState, useEffect } from "react";
-import { Typography, Container, Button, Box, Avatar } from "@mui/material";
+import { Typography, Button, Container, Box, Avatar } from "@mui/material";
+import useAuth from "../../hooks/useAuth";
 import Grid from "@mui/material/Unstable_Grid2";
 import Carousel from "react-material-ui-carousel";
 import styled from "styled-components";
@@ -17,10 +18,16 @@ import AdaptIcon2 from "../../images/adapt_icon_2.png";
 import Avatar1 from "../../images/avatar1.png";
 import Logo from "../../images/AdoptNLove.png";
 import { ToastContainer } from "react-toastify";
+import { notification, Space } from 'antd';
+import axios from "axios";
+import { NavLink, useNavigate } from "react-router-dom";
+
+
 
 const DsButton = styled(Button)`
   text-transform: none !important;
 `;
+const BASE_URL = "http://localhost:3500";
 
 const Counter = ({ target }) => {
   const [count, setCount] = useState(0);
@@ -68,10 +75,52 @@ const testimonials = [
 ];
 
 function Home() {
+  const context = useAuth();
+  context.handleLoadCartProduct();
+
+  const btn = (
+    <Space>
+      {/* button to /pet-user */}
+      <Button type="primary" size="small" component={NavLink} to="/pet-user">
+        Xem chi tiết
+      </Button>
+    </Space>
+  );
+
+  const [api, contextHolder] = notification.useNotification();
+  const openNotificationWithIcon = (type) => {
+    api[type]({
+      message: 'Thông báo',
+      description:
+        'Thú cưng của bạn đang được giảm giá sử dụng dịch vụ. Đến kiểm tra xem !',
+      btn,
+    });
+  };
+
+  const handleCheckPetDiscount = async (id) => {
+    try {
+      const res = await axios.get(`${BASE_URL}/pet/userId?id=${id}`);
+      //count pet have discount > 0
+      const count = res.data.docs.filter((pet) => pet.discount > 0).length;
+      console.log("giam gia: " + count);
+      if (count > 0) {
+        openNotificationWithIcon('success');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    handleCheckPetDiscount(context.auth.id);
+  }, [context.auth.id]);
+
+
   return (
     <>
       <Header />
       <ToastContainer />
+      {contextHolder}
       <Grid
         className="banner"
         container
@@ -119,6 +168,7 @@ function Home() {
                 textTransform: "none",
                 fontSize: "1rem",
               }}
+              onClick={() => handleCheckPetDiscount(context.auth.id)}
             >
               Liên hệ
             </Button>

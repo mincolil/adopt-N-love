@@ -33,29 +33,89 @@ const getBookingDetailByBookingId = async (req, res) => {
             },
             {
                 $addFields: {
-                    isWithinSale: {
-                        $and: [
-                            { $gte: ["$createdAt", "$service.saleStartTime"] },
-                            { $lte: ["$createdAt", "$service.saleEndTime"] }
-                        ]
-                    },
                     discountedPrice: {
-                        $cond: {
-                            if: {
-                                $and: [
-                                    "$service.saleStartTime",
-                                    "$service.saleEndTime",
-                                    { $gte: ["$createdAt", "$service.saleStartTime"] },
-                                    { $lte: ["$createdAt", "$service.saleEndTime"] }
-                                ]
-                            },
-                            then: {
-                                $multiply: [
-                                    "$quantity",
-                                    { $subtract: ["$service.price", { $multiply: ["$service.price", { $divide: ["$service.discount", 100] }] }] }
-                                ]
-                            },
-                            else: { $multiply: ["$quantity", "$service.price"] }
+                        //4 conditions if service has discount and pet has discount, service has discount, pet has discount, no discount
+                        $switch: {
+                            branches: [
+                                {
+                                    case: {
+                                        $and: [
+                                            { $gte: ["$service.saleStartTime", new Date()] },
+                                            { $lte: ["$service.saleEndTime", new Date()] },
+                                            { $ne: ["$service.discount", 0] },
+                                            { $ne: ["$pet.discount", 0] }
+                                        ]
+                                    },
+                                    then: {
+                                        $multiply: [
+                                            "$service.price",
+                                            {
+                                                $subtract: [
+                                                    1,
+                                                    {
+                                                        $divide: ["$service.discount", 100]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                $subtract: [
+                                                    1,
+                                                    {
+                                                        $divide: ["$pet.discount", 100]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    case: {
+                                        $and: [
+                                            { $gte: ["$service.saleStartTime", new Date()] },
+                                            { $lte: ["$service.saleEndTime", new Date()] },
+                                            { $ne: ["$service.discount", 0] }
+                                        ]
+                                    },
+                                    then: {
+                                        $multiply: [
+                                            "$service.price",
+                                            {
+                                                $subtract: [
+                                                    1,
+                                                    {
+                                                        $divide: ["$service.discount", 100]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    case: {
+                                        $ne: ["$pet.discount", 0]
+                                    },
+                                    then: {
+                                        $multiply: [
+                                            "$service.price",
+                                            {
+                                                $subtract: [
+                                                    1,
+                                                    {
+                                                        $divide: ["$pet.discount", 100]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    case: {
+                                        $eq: ["$service.discount", 0]
+                                    },
+                                    then: "$service.price"
+                                }
+                            ],
+                            default: "$service.price"
                         }
                     }
                 }

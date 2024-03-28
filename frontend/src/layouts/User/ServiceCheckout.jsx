@@ -49,7 +49,6 @@ export default function ServiceCheckout() {
 
   const navigate = useNavigate();
   const context = useAuth();
-  console.log(context.auth);
 
   const [data, setData] = useState([]);
   // const [quantity, setQuantity] = useState(0)
@@ -121,8 +120,21 @@ export default function ServiceCheckout() {
           // console.log(loadData.data);
           let totalPrice = 0;
           for (let i = 0; i < loadData.data.length; i++) {
-            if (
+            if ((
               loadData.data[i].serviceId.discount !== 0 &&
+              dayjs().isBetween(
+                dayjs(loadData.data[i].serviceId.saleStartTime),
+                dayjs(loadData.data[i].serviceId.saleEndTime)
+              )) && loadData.data[i].petId.discount !== 0
+            ) {
+              totalPrice +=
+                loadData.data[i].quantity *
+                (loadData.data[i].serviceId.price -
+                  (loadData.data[i].serviceId.price *
+                    loadData.data[i].serviceId.discount) /
+                  100
+                  - (loadData.data[i].serviceId.price * loadData.data[i].petId.discount / 100));
+            } else if (loadData.data[i].serviceId.discount !== 0 &&
               dayjs().isBetween(
                 dayjs(loadData.data[i].serviceId.saleStartTime),
                 dayjs(loadData.data[i].serviceId.saleEndTime)
@@ -133,8 +145,15 @@ export default function ServiceCheckout() {
                 (loadData.data[i].serviceId.price -
                   (loadData.data[i].serviceId.price *
                     loadData.data[i].serviceId.discount) /
-                    100);
-            } else {
+                  100);
+
+            }
+            else if (loadData.data[i].petId.discount !== 0) {
+              totalPrice +=
+                loadData.data[i].quantity *
+                (loadData.data[i].serviceId.price - (loadData.data[i].serviceId.price * loadData.data[i].petId.discount / 100));
+            }
+            else {
               totalPrice +=
                 loadData.data[i].quantity * loadData.data[i].serviceId.price;
             }

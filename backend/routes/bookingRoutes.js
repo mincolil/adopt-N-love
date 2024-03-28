@@ -11,5 +11,4 @@ router.get('/', bookingController.getAllBooking) //test
     .put('/:bookingId', validateBooking.validateUpdateBooking, bookingController.updateBooking) //test
     .put('/update-status/:bookingId', bookingController.updateStatus)
     .delete('/:bookingId', bookingController.deleteBooking)
-
 module.exports = router    

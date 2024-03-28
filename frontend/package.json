@@ -14,7 +14,7 @@
     "@mui/x-charts": "^6.18.3",
     "@mui/x-data-grid": "^6.16.2",
     "@mui/x-date-pickers": "^6.18.2",
-    "@stripe/stripe-js": "^3.0.10",
+    "@stripe/stripe-js": "^3.1.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",

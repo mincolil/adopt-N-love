@@ -50,7 +50,7 @@ export default function AccountMenu() {
         await auth2.signOut(); // Wait for sign-out to complete
       }
       // Navigate after sign-out is complete
-      navigate("/sign-in");
+      window.location.href = "/sign-in";
       toast.success("Đăng xuất thành công!");
     } catch (error) {
       console.error(error);

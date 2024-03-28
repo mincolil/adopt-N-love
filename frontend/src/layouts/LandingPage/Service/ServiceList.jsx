@@ -40,15 +40,9 @@ import { ToastContainer } from "react-toastify";
 import useAuth from "../../../hooks/useAuth";
 import { Link as RouterLink } from "react-router-dom";
 import dayjs from "dayjs";
+import ChoosePet from "../../../components/Modal/ModalChoosePet";
 
 const BASE_URL = "http://localhost:3500";
-
-const DsCheckbox = styled(Checkbox)`
-  color: #eeeeee !important;
-  &.Mui-checked {
-    color: #000 !important;
-  }
-`;
 
 const numberToVND = (number) => {
   return number.toLocaleString("vi-VN", {
@@ -57,7 +51,53 @@ const numberToVND = (number) => {
   });
 };
 
+
 function ServiceItem({ service }) {
+  const [dataPet, setDataPet] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState({});
+  const context = useAuth();
+
+  const handleAddToCartClick = async (serviceId) => {
+    if (context.auth.token === undefined) {
+      toast.warning("Bạn chưa đăng nhập, vui lòng đăng nhập !");
+    } else {
+      try {
+        const loadDataPet = await axios.post(
+          `http://localhost:3500/pet/booking`,
+          {
+            userId: context.auth.id,
+            serviceId: serviceId,
+          }
+        );
+        if (loadDataPet.error) {
+          toast.error(loadDataPet.error);
+        } else {
+          // setData(loadDataPet.data.docs);
+
+          setDataPet(loadDataPet.data);
+          setIsModalOpen(true);
+          setSelectedService(serviceId);
+          if (serviceId !== undefined) {
+            context.auth.serviceId = serviceId;
+          }
+
+          // console.log("Kiểm tra pet của người dùng", loadDataPet.data);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+      // console.log("Check data id", serviceId);
+      // setSelectedService(serviceId);
+    }
+  };
+
+  const handleCloseEditModal = () => {
+    setIsModalOpen(false);
+    setSelectedService(null);
+  };
+
+
   const { _id, serviceName, price, serviceImage, discount, saleEndTime, saleStartTime } = service;
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
@@ -177,11 +217,20 @@ function ServiceItem({ service }) {
             size="large"
             color="primary"
             aria-label="add to shopping cart"
+            onClick={() => handleAddToCartClick(service._id)}
           >
             <AddShoppingCartIcon />
           </IconButton>
         </CardActions>
       </Card>
+      {/* Choose Pet */}
+      <ChoosePet
+        open={isModalOpen}
+        onClose={handleCloseEditModal}
+        service={selectedService}
+        pet={dataPet}
+        loadData={handleAddToCartClick}
+      />
     </Grid>
   );
 }

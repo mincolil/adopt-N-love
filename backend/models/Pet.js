@@ -21,6 +21,10 @@ const petSchema = new mongoose.Schema({
         ref: 'Category',
         required: true,
     },
+    discount: {
+        type: Number,
+        default: 0,
+    },
     color: String,
     weight: Number,
     height: Number,

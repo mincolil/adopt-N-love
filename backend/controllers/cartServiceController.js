@@ -3,6 +3,7 @@ const Service = require('../models/Service')
 const Booking = require('../models/Booking');
 const BookingDetail = require('../models/BookingDetail');
 const jwt = require('jsonwebtoken');
+const Pet = require('../models/Pet');
 
 
 const viewCart = async (req, res) => {
@@ -123,9 +124,15 @@ const checkout = async (req, res) => {
                 });
 
                 await bookingDetail.save();
+                //get discount value of pet
+                const pet = await Pet.findById(cartItem.petId);
+                let petDiscount = 0;
+                if (pet) {
+                    petDiscount = pet.discount;
+                }
 
                 // Update the total price
-                total += service.discountedPrice * cartItem.quantity;
+                total += ((service.discountedPrice) - (service.price * petDiscount / 100)) * cartItem.quantity;
             }
         }
 

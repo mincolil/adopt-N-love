@@ -223,6 +223,36 @@ export default function PetUser() {
                         justifyContent: "space-between",
                       }}
                     >
+                      {value.discount > 0 && (
+                        <Card
+                          style={{
+                            position: "absolute",
+                            top: "0px",
+                            right: "0px",
+                            fontSize: "18px",
+                            alignItems: "center",
+                            styled: { padding: "2px 4px" },
+                          }}
+                        >
+                          <Typography
+                            variant="h6"
+                            component="h2"
+                            sx={{
+                              color: "#fff",
+                              backgroundColor: "#ffffff",
+                              fontSize: "1rem",
+                              borderRadius: "2px",
+                              padding: "2px 4px",
+                              fontWeight: "800",
+                              whiteSpace: "nowrap",
+                              textTransform: "uppercase",
+                              color: "#f57c00",
+                            }}
+                          >
+                            Ưu đãi
+                          </Typography>
+                        </Card>
+                      )}
                       <AspectRatio
                         variant="outlined"
                         style={{ backgroundColor: "#f57c00" }}

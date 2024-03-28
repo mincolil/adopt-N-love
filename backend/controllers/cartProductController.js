@@ -1,10 +1,15 @@
 const CartProduct = require('../models/CartProduct');
 const Product = require('../models/Product')
 const Order = require('../models/Order');
+const Service = require('../models/Service');
 const OrderDetail = require('../models/OrderDetail');
+const CartService = require('../models/CartService');
+const BookingDetail = require('../models/BookingDetail');
 const jwt = require('jsonwebtoken');
+const Pet = require('../models/Pet');
 const e = require('express');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const Booking = require('../models/Booking');
 let endpointSecret = "whsec_c29f4e9b61dc83ebf1bfdf2b9d16e971b443576807c28f8647222d9ae757309c";
 
 const viewCart = async (req, res) => {
@@ -183,8 +188,6 @@ const checkoutStripe = async (req, res) => {
                     quantity: cartItem.quantity,
                 });
             }
-            product.quantity -= cartItem.quantity;
-            await product.save();
         }
 
         const session = await stripe.checkout.sessions.create({
@@ -236,49 +239,93 @@ const handleStripePayment = async (req, res) => {
         // Here you can retrieve order details from the session object
         // and save them in your database
         let total = 0;
-        const order = new Order({
-            userId: session.metadata.userId,
-            totalPrice: session.amount_total,
-            status: 'Đã thanh toán',
-            recipientName: session.metadata.recipientName,
-            recipientPhoneNumber: session.metadata.recipientPhoneNumber,
-            deliveryAddress: session.metadata.deliveryAddress,
-        });
-
-        const createdOrder = await order.save();
 
         // You can also remove cart items here if needed
         // Create booking details for each cart item
-        const parsedCartItems = JSON.parse(session.metadata.cartItems);
 
 
-        for (const cartItem of parsedCartItems) {
+        if (session.metadata.cartItems) {
+            const parsedCartItems = JSON.parse(session.metadata.cartItems);
 
-            const product = await Product.findById(cartItem.productId);
+            const order = new Order({
+                userId: session.metadata.userId,
+                totalPrice: session.amount_total,
+                status: 'Đã thanh toán',
+                recipientName: session.metadata.recipientName,
+                recipientPhoneNumber: session.metadata.recipientPhoneNumber,
+                deliveryAddress: session.metadata.deliveryAddress,
+            });
+            const createdOrder = await order.save();
+            for (const cartItem of parsedCartItems) {
 
-            if (product) {
-                const orderDetail = new OrderDetail({
-                    orderId: createdOrder._id,
-                    productId: cartItem.productId,
-                    quantity: cartItem.quantity,
-                });
+                const product = await Product.findById(cartItem.productId);
 
-                await orderDetail.save();
+                if (product) {
+                    const orderDetail = new OrderDetail({
+                        orderId: createdOrder._id,
+                        productId: cartItem.productId,
+                        quantity: cartItem.quantity,
+                    });
 
-                // Update the total price
-                total += product.discountedPrice * cartItem.quantity;
+                    await orderDetail.save();
+
+                    // Update the total price
+                    total += product.discountedPrice * cartItem.quantity;
+                }
+                product.quantity -= cartItem.quantity;
+                await product.save();
             }
-            product.quantity -= cartItem.quantity;
-            await product.save();
+
+            // Update the booking's total price
+            createdOrder.totalPrice = total;
+            await createdOrder.save();
+
+            // Remove all cart items for the user
+            const userId = session.metadata.userId;
+            await CartProduct.deleteMany({ userId });
         }
+        if (session.metadata.cartServiceItems) {
+            const parsedCartServiceItems = JSON.parse(session.metadata.cartServiceItems);
+            const booking = new Booking({
+                userId: session.metadata.userId,
+                totalPrice: session.amount_total,
+                status: 'Đã thanh toán',
+                recipientName: session.metadata.recipientName,
+                recipientPhoneNumber: session.metadata.recipientPhoneNumber,
+            });
+            const createdBooking = await booking.save();
+            for (const cartServiceItem of parsedCartServiceItems) {
 
-        // Update the booking's total price
-        createdOrder.totalPrice = total;
-        await createdOrder.save();
+                const service = await Service.findById(cartServiceItem.serviceId);
 
-        // Remove all cart items for the user
-        const userId = session.metadata.userId;
-        await CartProduct.deleteMany({ userId });
+                if (service) {
+                    const bookingDetail = new BookingDetail({
+                        bookingId: createdBooking._id,
+                        petId: cartServiceItem.petId,
+                        serviceId: cartServiceItem.serviceId,
+                        quantity: cartServiceItem.quantity,
+                        bookingDate: cartServiceItem.bookingDate,
+                    });
+
+                    await bookingDetail.save();
+                    const pet = await Pet.findById(cartServiceItem.petId);
+                    let petDiscount = 0;
+                    if (pet) {
+                        petDiscount = pet.discount;
+                    }
+                    // Update the total price
+                    total += ((service.discountedPrice) - (service.price * petDiscount / 100)) * cartServiceItem.quantity;
+                }
+            }
+
+            // Update the booking's total price
+            createdBooking.totalPrice = total;
+            await createdBooking.save();
+
+            // Remove all cart items for the user
+            const userId = session.metadata.userId;
+            await CartService.deleteMany({ userId });
+        }
 
         res.status(200).json({
             message: 'Checkout successful',

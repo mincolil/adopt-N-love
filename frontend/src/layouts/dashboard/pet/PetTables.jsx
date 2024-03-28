@@ -484,7 +484,9 @@ export default function PetTable() {
       render: (text, record) => (
         <Space size="middle">
           <Button onMouseDown={(e) => handleUpdatePet(record, e)}>Edit</Button>
+          <Button onMouseDown={(e) => handleDetailPet(record, e)}>Detail</Button>
         </Space>
+
       ),
     },
   ];
@@ -549,14 +551,7 @@ export default function PetTable() {
       </Box>
 
       <Table columns={columns} dataSource={data} onChange={onChange}
-        onRow={(record, rowIndex) => {
-          return {
-            onClick: event => {
-              console.log(record)
-              handleDetailPet(record)
-            }, // click row
-          };
-        }}
+
       />;
 
 

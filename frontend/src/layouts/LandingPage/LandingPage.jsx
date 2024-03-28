@@ -113,7 +113,7 @@ function Home() {
 
   useEffect(() => {
     handleCheckPetDiscount(context.auth.id);
-  }, [context.auth.id]);
+  }, []);
 
 
   return (

@@ -27,6 +27,7 @@ import Header from "../../components/Header/Header";
 import "./styled/ProductCheckout.css";
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import Cards from "react-credit-cards";
+import { loadStripe } from '@stripe/stripe-js';
 
 const inputStyle = {
   width: "100%",
@@ -62,43 +63,68 @@ export default function ServiceCheckout() {
 
   const checkoutProduct = async () => {
     // alert('Phần mềm đang được Hạnh Nguyên cập nhật')
-    console.log(
-      recipientName + " " + recipientPhoneNumber + " " + context.auth.token
-    );
-    if (recipientName.trim() === "") {
-      toast.error("Vui lòng điền người nhận");
-    } else if (recipientPhoneNumber.trim() === "") {
-      toast.error("Vui lòng nhập số điện thoại");
-    } else if (!recipientPhoneNumber.match(PHONE_NUMBER_REGEX)) {
-      toast.error("Số điện thoại không chính xác");
-    } else {
-      try {
-        await axios
-          .post(
-            `http://localhost:3500/cartService/checkout`,
-            {
-              recipientName: recipientName,
-              recipientPhoneNumber: recipientPhoneNumber,
-              // totalPrice: total
-            },
-            {
-              headers: { Authorization: context.auth.token },
-              withCredentials: true,
-            }
-          )
-          .then((data) => {
-            if (data.data.message === "Checkout successful") {
-              toast.success("Đặt dịch vụ thành công");
-              context.handleLoadCartService();
-              navigate("/service-purchase");
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      } catch (err) {
-        console.log(err);
+    if (selectedPayment === "other") {
+      console.log(
+        recipientName + " " + recipientPhoneNumber + " " + context.auth.token
+      );
+      if (recipientName.trim() === "") {
+        toast.error("Vui lòng điền người nhận");
+      } else if (recipientPhoneNumber.trim() === "") {
+        toast.error("Vui lòng nhập số điện thoại");
+      } else if (!recipientPhoneNumber.match(PHONE_NUMBER_REGEX)) {
+        toast.error("Số điện thoại không chính xác");
+      } else {
+        try {
+          await axios
+            .post(
+              `http://localhost:3500/cartService/checkout`,
+              {
+                recipientName: recipientName,
+                recipientPhoneNumber: recipientPhoneNumber,
+                // totalPrice: total
+              },
+              {
+                headers: { Authorization: context.auth.token },
+                withCredentials: true,
+              }
+            )
+            .then((data) => {
+              if (data.data.message === "Checkout successful") {
+                toast.success("Đặt dịch vụ thành công");
+                context.handleLoadCartService();
+                navigate("/service-purchase");
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } catch (err) {
+          console.log(err);
+        }
       }
+    } else if (selectedPayment === "creditCard") {
+      const stripePromise = await loadStripe("pk_test_51OwZdRP1wqZM1wtKGbFute5ovqh8plumSuDFZZIJLXL7pry6RTfnoavZUyYmS4VrUHT5ZwpP6Wc7Br1742cK2TRo00vG6rJnx6");
+      const stripe = await axios.post(
+        `http://localhost:3500/cartService/checkout-stripe`,
+        {
+          recipientName: recipientName,
+          recipientPhoneNumber: recipientPhoneNumber,
+          // totalPrice: total
+        },
+        {
+          headers: { Authorization: context.auth.token },
+          withCredentials: true,
+          'Content-Type': "application/json",
+        }
+      )
+        .then((data) => {
+          console.log(data);
+          console.log("data.data.url:" + data.data.url);
+          context.handleLoadCartService();
+          window.location.href = data.data.url;
+        }).catch((err) => {
+          console.log(err);
+        });
     }
   };
 

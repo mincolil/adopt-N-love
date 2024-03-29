@@ -6,6 +6,7 @@ import Grid from "@mui/material/Grid";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Button, notification, Space } from 'antd';
 
 import useAuth from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +17,7 @@ import "react-credit-cards/es/styles-compiled.css";
 import "./styled/ProductCheckout.css";
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import { loadStripe } from '@stripe/stripe-js';
+
 
 import {
   Typography,
@@ -66,81 +68,97 @@ export default function ProductCheckout() {
   );
   const [deliveryAddress, setDeliveryAddress] = useState(context.auth.address);
 
-  // const makepayment = () => {
-  //   const stripePromise = await loadStripe('pk_test_51OwZdRP1wqZM1wtKGbFute5ovqh8plumSuDFZZIJLXL7pry6RTfnoavZUyYmS4VrUHT5ZwpP6Wc7Br1742cK2TRo00vG6rJnx6');
-  //   const body = {
 
-  //   }
-  // }
+  const [api, contextHolder] = notification.useNotification();
+  const openNotificationWithIcon = (type, des) => {
+    api[type]({
+      message: 'Notification Title',
+      description: des,
+    });
+  };
 
   const checkoutProduct = async () => {
     // alert('Phần mềm đang được Hạnh Nguyên cập nhật')
-    if (selectedPayment === "other") {
-      console.log(
-        recipientName + " " + recipientPhoneNumber + " " + context.auth.token
-      );
-      if (recipientName.trim() === "") {
-        toast.error("Vui lòng điền người nhận");
-      } else if (deliveryAddress.trim() === "") {
-        toast.error("Vui lòng nhập địa chỉ");
-      } else if (recipientPhoneNumber.trim() === "") {
-        toast.error("Vui lòng nhập số điện thoại");
-      } else if (!recipientPhoneNumber.match(PHONE_NUMBER_REGEX)) {
-        toast.error("Số điện thoại không chính xác");
-      } else {
-        try {
-          const loadData = await axios
-            .post(
-              `http://localhost:3500/cartProduct/checkout`,
-              {
-                recipientName: recipientName,
-                recipientPhoneNumber: recipientPhoneNumber,
-                deliveryAddress: deliveryAddress,
-                // totalPrice: total
-              },
-              {
-                headers: { Authorization: context.auth.token },
-                withCredentials: true,
-              }
-            )
+    if (selectedPayment === "") {
+      openNotificationWithIcon('warning', 'Vui lòng chọn phương thức thanh toán')
+    } else {
+      if (selectedPayment === "other") {
+        console.log(
+          recipientName + " " + recipientPhoneNumber + " " + context.auth.token
+        );
+        if (recipientName.trim() === "") {
+          openNotificationWithIcon('warning', 'Vui lòng nhập tên người nhận')
+        } else if (deliveryAddress.trim() === "") {
+          openNotificationWithIcon('warning', 'Vui lòng nhập địa chỉ')
+        } else if (recipientPhoneNumber.trim() === "") {
+          openNotificationWithIcon('warning', 'Vui lòng nhập số điện thoại')
+        } else if (!recipientPhoneNumber.match(PHONE_NUMBER_REGEX)) {
+          openNotificationWithIcon('warning', 'Số điện thoại không hợp lệ')
+        } else {
+          try {
+            const loadData = await axios
+              .post(
+                `http://localhost:3500/cartProduct/checkout`,
+                {
+                  recipientName: recipientName,
+                  recipientPhoneNumber: recipientPhoneNumber,
+                  deliveryAddress: deliveryAddress,
+                  // totalPrice: total
+                },
+                {
+                  headers: { Authorization: context.auth.token },
+                  withCredentials: true,
+                }
+              )
+              .then((data) => {
+                if (data.data.message === "Checkout successful") {
+                  openNotificationWithIcon('success', 'Đặt hàng thành công')
+                  context.handleLoadCartProduct();
+                  navigate("/product-purchase");
+                }
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          } catch (err) {
+            console.log(err);
+          }
+        }
+      } else if (selectedPayment === "creditCard") {
+        if (recipientName.trim() === "") {
+          openNotificationWithIcon('warning', 'Vui lòng nhập tên người nhận')
+        } else if (deliveryAddress.trim() === "") {
+          openNotificationWithIcon('warning', 'Vui lòng nhập địa chỉ')
+        } else if (recipientPhoneNumber.trim() === "") {
+          openNotificationWithIcon('warning', 'Vui lòng nhập số điện thoại')
+        } else if (!recipientPhoneNumber.match(PHONE_NUMBER_REGEX)) {
+          openNotificationWithIcon('warning', 'Số điện thoại không hợp lệ')
+        } else {
+          const stripePromise = await loadStripe("pk_test_51OwZdRP1wqZM1wtKGbFute5ovqh8plumSuDFZZIJLXL7pry6RTfnoavZUyYmS4VrUHT5ZwpP6Wc7Br1742cK2TRo00vG6rJnx6");
+          const stripe = await axios.post(
+            `http://localhost:3500/cartProduct/checkout-stripe`,
+            {
+              recipientName: recipientName,
+              recipientPhoneNumber: recipientPhoneNumber,
+              deliveryAddress: deliveryAddress,
+              // totalPrice: total
+            },
+            {
+              headers: { Authorization: context.auth.token },
+              withCredentials: true,
+              'Content-Type': "application/json",
+            }
+          )
             .then((data) => {
-              if (data.data.message === "Checkout successful") {
-                toast.success("Đặt hàng sản phẩm thành công");
-                context.handleLoadCartProduct();
-                navigate("/product-purchase");
-              }
-            })
-            .catch((err) => {
+              console.log(data);
+              console.log("data.data.url:" + data.data.url);
+              context.handleLoadCartProduct();
+              window.location.href = data.data.url;
+            }).catch((err) => {
               console.log(err);
             });
-        } catch (err) {
-          console.log(err);
         }
       }
-    } else if (selectedPayment === "creditCard") {
-      const stripePromise = await loadStripe("pk_test_51OwZdRP1wqZM1wtKGbFute5ovqh8plumSuDFZZIJLXL7pry6RTfnoavZUyYmS4VrUHT5ZwpP6Wc7Br1742cK2TRo00vG6rJnx6");
-      const stripe = await axios.post(
-        `http://localhost:3500/cartProduct/checkout-stripe`,
-        {
-          recipientName: recipientName,
-          recipientPhoneNumber: recipientPhoneNumber,
-          deliveryAddress: deliveryAddress,
-          // totalPrice: total
-        },
-        {
-          headers: { Authorization: context.auth.token },
-          withCredentials: true,
-          'Content-Type': "application/json",
-        }
-      )
-        .then((data) => {
-          console.log(data);
-          console.log("data.data.url:" + data.data.url);
-          context.handleLoadCartProduct();
-          window.location.href = data.data.url;
-        }).catch((err) => {
-          console.log(err);
-        });
     }
   };
 
@@ -229,6 +247,7 @@ export default function ProductCheckout() {
   return (
     <>
       <Header />
+      {contextHolder}
       <Box
         sx={{
           flexGrow: 1,

@@ -7,6 +7,7 @@ const mailer = require('../utils/mailer')
 const clientId = "424228344980-l67mummet93pgl903qru8ejvjeoo098s.apps.googleusercontent.com";
 const clientserver = "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"
 const { OAuth2Client } = require('google-auth-library')
+const { cookie } = require('express-validator')
 
 const authClient = new OAuth2Client(clientId)
 
@@ -184,11 +185,18 @@ const changePassword = async (req, res) => {
 }
 
 const logout = (req, res) => {
-    const token = req.cookies.token
-    if (!token) return res.sendStatus(204) //No content
-    else {
-        res.clearCookie('token')
-        res.json({ message: 'Cookie cleared' })
+    // const token = req.cookies.token
+    // if (!token) return res.sendStatus(204) //No content
+    // else {
+    //     res.clearCookie('token')
+    //     res.json({ message: 'Cookie cleared' })
+    // }
+    try {
+        //remove google cookie
+        res.cookie('token', token, { expires: new Date(0) }).json({ message: 'Logout success' })
+
+    } catch (err) {
+        res.status(400).json({ error: 'Logout fail' + err })
     }
 }
 

@@ -34,7 +34,7 @@ import useAuth from "../../../hooks/useAuth";
 
 import { jwtDecode } from "jwt-decode";
 
-import GoogleLogin from 'react-google-login';
+import GoogleLogin, { GoogleLogout } from 'react-google-login';
 import { gapi } from 'gapi-script'
 
 const defaultTheme = createTheme();

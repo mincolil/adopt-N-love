@@ -39,6 +39,12 @@ app.use(
     })
 )
 
+//gg login
+const helmet = require('helmet');
+app.use(helmet({
+    crossOriginOpenerPolicy: 'same-origin; allow-popups'
+}));
+
 app.use(session({
     secret: "17092002minhdule",
     resave: false,

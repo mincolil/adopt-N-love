@@ -28,6 +28,7 @@ import "./styled/ProductCheckout.css";
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import Cards from "react-credit-cards";
 import { loadStripe } from '@stripe/stripe-js';
+import { Button, notification, Space } from 'antd';
 
 const inputStyle = {
   width: "100%",
@@ -61,70 +62,90 @@ export default function ServiceCheckout() {
     context.auth.phone
   );
 
+  const [api, contextHolder] = notification.useNotification();
+  const openNotificationWithIcon = (type, des) => {
+    api[type]({
+      message: 'Notification Title',
+      description: des,
+    });
+  };
+
   const checkoutProduct = async () => {
     // alert('Phần mềm đang được Hạnh Nguyên cập nhật')
-    if (selectedPayment === "other") {
-      console.log(
-        recipientName + " " + recipientPhoneNumber + " " + context.auth.token
-      );
-      if (recipientName.trim() === "") {
-        toast.error("Vui lòng điền người nhận");
-      } else if (recipientPhoneNumber.trim() === "") {
-        toast.error("Vui lòng nhập số điện thoại");
-      } else if (!recipientPhoneNumber.match(PHONE_NUMBER_REGEX)) {
-        toast.error("Số điện thoại không chính xác");
-      } else {
-        try {
-          await axios
-            .post(
-              `http://localhost:3500/cartService/checkout`,
-              {
-                recipientName: recipientName,
-                recipientPhoneNumber: recipientPhoneNumber,
-                // totalPrice: total
-              },
-              {
-                headers: { Authorization: context.auth.token },
-                withCredentials: true,
-              }
-            )
+    if (selectedPayment === "") {
+      openNotificationWithIcon('warning', 'Vui lòng chọn phương thức thanh toán')
+    } else {
+      if (selectedPayment === "other") {
+        console.log(
+          recipientName + " " + recipientPhoneNumber + " " + context.auth.token
+        );
+        if (recipientName.trim() === "") {
+          openNotificationWithIcon('warning', 'Vui lòng nhập tên người nhận')
+        } else if (recipientPhoneNumber.trim() === "") {
+          openNotificationWithIcon('warning', 'Vui lòng nhập số điện thoại người nhận')
+        } else if (!recipientPhoneNumber.match(PHONE_NUMBER_REGEX)) {
+          openNotificationWithIcon('warning', 'Số điện thoại không hợp lệ')
+        } else {
+          try {
+            await axios
+              .post(
+                `http://localhost:3500/cartService/checkout`,
+                {
+                  recipientName: recipientName,
+                  recipientPhoneNumber: recipientPhoneNumber,
+                  // totalPrice: total
+                },
+                {
+                  headers: { Authorization: context.auth.token },
+                  withCredentials: true,
+                }
+              )
+              .then((data) => {
+                if (data.data.message === "Checkout successful") {
+                  toast.success("Đặt dịch vụ thành công");
+                  context.handleLoadCartService();
+                  navigate("/service-purchase");
+                }
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          } catch (err) {
+            console.log(err);
+          }
+        }
+      } else if (selectedPayment === "creditCard") {
+        if (recipientName.trim() === "") {
+          openNotificationWithIcon('warning', 'Vui lòng nhập tên người nhận')
+        } else if (recipientPhoneNumber.trim() === "") {
+          openNotificationWithIcon('warning', 'Vui lòng nhập số điện thoại người nhận')
+        } else if (!recipientPhoneNumber.match(PHONE_NUMBER_REGEX)) {
+          openNotificationWithIcon('warning', 'Số điện thoại không hợp lệ')
+        } else {
+          const stripePromise = await loadStripe("pk_test_51OwZdRP1wqZM1wtKGbFute5ovqh8plumSuDFZZIJLXL7pry6RTfnoavZUyYmS4VrUHT5ZwpP6Wc7Br1742cK2TRo00vG6rJnx6");
+          const stripe = await axios.post(
+            `http://localhost:3500/cartService/checkout-stripe`,
+            {
+              recipientName: recipientName,
+              recipientPhoneNumber: recipientPhoneNumber,
+              // totalPrice: total
+            },
+            {
+              headers: { Authorization: context.auth.token },
+              withCredentials: true,
+              'Content-Type': "application/json",
+            }
+          )
             .then((data) => {
-              if (data.data.message === "Checkout successful") {
-                toast.success("Đặt dịch vụ thành công");
-                context.handleLoadCartService();
-                navigate("/service-purchase");
-              }
-            })
-            .catch((err) => {
+              console.log(data);
+              console.log("data.data.url:" + data.data.url);
+              context.handleLoadCartService();
+              window.location.href = data.data.url;
+            }).catch((err) => {
               console.log(err);
             });
-        } catch (err) {
-          console.log(err);
         }
       }
-    } else if (selectedPayment === "creditCard") {
-      const stripePromise = await loadStripe("pk_test_51OwZdRP1wqZM1wtKGbFute5ovqh8plumSuDFZZIJLXL7pry6RTfnoavZUyYmS4VrUHT5ZwpP6Wc7Br1742cK2TRo00vG6rJnx6");
-      const stripe = await axios.post(
-        `http://localhost:3500/cartService/checkout-stripe`,
-        {
-          recipientName: recipientName,
-          recipientPhoneNumber: recipientPhoneNumber,
-          // totalPrice: total
-        },
-        {
-          headers: { Authorization: context.auth.token },
-          withCredentials: true,
-          'Content-Type': "application/json",
-        }
-      )
-        .then((data) => {
-          console.log(data);
-          console.log("data.data.url:" + data.data.url);
-          context.handleLoadCartService();
-          window.location.href = data.data.url;
-        }).catch((err) => {
-          console.log(err);
-        });
     }
   };
 
@@ -223,6 +244,7 @@ export default function ServiceCheckout() {
   return (
     <>
       <Header />
+      {contextHolder}
       <Box
         sx={{
           flexGrow: 1,
@@ -387,90 +409,8 @@ export default function ServiceCheckout() {
                     focus={focus}
                   />
                   <br />
-                  <form className="credit-form">
-                    <Grid container spacing={2}>
-                      <Grid item xs={12}>
-                        <FormControl fullWidth>
-                          <InputLabel htmlFor="number">Card Number</InputLabel>
-                          <Input
-                            id="number"
-                            type="text"
-                            value={number}
-                            onChange={(e) => setNumber(e.target.value)}
-                            onFocus={(e) => setFocus(e.target.name)}
-                          />
-                        </FormControl>
-                      </Grid>
-                      <Grid item xs={12}>
-                        <FormControl fullWidth>
-                          <InputLabel htmlFor="name">Card Name</InputLabel>
-                          <Input
-                            id="name"
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            onFocus={(e) => setFocus(e.target.name)}
-                          />
-                        </FormControl>
-                      </Grid>
-                      <Grid item xs={6}>
-                        <FormControl fullWidth>
-                          <InputLabel htmlFor="date">
-                            Expiration Date
-                          </InputLabel>
-                          <Input
-                            id="date"
-                            type="text"
-                            value={date}
-                            onChange={(e) => setDate(e.target.value)}
-                            onFocus={(e) => setFocus(e.target.name)}
-                          />
-                        </FormControl>
-                      </Grid>
-                      <Grid item xs={6}>
-                        <FormControl fullWidth>
-                          <InputLabel htmlFor="cvv">CVV</InputLabel>
-                          <Input
-                            id="cvv"
-                            type="number"
-                            value={cvv}
-                            onChange={(e) => setCvv(e.target.value)}
-                            onFocus={(e) => setFocus(e.target.name)}
-                          />
-                        </FormControl>
-                      </Grid>
-                    </Grid>
-                  </form>
                 </AccordionDetails>
               </Accordion>
-
-              {/* <Accordion
-                expanded={expanded === "panel3"}
-                onChange={handleAccordionChange("panel3")}
-              >
-                <AccordionSummary>
-                  <div className="form-check w-100">
-                    <RadioGroup
-                      value={selectedPayment}
-                      onChange={handlePaymentChange}
-                    >
-                      <FormControlLabel
-                        value="paypal"
-                        control={<Radio />}
-                        label="PayPal"
-                      />
-                    </RadioGroup>
-                  </div>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <div className="card-body">
-                    <Typography>
-                      Email address:{" "}
-                      <input type="email" className="form-control" />
-                    </Typography>
-                  </div>
-                </AccordionDetails>
-              </Accordion> */}
             </Box>
           </Grid>
         </Grid>

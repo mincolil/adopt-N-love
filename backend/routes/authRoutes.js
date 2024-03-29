@@ -6,6 +6,7 @@ const passport = require('passport');
 const { authenticateGoogle } = require('../middleware/authMiddleware');
 
 router.post('/login', validateAuth.validateLoginData, authController.login)
+    .get('/logout', authController.logout)
     .post('/google', authController.loginGoogle)
     .get('/check', authController.check)
     .post('/register', validateAuth.validateRegisterData, authController.register)

@@ -19,13 +19,17 @@ import HomeIcon from "@mui/icons-material/Home";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
-import { useGoogleLogout } from 'react-google-login';
+import { GoogleLogout, useGoogleLogout } from 'react-google-login';
 
 import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import useAuth from "../../hooks/useAuth";
+import { withCookies, Cookies } from 'react-cookie';
+import { instanceOf } from 'prop-types';
 import axios from "axios";
+import { Tab } from "@mui/base";
+import { gapi } from "gapi-script";
 
 export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -42,20 +46,26 @@ export default function AccountMenu() {
   // --------------------- LOGOUT -----------------------------
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
+  const clientId = "424228344980-l67mummet93pgl903qru8ejvjeoo098s.apps.googleusercontent.com";
+
+  const handleLogout = async (e) => {
     try {
       localStorage.removeItem("token");
-      const auth2 = window.gapi.auth2.getAuthInstance();
-      if (auth2 != null) {
-        await auth2.signOut(); // Wait for sign-out to complete
-      }
-      // Navigate after sign-out is complete
-      window.location.href = "/sign-in";
-      toast.success("Đăng xuất thành công!");
+      //remove google token
+      navigate("/sign-in");
     } catch (error) {
       console.error(error);
       toast.error(error);
     }
+  };
+
+  const customStyles = {
+    backgroundColor: 'red', // Set the background color to red
+    border: 'none', // Remove the border
+    color: 'white', // Set the text color to white
+    padding: '10px 20px', // Add padding
+    borderRadius: '5px', // Add border radius
+    cursor: 'pointer', // Change cursor to pointer
   };
 
   return (
@@ -186,12 +196,22 @@ export default function AccountMenu() {
           Thú cưng của tôi
         </MenuItem>
 
-        <MenuItem onMouseDown={handleLogout}>
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
-          Đăng xuất
-        </MenuItem>
+
+        <GoogleLogout
+          clientId={clientId}
+          buttonText="hehehe"
+          onLogoutSuccess={handleLogout}
+          render={(renderProps) => (
+            <MenuItem onClick={renderProps.onClick}>
+              <ListItemIcon><Logout fontSize="small" /></ListItemIcon>
+
+              Đăng xuất
+            </MenuItem>
+          )}
+        >
+        </GoogleLogout>
+
+
       </Menu>
     </React.Fragment>
   );

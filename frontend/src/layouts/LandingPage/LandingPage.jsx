@@ -113,6 +113,7 @@ function Home() {
 
   useEffect(() => {
     handleCheckPetDiscount(context.auth.id);
+    console.log(localStorage.getItem("token"));
   }, []);
 
 

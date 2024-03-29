@@ -66,12 +66,14 @@ export default function PetUser() {
   const [currentPage, setCurrentPage] = useState(1);
 
   const context = useAuth();
+  const { auth } = context
   // console.log(context);
 
   // ----------------------------------- API GET ALL PET BY USER ID--------------------------------
   useEffect(() => {
-    loadAllPetByUserId(currentPage);
-  }, [currentPage]);
+    if (auth)
+      loadAllPetByUserId(currentPage);
+  }, [currentPage, auth]);
 
   const loadAllPetByUserId = async (page) => {
     console.log("Kiểm tra page", page);

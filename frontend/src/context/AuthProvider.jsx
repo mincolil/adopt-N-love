@@ -87,8 +87,6 @@ export const AuthProvider = ({ children }) => {
         }
     }, [auth])
 
-    console.log(productNumber)
-
     return (
         <AuthContext.Provider value={value}>
             {children}

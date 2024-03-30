@@ -3,10 +3,8 @@ import AspectRatio from "@mui/joy/AspectRatio";
 import Button from "@mui/joy/Button";
 import Card from "@mui/joy/Card";
 import CardActions from "@mui/joy/CardActions";
-import CardContent from "@mui/joy/CardContent";
 import CardOverflow from "@mui/joy/CardOverflow";
 import Typography from "@mui/joy/Typography";
-import BakeryDiningIcon from "@mui/icons-material/BakeryDining";
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
@@ -67,7 +65,6 @@ export default function PetUser() {
 
   const context = useAuth();
   const { auth } = context
-  // console.log(context);
 
   // ----------------------------------- API GET ALL PET BY USER ID--------------------------------
   useEffect(() => {

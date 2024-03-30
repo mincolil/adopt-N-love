@@ -83,9 +83,13 @@ export default function ProductPurchase() {
     }
   };
 
+  // ------------------------LOAD PAGE----------------------------------------
+  const { auth } = context;
+
   useEffect(() => {
-    handleLoadCartProductById(DEFAULT_STATUS);
-  }, []);
+    if (auth)
+      handleLoadCartProductById(DEFAULT_STATUS);
+  }, [auth]);
 
   // ----------------------------------------------------------------
 

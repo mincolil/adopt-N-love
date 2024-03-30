@@ -21,6 +21,7 @@ import { ToastContainer } from "react-toastify";
 import { notification, Space } from 'antd';
 import axios from "axios";
 import { NavLink, useNavigate } from "react-router-dom";
+import { Button as AntButton } from "antd";
 
 
 
@@ -76,14 +77,15 @@ const testimonials = [
 
 function Home() {
   const context = useAuth();
-  context.handleLoadCartProduct();
 
   const btn = (
     <Space>
       {/* button to /pet-user */}
-      <Button type="primary" size="small" component={NavLink} to="/pet-user">
-        Xem chi tiết
-      </Button>
+      <div>
+        <AntButton type="primary" size="small" component={NavLink} to="/pet-user">
+          Xem chi tiết
+        </AntButton>
+      </div>
     </Space>
   );
 
@@ -102,7 +104,6 @@ function Home() {
       const res = await axios.get(`${BASE_URL}/pet/userId?id=${id}`);
       //count pet have discount > 0
       const count = res.data.docs.filter((pet) => pet.discount > 0).length;
-      console.log("giam gia: " + count);
       if (count > 0) {
         openNotificationWithIcon('success');
       }
@@ -111,10 +112,14 @@ function Home() {
     }
   };
 
+  //--------------------------------------------LOAD PAGE
+  const { auth } = context;
+
   useEffect(() => {
-    handleCheckPetDiscount(context.auth.id);
-    console.log(localStorage.getItem("token"));
-  }, []);
+    if (auth) {
+      handleCheckPetDiscount(context.auth.id);
+    }
+  }, [auth]);
 
 
   return (
@@ -133,6 +138,7 @@ function Home() {
           position: "relative",
           top: "80px",
         }}
+        item="true"
       >
         <Container
           sx={{ display: "flex", flexWrap: "wrap", alignContent: "center" }}

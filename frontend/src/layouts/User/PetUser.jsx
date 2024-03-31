@@ -3,10 +3,8 @@ import AspectRatio from "@mui/joy/AspectRatio";
 import Button from "@mui/joy/Button";
 import Card from "@mui/joy/Card";
 import CardActions from "@mui/joy/CardActions";
-import CardContent from "@mui/joy/CardContent";
 import CardOverflow from "@mui/joy/CardOverflow";
 import Typography from "@mui/joy/Typography";
-import BakeryDiningIcon from "@mui/icons-material/BakeryDining";
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
@@ -66,12 +64,13 @@ export default function PetUser() {
   const [currentPage, setCurrentPage] = useState(1);
 
   const context = useAuth();
-  // console.log(context);
+  const { auth } = context
 
   // ----------------------------------- API GET ALL PET BY USER ID--------------------------------
   useEffect(() => {
-    loadAllPetByUserId(currentPage);
-  }, [currentPage]);
+    if (auth)
+      loadAllPetByUserId(currentPage);
+  }, [currentPage, auth]);
 
   const loadAllPetByUserId = async (page) => {
     console.log("Kiểm tra page", page);

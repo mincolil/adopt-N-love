@@ -1,6 +1,5 @@
 import * as React from "react";
 import {
-  Table,
   TableBody,
   TableCell,
   TableContainer,
@@ -24,15 +23,19 @@ import DateFormat from "../../../components/DateFormat";
 import { ToastContainer } from "react-toastify";
 
 //React
-import { useState } from "react";
-// import useAuth from "../../../hooks/useAuth";
 // Axios
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+
+//ant
+import { Table, Tag } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
+import { Button, Input, Space, InputNumber } from 'antd';
+import Highlighter from 'react-highlight-words';
 
 // -------------------------------STYLE MODAL----------------------
 const style = {
@@ -142,37 +145,12 @@ export default function BasicTable() {
     return formattedTime;
   };
 
-  // --------------------- HANDLE DELETE -----------------------------
-  // const handleDelete = async (id) => {
-  //   try {
-  //     console.log(id);
-  //     const data = await axios.delete(`http://localhost:3500/order/${id}`);
-  //     if (data.error) {
-  //       toast.error(data.error);
-  //     } else {
-  //       console.log(data);
-  //       toast.success("Delete successfully");
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
 
   async function loadOrder(status) {
     try {
       await axios.get(`http://localhost:3500/order`)
         .then((data) => {
-          // console.log(data.data);
-          // const filterData = [];
-          // for (let i = 0; i < data.data.length; i++) {
-          //   if (data.data[i].status === status) {
-          //     filterData.push(data.data[i]);
-          //   }
-          // }
-          // filterData.sort((a, b) => new Date(convertDate(b.createdAt)) - new Date(convertDate(a.createdAt)));
-          // // console.log(filterData)
-          setData(data.data.docs);
-          setPages(data.data.pages);
+          setData(data.data);
         });
     } catch (err) {
       console.log(err);
@@ -207,14 +185,6 @@ export default function BasicTable() {
           }`
         )
           .then((data) => {
-            // setData(data.data.docs);
-            // console.log(data.data.docs);
-            // const filterData = [];
-            // for (let i = 0; i < data.data.docs.length; i++) {
-            //   if (data.data.docs[i].status === status) {
-            //     filterData.push(data.data.docs[i]);
-            //   }
-            // }
             setCurrentPage(data.data.page)
             setData(data.data.docs);
             setPages(data.data.pages);
@@ -230,53 +200,12 @@ export default function BasicTable() {
     loadOrder(DEFAULT_STATUS);
   }, []);
 
-  // ----------------------------------- HANDLE GET ORDER OF USER --------------------------------
-
-  // const [userId, setUserId] = useState("");
-
-  // const hanldeSearch = (e) => {
-  //   setUserId(e.target.value);
-  // };
-
-  // const handleGetOrderByUserId = async () => {
-  //   if (!userId == "") {
-  //     getAllOrderByUserId();
-  //   } else {
-  //     loadAllOrder(DEFAULT_PAGE, DEFAULT_LIMIT, DEFAULT_STATUS);
-  //   }
-  // };
-
-  // ----------------------------------- GET ALL ORDER BY USER ID --------------------------------
-
-  // const getAllOrderByUserId = async () => {
-  //   try {
-  //     const loadData = await axios.get(`http://localhost:3500/order/${userId}`);
-  //     if (loadData.error) {
-  //       toast.error(loadData.error);
-  //     } else {
-  //       setData(loadData.data);
-  //       // toast.success("Login successful");
-  //       console.log(loadData.data);
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-
-  // ---------------------------------------------------------------
-
   const handlePaging = (event, value) => {
     loadAllOrder(value, DEFAULT_LIMIT, status, fromDate, toDate);
   };
 
   // ---------------------------------------------------------------
 
-  // const errorStyle = {
-  //   color: "red",
-  //   // backgroundColor: "DodgerBlue",
-  //   paddingLeft: "15px",
-  //   fontSize: "12px",
-  // };
 
   const statusList = ["Chờ xác nhận", "Đã thanh toán", "Đang giao hàng", "Đã nhận hàng", "Huỷ"];
 
@@ -304,28 +233,252 @@ export default function BasicTable() {
     }
   };
 
-  // const handleDeleteOrder = async (id, orderId, option) => {
-  //   try {
-  //     const loadData = await axios
-  //       .delete(`http://localhost:3500/orderDetail/${id}`, {
-  //         headers: { Authorization: context.auth.token },
-  //         withCredentials: true,
-  //       })
-  //       .then((data) => {
-  //         console.log(data);
-  //         handleViewOrderDetail(orderId, option);
-  //       });
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-
   const numberToVND = (number) => {
     return number.toLocaleString("vi-VN", {
       style: "currency",
       currency: "VND",
     });
   };
+
+  // --------------------- ANT TABLE -----------------------------
+  const [searchText, setSearchText] = useState('');
+  const [searchedColumn, setSearchedColumn] = useState('');
+  const [sortedInfo, setSortedInfo] = useState({});
+
+  const searchInput = useRef(null);
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText('');
+  };
+  const getColumnSearchProps = (dataIndex, field) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Reset
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({
+                closeDropdown: false,
+              });
+              setSearchText(selectedKeys[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Filter
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            close
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1677ff' : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) => {
+      if (field == 'name') {
+        return record.userId.fullname.toLowerCase().includes(value.toLowerCase());
+      } else if (field == 'phone') {
+        return record.userId.phone.toLowerCase().includes(value.toLowerCase());
+      } else {
+        if (record[dataIndex]) return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
+      }
+
+    },
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{
+            backgroundColor: '#ffc069',
+            padding: 0,
+          }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ''}
+        />
+      ) : (
+        text
+      ),
+  });
+
+  const columns = [
+    {
+      title: 'Tên người dùng',
+      dataIndex: ['userId', 'fullname'],
+      ...getColumnSearchProps('fullname', 'name'),
+      width: '20%',
+      key: 'fullname',
+      sorter: (a, b) => a.userId.fullname.length - b.userId.fullname.length,
+      sortOrder: sortedInfo.columnKey === 'fullname' ? sortedInfo.order : null,
+    },
+    {
+      title: 'Số điện thoại',
+      dataIndex: 'age',
+      dataIndex: ['userId', 'phone'],
+      ...getColumnSearchProps('phone', 'phone'),
+      width: '15%',
+    },
+    {
+      title: 'Ngày đặt dịch hàng',
+      dataIndex: 'createdAt',
+      width: '20%',
+      key: 'createdAt',
+    },
+
+    {
+      title: 'Tổng giá trị',
+      dataIndex: 'totalPrice',
+      key: 'totalPrice',
+      width: '20%',
+      sorter: (a, b) => a.totalPrice - b.totalPrice,
+      sortOrder: sortedInfo.columnKey === 'totalPrice' ? sortedInfo.order : null,
+    },
+    {
+      title: 'Trạng thái',
+      dataIndex: 'status',
+      width: '40%',
+      render: (status) => (
+        <span>
+          {
+            status === "Chờ xác nhận" ? <Tag color="blue">{status}</Tag> :
+              status === "Đã thanh toán" ? <Tag color="green">{status}</Tag> :
+                status === "Đang giao hàng" ? <Tag color="orange">{status}</Tag> :
+                  status === "Đã nhận hàng" ? <Tag color="cyan">{status}</Tag> :
+                    <Tag color="red">{status}</Tag>
+          }
+        </span>
+      ),
+      filters: [
+        {
+          text: 'Chờ xác nhận',
+          value: 'Chờ xác nhận',
+        },
+        {
+          text: 'Đã thanh toán',
+          value: 'Đã thanh toán',
+        },
+        {
+          text: 'Đang giao hàng',
+          value: 'Đang giao hàng',
+        },
+        {
+          text: 'Đã nhận hàng',
+          value: 'Đã nhận hàng',
+        },
+        {
+          text: 'Huỷ',
+          value: 'Huỷ',
+        },
+      ],
+      onFilter: (value, record) => record.status.startsWith(value),
+    },
+    //button edit
+    {
+      title: 'Action',
+      key: 'action',
+      render: (text, record) => (
+        <Space size="middle">
+          <Button onClick={(e) => handleViewOrderDetail(
+            record._id,
+            OPTION_VIEW_ORDER_BY_ID,
+            record.status
+          )}>Edit</Button>
+        </Space>
+      ),
+    },
+  ];
+
+  const onChange = (pagination, filters, sorter, extra) => {
+    console.log('params', pagination, filters, sorter, extra);
+    setSortedInfo(sorter);
+  };
+
+
+  const columnsDetail = [
+    {
+      title: 'STT',
+      dataIndex: 'stt',
+      key: 'stt',
+      render: (text, record, index) => index + 1,
+    },
+    {
+      title: 'Mã đơn hang',
+      dataIndex: 'orderId',
+      key: 'orderId',
+    },
+    {
+      title: 'Tên sản phẩm',
+      dataIndex: ['product', 'productName'],
+      key: 'productName',
+    },
+    {
+      title: 'Số lượng',
+      dataIndex: 'quantity',
+      key: 'quantity',
+    },
+    {
+      title: 'Giá',
+      dataIndex: 'price',
+      key: 'price',
+    },
+  ];
 
   return (
     <>
@@ -337,24 +490,7 @@ export default function BasicTable() {
         alignItems="center"
         mb={3}
       >
-        <Grid item xs={12} sm={6}>
-          <select
-            style={{
-              padding: "10px 15px",
-              borderRadius: "5px",
-              width: "100%",
-              height: "55px",
-            }}
-            onChange={(e) => setStatus(e.target.value)}
-          >
-            <option value={status} disabled selected>
-              {status}
-            </option>
-            {statusList.map((value, index) => {
-              return <option value={value}>{value}</option>;
-            })}
-          </select>
-        </Grid>
+
         <Grid item xs={12} sm={6} justifyContent="space-between">
           <Grid container spacing={3}>
             <Grid item xs={12} sm={4}>
@@ -374,10 +510,18 @@ export default function BasicTable() {
                 maxDate={dayjs().add(1, 'day')}
               />
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={2}>
               <ButtonCustomize
                 onClick={() => handlePaging(1)}
                 nameButton="Lọc"
+                variant="contained"
+                sx={{ marginTop: "8px" }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={2}>
+              <ButtonCustomize
+                onClick={() => loadOrder()}
+                nameButton="Tất cả"
                 variant="contained"
                 sx={{ marginTop: "8px" }}
               />
@@ -392,78 +536,8 @@ export default function BasicTable() {
                 // component={RouterLink}
                 nameButton="Tìm kiếm"
             /> */}
-      <Paper sx={{ width: "100%", overflow: "hidden", marginTop: "20px" }}>
-        <TableContainer sx={{ maxHeight: 440 }}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                <TableCell children>STT</TableCell>
-                <TableCell align="left">Tên người dùng</TableCell>
-                <TableCell align="left">Ngày đặt hàng</TableCell>
-                <TableCell align="left">Tổng giá trị</TableCell>
-                <TableCell align="left">Trạng thái</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data.length === 0
-                ? (<TableCell colSpan={5} style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                  KHÔNG CÓ SẢN PHẨM TRONG MỤC NÀY
-                </TableCell>)
-                : data.map((value, index) => {
-                  return (
-                    <TableRow
-                      key={index}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                      onClick={(e) =>
-                        handleViewOrderDetail(
-                          value._id,
-                          OPTION_VIEW_ORDER_BY_ID
-                        )
-                      }
-                    >
-                      <TableCell component="th" scope="row">
-                        {(currentPage - 1) * 10 + index + 1}
-                      </TableCell>
-                      <TableCell align="left">
-                        {value.userId !== null ? value.recipientName : ""}
-                      </TableCell>
-                      <TableCell align="left">
-                        <DateFormat date={value.createdAt} />
-                      </TableCell>
-                      <TableCell align="left">{numberToVND(value.totalPrice)}</TableCell>
-                      <TableCell align="left">{value.status}</TableCell>
-                      {/* <TableCell align="right">
-                                                <ButtonGroup variant="contained" fullWidth>
-                                                    <ButtonCustomize
-                                                        onClick={(e) => handleDelete(value._id)}
-                                                        backgroundColor="red"
-                                                        variant="contained"
-                                                        // component={RouterLink}
-                                                        nameButton="Xoá"
-                                                        fullWidth
-                                                    />
-                                                </ButtonGroup>
-                                            </TableCell> */}
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <hr style={{ opacity: "0.5" }} />
-        <Stack
-          spacing={2}
-          sx={{ float: "right" }}
-          style={{ margin: "10px 0", justifyContent: "center" }}
-        >
-          <Pagination
-            count={pages === 1 || pages < 1 ? 1 : pages}
-            page={currentPage}
-            color="primary"
-            onChange={handlePaging}
-          />
-        </Stack>
-      </Paper>
+
+      <Table columns={columns} dataSource={data} onChange={onChange} />
 
       <Modal
         open={open}
@@ -513,64 +587,7 @@ export default function BasicTable() {
             <CloseIcon />
           </IconButton>
           <DialogContent dividers>
-            <Grid
-              container
-              rowSpacing={1}
-              columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-            >
-              <Table sx={{ width: "100%" }} aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell children>STT</TableCell>
-                    <TableCell align="left">Mã đơn hàng</TableCell>
-                    <TableCell align="left">Tên sản phẩm</TableCell>
-                    <TableCell align="left">Số lượng</TableCell>
-                    <TableCell align="left">Giá</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {orderDetail &&
-                    orderDetail.map((value, index) => {
-                      return (
-                        <TableRow
-                          key={index}
-                          sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
-                          }}
-                        >
-                          <TableCell component="th" scope="row">
-                            {index + 1}
-                          </TableCell>
-                          <TableCell align="left">{value.orderId}</TableCell>
-                          <TableCell align="left">
-                            {value.productId !== null
-                              ? value.product.productName
-                              : ""}
-                          </TableCell>
-                          <TableCell align="left">{value.quantity}</TableCell>
-                          <TableCell align="left">{numberToVND(value.price)}</TableCell>
-                          {/* <TableCell align="left">
-                            <button
-                              variant="contained"
-                              margin="normal"
-                              color="primary"
-                              onClick={(e) =>
-                                handleDeleteOrder(
-                                  value._id,
-                                  value.orderId,
-                                  OPTION_VIEW_ORDER_BY_ID
-                                )
-                              }
-                            >
-                              Xoá
-                            </button>
-                          </TableCell> */}
-                        </TableRow>
-                      );
-                    })}
-                </TableBody>
-              </Table>
-            </Grid>
+            <Table columns={columnsDetail} dataSource={orderDetail} />
           </DialogContent>
           {/* 
                     <DialogActions>

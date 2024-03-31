@@ -64,11 +64,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     useEffect(() => {
-        handleLoadCartProduct()
-        handleLoadCartService()
-        handleLoadAdoptRequest()
         if (localStorage.getItem('token') !== null) {
-
             if (auth.role === undefined) {
 
                 const dataDecode = jwtDecode(localStorage.getItem('token'));
@@ -81,7 +77,15 @@ export const AuthProvider = ({ children }) => {
                 });
             }
         }
-    })
+    }, [localStorage.getItem('token')])
+
+    useEffect(() => {
+        if (auth.token) {
+            handleLoadCartProduct()
+            handleLoadCartService()
+            handleLoadAdoptRequest()
+        }
+    }, [auth])
 
     return (
         <AuthContext.Provider value={value}>

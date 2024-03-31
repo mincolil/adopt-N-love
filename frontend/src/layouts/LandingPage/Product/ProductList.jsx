@@ -58,7 +58,16 @@ const numberToVND = (number) => {
 };
 
 function ProductItem({ product }) {
-  const { _id, productName, quantity, price, productImage, discount, saleEndTime, saleStartTime } = product;
+  const {
+    _id,
+    productName,
+    quantity,
+    price,
+    productImage,
+    discount,
+    saleEndTime,
+    saleStartTime,
+  } = product;
   const [quantitySell, setQuantitySell] = useState(1);
   const context = useAuth();
 
@@ -103,10 +112,7 @@ function ProductItem({ product }) {
             alt={productName}
           />
           {discount !== 0 &&
-            dayjs().isBetween(
-              dayjs(saleStartTime),
-              dayjs(saleEndTime)
-            ) ? (
+          dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
             <Card
               style={{
                 position: "absolute",
@@ -142,7 +148,7 @@ function ProductItem({ product }) {
               variant="h5"
               component="div"
               className="product-title"
-              style={{ color: '#838b8b' }}
+              style={{ color: "#838b8b" }}
             >
               {productName}
             </Typography>
@@ -152,10 +158,7 @@ function ProductItem({ product }) {
               className="product-price"
             >
               {discount !== 0 &&
-                dayjs().isBetween(
-                  dayjs(saleStartTime),
-                  dayjs(saleEndTime)
-                ) ? (
+              dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
                 <Box
                   display="flex"
                   flexGrow={1}
@@ -180,12 +183,9 @@ function ProductItem({ product }) {
                     gutterBottom
                     variant="h6"
                     component="h2"
-                    style={{ color: '#ff5722' }}
+                    style={{ color: "#ff5722" }}
                   >
-                    {numberToVND(
-                      price -
-                      (price * discount) / 100
-                    )}
+                    {numberToVND(price - (price * discount) / 100)}
                   </Typography>
                 </Box>
               ) : (
@@ -193,7 +193,7 @@ function ProductItem({ product }) {
                   gutterBottom
                   variant="h6"
                   component="h2"
-                  style={{ color: '#ff5722' }}
+                  style={{ color: "#ff5722" }}
                 >
                   {numberToVND(price)}
                 </Typography>
@@ -234,8 +234,24 @@ export default function ProductList() {
   // ----------------------------------- FILTER BY PRICE --------------------------------
   const handlePriceChange = (event, newValue) => {
     if (newValue) {
-      setPrice(newValue);
-      filterProductsByPrice(newValue[0], newValue[1]);
+      const [minPrice, maxPrice] = newValue;
+      const priceRange = maxPrice - minPrice;
+      // Kiểm tra nếu price[0] không được kéo qua price[1]
+      if (priceRange < 10000 && event.target === null) {
+        if (event[0] < event[1]) {
+          setPrice([event[0], event[0] + 10000]);
+          filterProductsByPrice(event[0], event[0] + 10000);
+        } else {
+          setPrice([event[1] - 10000, event[1]]);
+          filterProductsByPrice(event[1] - 10000, event[1]);
+        }
+      } else {
+        // Đảm bảo price[0] không vượt qua price[1]
+        if (minPrice !== price[0] || maxPrice !== price[1]) {
+          setPrice(newValue);
+          filterProductsByPrice(minPrice, maxPrice);
+        }
+      }
     }
   };
 
@@ -256,6 +272,7 @@ export default function ProductList() {
           setData(loadData.data.docs);
           setTotalProducts(loadData.data.limit);
           setCurrentPage(loadData.data.page);
+          console.log(`http://localhost:3500/product?page=1&limit=12&minPrice=${minPrice}&maxPrice=${maxPrice}`);
         }
       } catch (err) {
         console.log(err);
@@ -426,10 +443,10 @@ export default function ProductList() {
       if (loadData.data.error) {
         toast.warning(
           "Kết quả " +
-          "[" +
-          keyword +
-          "]" +
-          " bạn vừa tìm không có! Vui lòng nhập lại. "
+            "[" +
+            keyword +
+            "]" +
+            " bạn vừa tìm không có! Vui lòng nhập lại. "
         );
         loadAllProduct(currentPage);
       } else {
@@ -533,19 +550,19 @@ export default function ProductList() {
                     min={0}
                     max={1000000}
                     sx={{
-                      color: 'orange',
-                      '& .MuiSlider-rail': {
-                        backgroundColor: 'orange',
+                      color: "orange",
+                      "& .MuiSlider-rail": {
+                        backgroundColor: "orange",
                       },
-                      '& .MuiSlider-track': {
-                        backgroundColor: '#ff5722',
+                      "& .MuiSlider-track": {
+                        backgroundColor: "#ff5722",
                       },
-                      '& .MuiSlider-thumb': {
-                        backgroundColor: '#ff5722',
+                      "& .MuiSlider-thumb": {
+                        backgroundColor: "#ff5722",
                       },
-                      '& .MuiSlider-valueLabel': {
-                        backgroundColor: '#ff5722',
-                        color: 'black', // You can adjust the color of the value label text
+                      "& .MuiSlider-valueLabel": {
+                        backgroundColor: "#ff5722",
+                        color: "black", // You can adjust the color of the value label text
                       },
                     }}
                   />
@@ -622,9 +639,15 @@ export default function ProductList() {
                 </Grid>
               </Grid>
               <Grid container spacing={2}>
-                {data.map((product, index) => (
-                  <ProductItem key={index} product={product} />
-                ))}
+                {!data || data.length === 0 ? (
+                  <Typography variant="body1">
+                    Không có sản phẩm tương ứng
+                  </Typography>
+                ) : (
+                  data.map((product, index) => (
+                    <ProductItem key={index} product={product} />
+                  ))
+                )}
               </Grid>
               <Stack
                 spacing={2}

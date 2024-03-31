@@ -102,30 +102,6 @@ const ChoosePet = ({ open, onClose, service, pet, loadData }) => {
     return `${date}T${time}`;
   }
 
-  // const handleLoadCartService = async () => {
-  //   try {
-  //     const loadData = await axios.get(
-  //       `http://localhost:3500/cartService/view-cart`,
-  //       {
-  //         headers: { Authorization: context.auth.token },
-  //         withCredentials: true,
-  //       }
-  //     );
-  //     if (loadData.error) {
-  //       toast.error(loadData.error);
-  //     } else {
-  //       setDataCart(loadData.data);
-  //     }
-  //   } catch (err) {
-  //     // console.log(err);
-  //     toast.error(err.response.data.error);
-  //   }
-  // };
-
-  // --------------------- Click paging -----------------------------
-  const handlePageClick = (event, value) => {
-    setCurrentPage(value);
-  };
 
   // --------------------- MODAL HANDLE -----------------------------
   const [openCreateModal, setOpenCreateModal] = useState(false);
@@ -193,9 +169,10 @@ const ChoosePet = ({ open, onClose, service, pet, loadData }) => {
   // ------------------------------- HANDLE GET CATEFORY SLOT ------------------------------
   const loadCategorySlot = async () => {
     try {
+      if (!context.auth.serviceId) return;
       const loadDataCategorySlot = await axios.get(`http://localhost:3500/service/${context.auth.serviceId}`);
       const categorySlot = loadDataCategorySlot.data.categoryId.slot;
-      console.log(categorySlot);
+      // console.log("slot con:" + categorySlot);
       setCategorySlot(categorySlot);
     } catch (err) {
       console.log(err);

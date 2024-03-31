@@ -33,6 +33,7 @@ import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import DateTimeFormat from "../../../components/DateTimeFormat";
+import moment from "moment";
 
 //ant
 import { Table, Tag } from 'antd';
@@ -208,7 +209,7 @@ export default function BookingTable() {
   // ----------------------------------------------------------------
 
 
-  const statusList = ['Chờ xác nhận', 'Đã thanh toán', 'Đang xử lý', 'Hoàn thành', 'Huỷ'];
+  const statusList = ['Chờ xác nhận', 'Đã thanh toán', 'Đã xác nhận', 'Hoàn thành', 'Huỷ'];
 
   const hanldeClickChangeStatus = async (status, id) => {
     if (
@@ -385,6 +386,7 @@ export default function BookingTable() {
       dataIndex: 'createdAt',
       width: '20%',
       key: 'createdAt',
+      render: text => moment.utc(text).format("DD/MM/YYYY HH:mm:ss")
     },
 
     {
@@ -394,6 +396,7 @@ export default function BookingTable() {
       width: '20%',
       sorter: (a, b) => a.totalPrice - b.totalPrice,
       sortOrder: sortedInfo.columnKey === 'totalPrice' ? sortedInfo.order : null,
+      render: (price) => numberToVND(price),
     },
     {
       title: 'Trạng thái',
@@ -404,7 +407,7 @@ export default function BookingTable() {
           {
             status === "Chờ xác nhận" ? <Tag color="blue">{status}</Tag> :
               status === "Đã thanh toán" ? <Tag color="green">{status}</Tag> :
-                status === "Đang xử lý" ? <Tag color="orange">{status}</Tag> :
+                status === "Đã xác nhận" ? <Tag color="orange">{status}</Tag> :
                   status === "Hoàn thành" ? <Tag color="cyan">{status}</Tag> :
                     <Tag color="red">{status}</Tag>
           }
@@ -420,8 +423,8 @@ export default function BookingTable() {
           value: 'Đã thanh toán',
         },
         {
-          text: 'Đang xử lý',
-          value: 'Đang xử lý',
+          text: 'Đã xác nhận',
+          value: 'Đã xác nhận',
         },
         {
           text: 'Hoàn thành',
@@ -477,11 +480,13 @@ export default function BookingTable() {
       title: 'Ngày hẹn',
       dataIndex: 'bookingDate',
       key: 'bookingDate',
+      render: text => moment(text).format("DD/MM/YYYY HH:mm:ss")
     },
     {
       title: 'Giá',
       dataIndex: 'price',
       key: 'price',
+      render: (price) => numberToVND(price),
     },
   ];
 

@@ -7,8 +7,6 @@ import {
   Box,
   List,
   ListItem,
-  Checkbox,
-  FormControlLabel,
   Card,
   CardActionArea,
   CardContent,
@@ -128,7 +126,7 @@ function ServiceItem({ service }) {
             alt={serviceName}
           />
           {discount !== 0 &&
-          dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
+            dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
             <Card
               style={{
                 position: "absolute",
@@ -176,7 +174,7 @@ function ServiceItem({ service }) {
               className="product-price"
             >
               {discount !== 0 &&
-              dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
+                dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
                 <Box
                   display="flex"
                   flexGrow={1}
@@ -690,8 +688,8 @@ export default function ServiceList() {
                     Không có dịch vụ tương ứng
                   </Typography>
                 ) : (
-                  data.map((product, index) => (
-                    <ServiceItem key={index} product={product} />
+                  data.map((service, index) => (
+                    <ServiceItem key={index} service={service} />
                   ))
                 )}
               </Grid>

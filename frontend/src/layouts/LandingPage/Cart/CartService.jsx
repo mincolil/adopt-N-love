@@ -68,7 +68,12 @@ export default function CartService() {
             if ((loadData.data[i].serviceId.discount !== 0
               &&
               dayjs().isBetween(dayjs(loadData.data[i].serviceId.saleStartTime), dayjs(loadData.data[i].serviceId.saleEndTime))) && loadData.data[i].petId.discount !== 0) {
-              totalPrice += loadData.data[i].quantity * (loadData.data[i].serviceId.price - (loadData.data[i].serviceId.price * loadData.data[i].serviceId.discount / 100) - (loadData.data[i].serviceId.price * loadData.data[i].petId.discount / 100))
+              const finalPrice = loadData.data[i].quantity * (loadData.data[i].serviceId.price - (loadData.data[i].serviceId.price * loadData.data[i].serviceId.discount / 100) - (loadData.data[i].serviceId.price * loadData.data[i].petId.discount / 100));
+              if (finalPrice > 0.7 * loadData.data[i].quantity * loadData.data[i].serviceId.price) {
+                totalPrice += finalPrice;
+              } else {
+                totalPrice += 0.7 * loadData.data[i].quantity * loadData.data[i].serviceId.price;
+              }
             } else if (loadData.data[i].serviceId.discount !== 0 && dayjs().isBetween(dayjs(loadData.data[i].serviceId.saleStartTime), dayjs(loadData.data[i].serviceId.saleEndTime))) {
               totalPrice += loadData.data[i].quantity * (loadData.data[i].serviceId.price - (loadData.data[i].serviceId.price * loadData.data[i].serviceId.discount / 100))
             } else if (loadData.data[i].petId.discount !== 0) {
@@ -204,6 +209,9 @@ export default function CartService() {
           <Typography variant="h3" className="custom_blog_title">
             Đặt lịch
           </Typography>
+          <Typography variant="body1">
+            Giảm giá của dịch vụ sẽ không quá 30% giá trị gốc
+          </Typography>
           <Box className="shoppingcart-content">
             <TableContainer>
               <Table className="shop_table">
@@ -247,10 +255,16 @@ export default function CartService() {
                                   </Typography>
                                   <Typography style={{ color: '#ff5722' }}>
                                     {
-                                      service.serviceId === null ? ""
-                                        :
-                                        (numberToVND((service.quantity * (service.serviceId.price - (service.serviceId.price * service.serviceId.discount / 100) - (service.serviceId.price * service.petId.discount / 100)))))
-
+                                      service.serviceId === null ? "" :
+                                        (() => {
+                                          const finalPrice = service.quantity * (service.serviceId.price - (service.serviceId.price * service.serviceId.discount / 100) - (service.serviceId.price * service.petId.discount / 100));
+                                          const originalPrice = service.quantity * service.serviceId.price;
+                                          if (finalPrice < 0.3 * originalPrice) {
+                                            return numberToVND(finalPrice);
+                                          } else {
+                                            return numberToVND(service.quantity * service.serviceId.price * 0.7);
+                                          }
+                                        })()
                                     }
                                     <br />
                                     {service.petId.discount !== 0 ? `  (pet: -${service.petId.discount}%)` : ""}
@@ -421,7 +435,7 @@ export default function CartService() {
             </Box>
           </Box>
         </Box>
-      </Container>
+      </Container >
       <Footer />
     </>
   );

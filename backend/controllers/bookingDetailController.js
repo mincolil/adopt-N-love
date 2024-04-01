@@ -170,6 +170,15 @@ const getBookingDetailByBookingId = async (req, res) => {
                             default: "$service.price"
                         }
                     }
+                },
+                $addFields: {
+                    discountedPrice: {
+                        $cond: {
+                            if: { $lt: ["$discountedPrice", { $multiply: ["$service.price", 0.7] }] },
+                            then: { $multiply: ["$service.price", 0.7] },
+                            else: "$discountedPrice"
+                        }
+                    }
                 }
             },
             {

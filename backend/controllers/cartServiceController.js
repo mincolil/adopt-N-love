@@ -116,7 +116,7 @@ const checkout = async (req, res) => {
             const service = await Service.findById(cartItem.serviceId);
 
             if (service) {
-                const bookingDetail = new bookingDetail({
+                const bookingDetail = new BookingDetail({
                     bookingId: createdBooking._id,
                     petId: cartItem.petId,
                     serviceId: cartItem.serviceId,
@@ -131,9 +131,14 @@ const checkout = async (req, res) => {
                 if (pet) {
                     petDiscount = pet.discount;
                 }
+                let finalPrice = (service.discountedPrice) - (service.price * petDiscount / 100);
+                if (finalPrice < (0.7 * service.price)) {
+                    finalPrice = 0.7 * service.price;
+                }
+
 
                 // Update the total price
-                total += ((service.discountedPrice) - (service.price * petDiscount / 100)) * cartItem.quantity;
+                total += finalPrice * cartItem.quantity;
             }
         }
 
@@ -188,7 +193,10 @@ const checkoutStripe = async (req, res) => {
         line_items = []
         for (const cartItem of cartItems) {
 
+
             const service = await Service.findById(cartItem.serviceId);
+
+
 
             if (service) {
                 const pet = await Pet.findById(cartItem.petId);
@@ -196,7 +204,11 @@ const checkoutStripe = async (req, res) => {
                 if (pet) {
                     petDiscount = pet.discount;
                 }
-                total += ((service.discountedPrice) - (service.price * petDiscount / 100)) * cartItem.quantity;
+                let finalPrice = (service.discountedPrice) - (service.price * petDiscount / 100);
+                if (finalPrice < (0.7 * service.price)) {
+                    finalPrice = 0.7 * service.price;
+                }
+                total += finalPrice * cartItem.quantity;
 
                 //add line item for stripe
                 line_items.push({
@@ -205,7 +217,7 @@ const checkoutStripe = async (req, res) => {
                         product_data: {
                             name: service.serviceName,
                         },
-                        unit_amount: service.discountedPrice,
+                        unit_amount: finalPrice,
                     },
                     quantity: cartItem.quantity,
                 });

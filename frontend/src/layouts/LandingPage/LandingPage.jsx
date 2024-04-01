@@ -20,6 +20,7 @@ import { notification, Space } from 'antd';
 import axios from "axios";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Button as AntButton } from "antd";
+import FloatingDogImage from "../../components/Floater/FloatingDogImage";
 
 
 
@@ -85,41 +86,15 @@ function Home() {
   );
 
   const [api, contextHolder] = notification.useNotification();
-  const openNotificationWithIcon = (type) => {
-    api[type]({
-      message: 'Thông báo',
-      description:
-        'Thú cưng của bạn đang được giảm giá sử dụng dịch vụ. Đến kiểm tra xem !',
-      btn,
-    });
-  };
-
-  const handleCheckPetDiscount = async (id) => {
-    try {
-      const res = await axios.get(`${BASE_URL}/pet/userId?id=${id}`);
-      //count pet have discount > 0
-      const count = res.data.docs.filter((pet) => pet.discount > 0).length;
-      if (count > 0) {
-        openNotificationWithIcon('success');
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   //--------------------------------------------LOAD PAGE
   const { auth } = context;
-
-  useEffect(() => {
-    if (auth) {
-      handleCheckPetDiscount(context.auth.id);
-    }
-  }, [auth]);
 
 
   return (
     <>
       <Header />
+
       <ToastContainer />
       {contextHolder}
       <Grid
@@ -170,7 +145,6 @@ function Home() {
                 textTransform: "none",
                 fontSize: "1rem",
               }}
-              onClick={() => handleCheckPetDiscount(context.auth.id)}
             >
               Liên hệ
             </Button>
@@ -385,6 +359,9 @@ function Home() {
           </Grid>
         </Container>
       </Box>
+      <div>
+        <FloatingDogImage />
+      </div>
       <Footer />
     </>
   );

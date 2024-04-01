@@ -124,9 +124,12 @@ export default function UserPRofile() {
       console.log(err);
     }
   };
+
+  const { auth } = context;
   useEffect(() => {
-    handleGetUserById();
-  }, []);
+    if (auth)
+      handleGetUserById();
+  }, [auth]);
 
   // --------------------- HANDLE UPDATE -----------------------------
 

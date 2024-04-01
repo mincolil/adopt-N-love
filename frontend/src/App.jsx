@@ -42,6 +42,8 @@ import ServiceCheckout from "./layouts/User/ServiceCheckout";
 import AdoptPetTable from "./layouts/dashboard/pet/AdoptPetTable";
 import AdoptPageDetail from "./layouts/LandingPage/Adopt/AdoptPageDetail";
 import AdoptRequest from "./layouts/LandingPage/Cart/AdoptRequest";
+import BookingSlotTable from "./layouts/dashboard/booking/BookingSlotTable";
+
 
 // import AdminLayout from "./layouts/dashboard/layouts/Admin"
 
@@ -89,6 +91,7 @@ function App() {
                   path="/dashboard/category-list"
                   element={<CategoryTable />}
                 />
+                <Route path="/dashboard/slot-booking-list" element={<BookingSlotTable />} />
                 <Route path="/dashboard/blog-list" element={<BlogTable />} />
               </Route>
             </Route>

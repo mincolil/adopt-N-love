@@ -149,7 +149,7 @@ const getUserById = async (req, res) => {
             error: "No user found"
         })
         res.status(200).json(result)
-    } catch (error) {
+    } catch (err) {
         console.log(err)
         res.status(500).json({
             error: err
@@ -175,22 +175,7 @@ module.exports = {
     createUser,
     updateUser,
     deleteOne,
-    getUserById,
-}
-//////m/
 
-//
-//const getUserById = async (req, res) => {
-//    try {
-//        const { id } = req.params
-//        const result = await User.findById(id)
-//        if (!result) return res.json({
-//           error: "No user found"
-//        })
-//        res.status(200).json(result)
-//    } catch (error) {
-//        console.log(err)
-//        res.status(500).json({
-//            error: err
-//        })
-//    }
+    getUserById
+}
+

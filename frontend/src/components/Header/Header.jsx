@@ -39,10 +39,7 @@ const Header = () => {
 
   const [isLoggedIn, setLoggedIn] = useState(false);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    setLoggedIn(!!token);
-  }, []);
+
 
   const context = useAuth();
   const [productNumber, setProductNumber] = useState(0);
@@ -57,6 +54,16 @@ const Header = () => {
     borderRadius: "50%",
     fontSize: "15px",
   };
+
+  const { auth } = context;
+
+  useEffect(() => {
+    if (auth) {
+      const token = localStorage.getItem("token");
+      setLoggedIn(!!token);
+    }
+
+  }, [auth]);
 
   return (
     <DsAppBar position="fixed" style={{ backgroundColor: "#ffffff" }}>
@@ -155,14 +162,16 @@ const Header = () => {
                     title="Đề nghị nhận nuôi thú cưng"
                     style={{ position: "relative" }}
                   >
-                    <NavLink to="/adopt-request">
-                      <IconButton size="small" sx={{ ml: 2 }}>
-                        <MarkEmailUnreadIcon
-                          sx={{ width: 32, height: 32 }}
-                        ></MarkEmailUnreadIcon>
-                      </IconButton>
-                    </NavLink>
-                    <div style={reddot}>{context.adoptRequestNumber}</div>
+                    <div>
+                      <NavLink to="/adopt-request">
+                        <IconButton size="small" sx={{ ml: 2 }}>
+                          <MarkEmailUnreadIcon
+                            sx={{ width: 32, height: 32 }}
+                          ></MarkEmailUnreadIcon>
+                        </IconButton>
+                      </NavLink>
+                      <div style={reddot}>{context.adoptRequestNumber}</div>
+                    </div>
                   </Tooltip>
                 )}
 
@@ -171,14 +180,16 @@ const Header = () => {
                     title="Giỏ hàng dịch vụ"
                     style={{ position: "relative" }}
                   >
-                    <NavLink to="/cart-service">
-                      <IconButton size="small" sx={{ ml: 2 }}>
-                        <ShoppingBagIcon
-                          sx={{ width: 32, height: 32 }}
-                        ></ShoppingBagIcon>
-                      </IconButton>
-                    </NavLink>
-                    <div style={reddot}>{context.serviceNumber}</div>
+                    <div>
+                      <NavLink to="/cart-service">
+                        <IconButton size="small" sx={{ ml: 2 }}>
+                          <ShoppingBagIcon
+                            sx={{ width: 32, height: 32 }}
+                          ></ShoppingBagIcon>
+                        </IconButton>
+                      </NavLink>
+                      <div style={reddot}>{context.serviceNumber}</div>
+                    </div>
                   </Tooltip>
                 )}
 
@@ -187,14 +198,16 @@ const Header = () => {
                     title="Giỏ hàng sản phẩm"
                     style={{ position: "relative" }}
                   >
-                    <NavLink to="/cart-product">
-                      <IconButton size="small" sx={{ ml: 2 }}>
-                        <ShoppingCartIcon
-                          sx={{ width: 32, height: 32 }}
-                        ></ShoppingCartIcon>
-                      </IconButton>
-                    </NavLink>
-                    <div style={reddot}>{context.productNumber}</div>
+                    <div>
+                      <NavLink to="/cart-product">
+                        <IconButton size="small" sx={{ ml: 2 }}>
+                          <ShoppingCartIcon
+                            sx={{ width: 32, height: 32 }}
+                          ></ShoppingCartIcon>
+                        </IconButton>
+                      </NavLink>
+                      <div style={reddot}>{context.productNumber}</div>
+                    </div>
                   </Tooltip>
                 )}
               </Box>
@@ -207,22 +220,26 @@ const Header = () => {
               >
                 {!isLoggedIn && (
                   <Tooltip title="Đăng kí">
-                    <NavLink to="/sign-up">
-                      <IconButton size="small" sx={{ ml: 2 }}>
-                        <AppRegistrationIcon
-                          sx={{ width: 32, height: 32 }}
-                        ></AppRegistrationIcon>
-                      </IconButton>
-                    </NavLink>
+                    <div>
+                      <NavLink to="/sign-up">
+                        <IconButton size="small" sx={{ ml: 2 }}>
+                          <AppRegistrationIcon
+                            sx={{ width: 32, height: 32 }}
+                          ></AppRegistrationIcon>
+                        </IconButton>
+                      </NavLink>
+                    </div>
                   </Tooltip>
                 )}
                 {!isLoggedIn && (
                   <Tooltip title="Đăng nhập">
-                    <NavLink to="/sign-in">
-                      <IconButton size="small" sx={{ ml: 2 }}>
-                        <LoginIcon sx={{ width: 32, height: 32 }}></LoginIcon>
-                      </IconButton>
-                    </NavLink>
+                    <div>
+                      <NavLink to="/sign-in">
+                        <IconButton size="small" sx={{ ml: 2 }}>
+                          <LoginIcon sx={{ width: 32, height: 32 }}></LoginIcon>
+                        </IconButton>
+                      </NavLink>
+                    </div>
                   </Tooltip>
                 )}
               </Box>

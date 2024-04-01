@@ -96,9 +96,14 @@ export default function ServicePurchase() {
     }
   };
 
+  // ---------------------------- LOAD PAGE------------------------------------
+
+  const { auth } = context;
+
   useEffect(() => {
-    handleLoadCartServiceById(DEFAULT_STATUS);
-  }, []);
+    if (auth)
+      handleLoadCartServiceById(DEFAULT_STATUS);
+  }, [auth]);
 
   // ----------------------------------------------------------------
 

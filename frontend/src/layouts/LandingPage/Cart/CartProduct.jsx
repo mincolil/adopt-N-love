@@ -19,7 +19,6 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { ToastContainer } from "react-toastify";
 import useAuth from "../../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
@@ -30,6 +29,7 @@ import AddIcon from "@mui/icons-material/Add";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import dayjs from "dayjs";
 import Grid from "@mui/material/Unstable_Grid2";
+import { notification, Space } from 'antd';
 
 export default function CartProduct() {
   const navigate = useNavigate();
@@ -46,6 +46,15 @@ export default function CartProduct() {
     return number.toLocaleString("vi-VN", {
       style: "currency",
       currency: "VND",
+    });
+  };
+
+  //ant notify
+  const [api, contextHolder] = notification.useNotification();
+  const openNotificationWithIcon = (type, des) => {
+    api[type]({
+      message: 'Notification Title',
+      description: des,
     });
   };
 
@@ -75,8 +84,7 @@ export default function CartProduct() {
         console.log(err);
       }
     } else {
-      console.log("Số lượng sản phẩm không đủ");
-      toast.error("Số lượng sản phẩm không đủ");
+      openNotificationWithIcon('error', 'Số lượng sản phẩm không đủ')
     }
   };
 
@@ -105,8 +113,7 @@ export default function CartProduct() {
         console.log(err);
       }
     } else {
-      console.log("Số lượng sản phẩm ko the bang 0");
-      toast.error("Số lượng sản phẩm ko the bang 0");
+      openNotificationWithIcon('error', 'Số lượng sản phẩm không thể bằng 0')
     }
   };
 
@@ -136,7 +143,6 @@ export default function CartProduct() {
           toast.error(loadData.error);
         } else {
           setData(loadData.data);
-          // console.log(loadData.data);
           let totalPrice = 0;
           for (let i = 0; i < loadData.data.length; i++) {
             if (
@@ -192,6 +198,7 @@ export default function CartProduct() {
     <>
       <toastContainer />
       <Header />
+      {contextHolder}
       <Container
         sx={{ position: "relative", top: "120px", marginBottom: "150px" }}
       >

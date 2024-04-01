@@ -25,7 +25,7 @@ import {
   MenuItem,
   Breadcrumbs,
   Link,
-  Button
+  Button,
 } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import SearchIcon from "@mui/icons-material/Search";
@@ -35,12 +35,14 @@ import Grid from "@mui/material/Unstable_Grid2";
 import "./styled/ServiceList.css";
 import styled from "styled-components";
 import axios from "axios";
-import { toast } from "react-toastify";
-import { ToastContainer } from "react-toastify";
+
 import useAuth from "../../../hooks/useAuth";
 import { Link as RouterLink } from "react-router-dom";
 import dayjs from "dayjs";
 import ChoosePet from "../../../components/Modal/ModalChoosePet";
+import { Button as AntButton } from "antd";
+import { notification, Space } from 'antd';
+import { NavLink, useNavigate } from "react-router-dom";
 
 const BASE_URL = "http://localhost:3500";
 
@@ -51,16 +53,24 @@ const numberToVND = (number) => {
   });
 };
 
-
 function ServiceItem({ service }) {
   const [dataPet, setDataPet] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState({});
   const context = useAuth();
 
+  const [api, contextHolder] = notification.useNotification();
+  const openNotificationWithIcon = (type, des) => {
+    api[type]({
+      message: 'Thông báo',
+      description:
+        des,
+    });
+  };
+
   const handleAddToCartClick = async (serviceId) => {
     if (context.auth.token === undefined) {
-      toast.warning("Bạn chưa đăng nhập, vui lòng đăng nhập !");
+      openNotificationWithIcon('warning', 'Vui lòng đăng nhập để sử dụng dịch vụ');
     } else {
       try {
         const loadDataPet = await axios.post(
@@ -71,7 +81,7 @@ function ServiceItem({ service }) {
           }
         );
         if (loadDataPet.error) {
-          toast.error(loadDataPet.error);
+          openNotificationWithIcon('error', loadDataPet.error);
         } else {
           // setData(loadDataPet.data.docs);
 
@@ -97,10 +107,18 @@ function ServiceItem({ service }) {
     setSelectedService(null);
   };
 
-
-  const { _id, serviceName, price, serviceImage, discount, saleEndTime, saleStartTime } = service;
+  const {
+    _id,
+    serviceName,
+    price,
+    serviceImage,
+    discount,
+    saleEndTime,
+    saleStartTime,
+  } = service;
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
+      {contextHolder}
       <Card className="product-card">
         <CardActionArea component={RouterLink} to={`/service-homepage/${_id}`}>
           <CardMedia
@@ -110,10 +128,7 @@ function ServiceItem({ service }) {
             alt={serviceName}
           />
           {discount !== 0 &&
-            dayjs().isBetween(
-              dayjs(saleStartTime),
-              dayjs(saleEndTime)
-            ) ? (
+          dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
             <Card
               style={{
                 position: "absolute",
@@ -124,8 +139,8 @@ function ServiceItem({ service }) {
               }}
             >
               <Typography
-                variant="h6"
-                component="h2"
+                // variant="h6"
+                // component="h2"
                 sx={{
                   color: "#fff",
                   backgroundColor: "#ee4d2d",
@@ -150,7 +165,7 @@ function ServiceItem({ service }) {
               variant="h5"
               component="div"
               className="product-title"
-              style={{ color: '#838b8b' }}
+              style={{ color: "#838b8b" }}
             >
               {serviceName}
             </Typography>
@@ -161,10 +176,7 @@ function ServiceItem({ service }) {
               className="product-price"
             >
               {discount !== 0 &&
-                dayjs().isBetween(
-                  dayjs(saleStartTime),
-                  dayjs(saleEndTime)
-                ) ? (
+              dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
                 <Box
                   display="flex"
                   flexGrow={1}
@@ -175,8 +187,8 @@ function ServiceItem({ service }) {
                 >
                   <Typography
                     gutterBottom
-                    variant="h6"
-                    component="h2"
+                    // variant="h6"
+                    // component="h2"
                     sx={{
                       textDecoration: "line-through",
                       marginRight: "8px",
@@ -187,29 +199,28 @@ function ServiceItem({ service }) {
                   </Typography>
                   <Typography
                     gutterBottom
-                    variant="h6"
-                    component="h2"
+
+                    // variant="h6"
+                    // component="h2"
                     style={{ color: '#ff5722' }}
+
                   >
-                    {numberToVND(
-                      price -
-                      (price * discount) / 100
-                    )}
+                    {numberToVND(price - (price * discount) / 100)}
                   </Typography>
                 </Box>
               ) : (
                 <Typography
                   gutterBottom
-                  variant="h6"
-                  component="h2"
+
+                  // variant="h6"
+                  // component="h2"
                   style={{ color: '#ff5722' }}
+
                 >
                   {numberToVND(price)}
                 </Typography>
               )}
-
             </Typography>
-
           </CardContent>
         </CardActionArea>
         <CardActions sx={{ justifyContent: "center" }}>
@@ -251,12 +262,39 @@ export default function ServiceList() {
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const context = useAuth();
+  const { auth } = context;
+
+  //NOTIFICATION
+  const [api, contextHolder] = notification.useNotification();
+  const openNotificationWithIcon = (type, des) => {
+    api[type]({
+      message: 'Thông báo',
+      description:
+        des,
+    });
+  };
 
   // ----------------------------------- FILTER BY PRICE --------------------------------
   const handlePriceChange = (event, newValue) => {
     if (newValue) {
-      setPrice(newValue);
-      filterServiceByPrice(newValue[0], newValue[1]);
+      const [minPrice, maxPrice] = newValue;
+      const priceRange = maxPrice - minPrice;
+      // Kiểm tra nếu price[0] không được kéo qua price[1]
+      if (priceRange < 10000 && event.target === null) {
+        if (event[0] < event[1]) {
+          setPrice([event[0], event[0] + 10000]);
+          filterServiceByPrice(event[0], event[0] + 10000);
+        } else {
+          setPrice([event[1] - 10000, event[1]]);
+          filterServiceByPrice(event[1] - 10000, event[1]);
+        }
+      } else {
+        // Đảm bảo price[0] không vượt qua price[1]
+        if (minPrice !== price[0] || maxPrice !== price[1]) {
+          setPrice(newValue);
+          filterServiceByPrice(minPrice, maxPrice);
+        }
+      }
     }
   };
 
@@ -269,7 +307,7 @@ export default function ServiceList() {
           `http://localhost:3500/service?page=1&limit=12&minPrice=${minPrice}&maxPrice=${maxPrice}`
         );
         if (loadData.error) {
-          toast.error(loadData.error);
+          console.log(loadData.error);
         } else {
           // console.log("Check loaddata", loadData.data);
           setTotalPages(loadData.data.pages);
@@ -285,8 +323,9 @@ export default function ServiceList() {
   }
 
   useEffect(() => {
-    handlePriceChange();
-  }, []);
+    if (auth)
+      handlePriceChange();
+  }, [auth]);
 
   // ----------------------------------- API SORT PRODUCT --------------------------------
 
@@ -326,7 +365,7 @@ export default function ServiceList() {
           `http://localhost:3500/service?sortPrice=${sortParam}`
         );
         if (loadData.error) {
-          toast.error(loadData.error);
+          console.log(loadData.error);
         } else {
           // console.log("Check loaddata", loadData.data);
           setTotalPages(loadData.data.pages);
@@ -346,9 +385,11 @@ export default function ServiceList() {
   }, []);
 
   // ----------------------------------- API GET ALL SERVICE --------------------------------
+
   useEffect(() => {
-    loadAllService(currentPage);
-  }, []);
+    if (auth)
+      loadAllService(currentPage);
+  }, [auth]);
 
   const loadAllService = async (page) => {
     try {
@@ -356,7 +397,7 @@ export default function ServiceList() {
         `${BASE_URL}/service?page=${page}&limit=12&status=true`
       );
       if (loadData.error) {
-        toast.error(loadData.error);
+        console.log(loadData.error);
       } else {
         // console.log("check data", loadData.data.docs);
         setTotalPages(loadData.data.pages);
@@ -383,7 +424,7 @@ export default function ServiceList() {
           `http://localhost:3500/service?page=1&categoryId=${cateId}&status=true&limit=9`
         );
         if (loadData.error) {
-          toast.error(loadData.error);
+          console.log(loadData.error);
         } else {
           // console.log("Check loaddata", loadData.data);
           setTotalPages(loadData.data.pages);
@@ -433,7 +474,7 @@ export default function ServiceList() {
 
   const handleSearchClick = async () => {
     if (keyword.trim() === "") {
-      toast.warning("Hãy nhập kết quả bạn cần tìm");
+      openNotificationWithIcon("warning", "Vui lòng nhập từ khóa tìm kiếm!");
       loadAllService(currentPage);
     } else {
       searchServiceByName();
@@ -447,13 +488,11 @@ export default function ServiceList() {
         `${BASE_URL}/service?service=${keyword.trim()}&page=${page}&limit=9`
       );
       if (loadData.data.error) {
-        toast.warning(
-          "Kết quả " +
+        openNotificationWithIcon("Kết quả " +
           "[" +
           keyword +
           "]" +
-          " bạn vừa tìm không có! Vui lòng nhập lại."
-        );
+          " bạn vừa tìm không có! Vui lòng nhập lại.");
         loadAllService(currentPage);
       } else {
         setData(loadData.data.docs);
@@ -475,7 +514,7 @@ export default function ServiceList() {
         `http://localhost:3500/category?categoryName=Dịch vụ`
       );
       if (loadDataCategoryService.error) {
-        toast.error(loadDataCategoryService.error);
+        console.log(loadDataCategoryService.error);
       } else {
         setCategory(loadDataCategoryService.data.docs);
       }
@@ -485,13 +524,14 @@ export default function ServiceList() {
   }
 
   useEffect(() => {
-    loadAllCategoryService();
-  }, []);
+    if (auth)
+      loadAllCategoryService();
+  }, [auth]);
 
   return (
     <>
-      <toastContainer />
       <Header />
+      {contextHolder}
       <Container
         sx={{ position: "relative", top: "120px", paddingBottom: "200px" }}
       >
@@ -556,19 +596,19 @@ export default function ServiceList() {
                     min={0}
                     max={1000000}
                     sx={{
-                      color: 'orange',
-                      '& .MuiSlider-rail': {
-                        backgroundColor: 'orange',
+                      color: "orange",
+                      "& .MuiSlider-rail": {
+                        backgroundColor: "orange",
                       },
-                      '& .MuiSlider-track': {
-                        backgroundColor: '#ff5722',
+                      "& .MuiSlider-track": {
+                        backgroundColor: "#ff5722",
                       },
-                      '& .MuiSlider-thumb': {
-                        backgroundColor: '#ff5722',
+                      "& .MuiSlider-thumb": {
+                        backgroundColor: "#ff5722",
                       },
-                      '& .MuiSlider-valueLabel': {
-                        backgroundColor: '#ff5722',
-                        color: 'black', // You can adjust the color of the value label text
+                      "& .MuiSlider-valueLabel": {
+                        backgroundColor: "#ff5722",
+                        color: "black", // You can adjust the color of the value label text
                       },
                     }}
                   />
@@ -645,9 +685,15 @@ export default function ServiceList() {
                 </Grid>
               </Grid>
               <Grid container spacing={2}>
-                {data.map((service, index) => (
-                  <ServiceItem key={index} service={service} />
-                ))}
+                {!data || data.length === 0 ? (
+                  <Typography variant="body1">
+                    Không có dịch vụ tương ứng
+                  </Typography>
+                ) : (
+                  data.map((product, index) => (
+                    <ServiceItem key={index} product={product} />
+                  ))
+                )}
               </Grid>
               <Stack
                 spacing={2}

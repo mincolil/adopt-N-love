@@ -11,8 +11,6 @@ import {
   Breadcrumbs,
   Tabs,
   Tab,
-  TextField,
-  Rating,
   Backdrop,
   CircularProgress,
 } from "@mui/material";
@@ -25,12 +23,6 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import MuiAccordion from "@mui/material/Accordion";
-import MuiAccordionSummary from "@mui/material/AccordionSummary";
-import MuiAccordionDetails from "@mui/material/AccordionDetails";
-import { styled } from "@mui/material/styles";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
 import Comments from "../../../components/Comments/Comments";
 import dayjs from "dayjs";
 
@@ -202,14 +194,6 @@ const ProductDetail = () => {
               <Typography variant="h1" className="product-title">
                 {product && product.productName}
               </Typography>
-              {/* <Box className="stars-rating">
-              <Box className="star-rating">
-                <span className="star-5"></span>
-              </Box>
-              <Typography variant="body2" className="count-star">
-                (7)
-              </Typography>
-            </Box> */}
               <Typography variant="body2" className="availability">
                 Số lượng còn:
                 <Link href="#"> {product && product.quantity}</Link>
@@ -334,10 +318,10 @@ const ProductDetail = () => {
             <Typography paragraph>{product && product.description}</Typography>
           </TabPanel>
           <TabPanel value={tab} index={1}>
-            <Typography variant="h6" gutterBottom>
+            {/* <Typography variant="h6" gutterBottom>
               1 review for <span>Glorious Eau</span>
-            </Typography>
-            <Box className="comment">
+            </Typography> */}
+            {/* <Box className="comment">
               <Box className="comment-container">
                 <Typography variant="subtitle1">
                   <strong>Nguyen Minh Hieu</strong> - <span>June 7, 2023</span>
@@ -390,7 +374,8 @@ const ProductDetail = () => {
                   </Button>
                 </form>
               </Box>
-            </Box>
+            </Box> */}
+            <Comments value={product._id} />
           </TabPanel>
         </Box>
 

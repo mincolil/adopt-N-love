@@ -168,9 +168,9 @@ export default function DashboardList() {
   return (
     <>
       <React.Fragment>
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Container sx={{ mt: 4, mb: 4 }}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={4} lg={3}>
+            <Grid item xs={12} md={6} lg={4}>
               <Paper
                 sx={{
                   p: 2,
@@ -183,7 +183,7 @@ export default function DashboardList() {
               </Paper>
             </Grid>
 
-            <Grid item xs={12} md={4} lg={3}>
+            <Grid item xs={12} md={6} lg={4}>
               <Paper
                 sx={{
                   p: 2,
@@ -196,7 +196,7 @@ export default function DashboardList() {
               </Paper>
             </Grid>
 
-            <Grid item xs={12} md={4} lg={3}>
+            <Grid item xs={12} md={6} lg={4}>
               <Paper
                 sx={{
                   p: 2,
@@ -209,7 +209,7 @@ export default function DashboardList() {
               </Paper>
             </Grid>
 
-            <Grid item xs={12} md={4} lg={3}>
+            <Grid item xs={12} md={6} lg={4}>
               <Paper
                 sx={{
                   p: 2,
@@ -222,7 +222,7 @@ export default function DashboardList() {
               </Paper>
             </Grid>
 
-            <Grid item xs={12} md={4} lg={3}>
+            <Grid item xs={12} md={6} lg={4}>
               <Paper
                 sx={{
                   p: 2,

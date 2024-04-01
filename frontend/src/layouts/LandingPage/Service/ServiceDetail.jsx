@@ -25,6 +25,7 @@ import { toast } from "react-toastify";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import ChoosePet from "../../../components/Modal/ModalChoosePet";
 import dayjs from "dayjs";
+import Comments from "../../../components/Comments/Comments";
 
 const BASE_URL = "http://localhost:3500";
 
@@ -59,7 +60,6 @@ const ServiceDetail = () => {
   const [dataPet, setDataPet] = useState([]);
   const { serviceId } = useParams();
   const [service, setService] = useState(null);
-  const [quantitySell, setQuantitySell] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState({});
   const [tab, setTab] = useState(0);
@@ -97,14 +97,6 @@ const ServiceDetail = () => {
       </Backdrop>
     );
   }
-
-  const handleIncreaseClick = () => {
-    setQuantitySell((quantitySell) => quantitySell + 1);
-  };
-
-  const handleDecreaseClick = () => {
-    setQuantitySell((quantitySell) => Math.max(quantitySell - 1, 1));
-  };
 
   // --------------------- GET DETAIL SERVICE BY ID -----------------------------
 
@@ -211,10 +203,10 @@ const ServiceDetail = () => {
               </Typography>
             </Box> */}
               {service.discount !== 0 &&
-                dayjs().isBetween(
-                  dayjs(service.saleStartTime),
-                  dayjs(service.saleEndTime)
-                ) ? (
+              dayjs().isBetween(
+                dayjs(service.saleStartTime),
+                dayjs(service.saleEndTime)
+              ) ? (
                 <Box
                   display="flex"
                   flexGrow={1}
@@ -239,11 +231,10 @@ const ServiceDetail = () => {
                     gutterBottom
                     variant="h6"
                     component="h2"
-                    style={{ color: '#ff5722' }}
+                    style={{ color: "#ff5722" }}
                   >
                     {numberToVND(
-                      service.price -
-                      (service.price * service.discount) / 100
+                      service.price - (service.price * service.discount) / 100
                     )}
                   </Typography>
                   <Typography
@@ -270,7 +261,7 @@ const ServiceDetail = () => {
                   gutterBottom
                   variant="h6"
                   component="h2"
-                  style={{ color: '#ff5722' }}
+                  style={{ color: "#ff5722" }}
                 >
                   {numberToVND(service.price)}
                 </Typography>
@@ -304,70 +295,14 @@ const ServiceDetail = () => {
               },
             }}
           >
-            <Tab label="Chi tiết sản phẩm" />
-            <Tab label="Đánh giá sản phẩm" />
+            <Tab label="Chi tiết dịch vụ" />
+            <Tab label="Đánh giá dịch vụ" />
           </Tabs>
           <TabPanel value={tab} index={0}>
             <Typography paragraph>{service && service.description}</Typography>
           </TabPanel>
           <TabPanel value={tab} index={1}>
-            <Typography variant="h6" gutterBottom>
-              1 review for <span>Glorious Eau</span>
-            </Typography>
-            <Box className="comment">
-              <Box className="comment-container">
-                <Typography variant="subtitle1">
-                  <strong>Nguyen Minh Hieu</strong> - <span>June 7, 2023</span>
-                </Typography>
-                <Typography paragraph>
-                  Simple and effective design. One of my favorites.
-                </Typography>
-              </Box>
-            </Box>
-            <Box className="review_form_wrapper">
-              <Box className="review_form">
-                <Typography variant="h6" gutterBottom>
-                  Add a review
-                </Typography>
-                <form className="comment-form-review">
-                  <Typography className="comment-notes" gutterBottom>
-                    Your email address will not be published. Required fields
-                    are marked <span className="required">*</span>
-                  </Typography>
-                  <Box className="comment-form-rating">
-                    <Typography>Your rating</Typography>
-                    <Rating name="simple-controlled" />
-                  </Box>
-                  <TextField
-                    id="review"
-                    name="review"
-                    label="Your review"
-                    multiline
-                    rows={4}
-                    fullWidth
-                    required
-                  />
-                  <TextField
-                    id="name"
-                    name="name"
-                    label="Name"
-                    fullWidth
-                    required
-                  />
-                  <TextField
-                    id="email"
-                    name="email"
-                    label="Email"
-                    type="email"
-                    fullWidth
-                    required
-                  />
-                  <Button type="submit" variant="contained" color="primary">
-                    Submit
-                  </Button>
-                </form>
-              </Box>
-            </Box>
+            <Comments value={service._id} />
           </TabPanel>
         </Box>
         {/* Choose Pet */}

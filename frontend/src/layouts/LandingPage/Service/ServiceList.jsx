@@ -25,7 +25,7 @@ import {
   MenuItem,
   Breadcrumbs,
   Link,
-  Button
+  Button,
 } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import SearchIcon from "@mui/icons-material/Search";
@@ -52,7 +52,6 @@ const numberToVND = (number) => {
     currency: "VND",
   });
 };
-
 
 function ServiceItem({ service }) {
   const [dataPet, setDataPet] = useState([]);
@@ -108,8 +107,15 @@ function ServiceItem({ service }) {
     setSelectedService(null);
   };
 
-
-  const { _id, serviceName, price, serviceImage, discount, saleEndTime, saleStartTime } = service;
+  const {
+    _id,
+    serviceName,
+    price,
+    serviceImage,
+    discount,
+    saleEndTime,
+    saleStartTime,
+  } = service;
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
       {contextHolder}
@@ -122,10 +128,7 @@ function ServiceItem({ service }) {
             alt={serviceName}
           />
           {discount !== 0 &&
-            dayjs().isBetween(
-              dayjs(saleStartTime),
-              dayjs(saleEndTime)
-            ) ? (
+          dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
             <Card
               style={{
                 position: "absolute",
@@ -162,7 +165,7 @@ function ServiceItem({ service }) {
               variant="h5"
               component="div"
               className="product-title"
-              style={{ color: '#838b8b' }}
+              style={{ color: "#838b8b" }}
             >
               {serviceName}
             </Typography>
@@ -173,10 +176,7 @@ function ServiceItem({ service }) {
               className="product-price"
             >
               {discount !== 0 &&
-                dayjs().isBetween(
-                  dayjs(saleStartTime),
-                  dayjs(saleEndTime)
-                ) ? (
+              dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
                 <Box
                   display="flex"
                   flexGrow={1}
@@ -199,29 +199,28 @@ function ServiceItem({ service }) {
                   </Typography>
                   <Typography
                     gutterBottom
+
                     // variant="h6"
                     // component="h2"
                     style={{ color: '#ff5722' }}
+
                   >
-                    {numberToVND(
-                      price -
-                      (price * discount) / 100
-                    )}
+                    {numberToVND(price - (price * discount) / 100)}
                   </Typography>
                 </Box>
               ) : (
                 <Typography
                   gutterBottom
+
                   // variant="h6"
                   // component="h2"
                   style={{ color: '#ff5722' }}
+
                 >
                   {numberToVND(price)}
                 </Typography>
               )}
-
             </Typography>
-
           </CardContent>
         </CardActionArea>
         <CardActions sx={{ justifyContent: "center" }}>
@@ -278,8 +277,24 @@ export default function ServiceList() {
   // ----------------------------------- FILTER BY PRICE --------------------------------
   const handlePriceChange = (event, newValue) => {
     if (newValue) {
-      setPrice(newValue);
-      filterServiceByPrice(newValue[0], newValue[1]);
+      const [minPrice, maxPrice] = newValue;
+      const priceRange = maxPrice - minPrice;
+      // Kiểm tra nếu price[0] không được kéo qua price[1]
+      if (priceRange < 10000 && event.target === null) {
+        if (event[0] < event[1]) {
+          setPrice([event[0], event[0] + 10000]);
+          filterServiceByPrice(event[0], event[0] + 10000);
+        } else {
+          setPrice([event[1] - 10000, event[1]]);
+          filterServiceByPrice(event[1] - 10000, event[1]);
+        }
+      } else {
+        // Đảm bảo price[0] không vượt qua price[1]
+        if (minPrice !== price[0] || maxPrice !== price[1]) {
+          setPrice(newValue);
+          filterServiceByPrice(minPrice, maxPrice);
+        }
+      }
     }
   };
 
@@ -581,19 +596,19 @@ export default function ServiceList() {
                     min={0}
                     max={1000000}
                     sx={{
-                      color: 'orange',
-                      '& .MuiSlider-rail': {
-                        backgroundColor: 'orange',
+                      color: "orange",
+                      "& .MuiSlider-rail": {
+                        backgroundColor: "orange",
                       },
-                      '& .MuiSlider-track': {
-                        backgroundColor: '#ff5722',
+                      "& .MuiSlider-track": {
+                        backgroundColor: "#ff5722",
                       },
-                      '& .MuiSlider-thumb': {
-                        backgroundColor: '#ff5722',
+                      "& .MuiSlider-thumb": {
+                        backgroundColor: "#ff5722",
                       },
-                      '& .MuiSlider-valueLabel': {
-                        backgroundColor: '#ff5722',
-                        color: 'black', // You can adjust the color of the value label text
+                      "& .MuiSlider-valueLabel": {
+                        backgroundColor: "#ff5722",
+                        color: "black", // You can adjust the color of the value label text
                       },
                     }}
                   />
@@ -670,9 +685,15 @@ export default function ServiceList() {
                 </Grid>
               </Grid>
               <Grid container spacing={2}>
-                {data.map((service, index) => (
-                  <ServiceItem key={index} service={service} />
-                ))}
+                {!data || data.length === 0 ? (
+                  <Typography variant="body1">
+                    Không có dịch vụ tương ứng
+                  </Typography>
+                ) : (
+                  data.map((product, index) => (
+                    <ServiceItem key={index} product={product} />
+                  ))
+                )}
               </Grid>
               <Stack
                 spacing={2}

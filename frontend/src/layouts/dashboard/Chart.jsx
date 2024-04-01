@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { PureComponent } from 'react';
 import { useTheme } from "@mui/material/styles";
 import {
   LineChart,
@@ -32,6 +32,22 @@ function createData(time, amount) {
 //   createData(11, 11),
 //   createData(12, 1600800),
 // ];
+
+class CustomizedLabel extends PureComponent {
+  render() {
+    const { x, y, stroke, value } = this.props;
+
+    if (value === 0) {
+      return null;
+    }
+
+    return (
+      <text x={x} y={y} dy={-4} fill={stroke} fontSize={10} textAnchor="middle">
+        {value}
+      </text>
+    );
+  }
+}
 
 export default function ChartDashBroad() {
   const [productStatisticcs, setProductStatisticcs] = useState();
@@ -120,11 +136,12 @@ export default function ChartDashBroad() {
                       ></Label>
                     </YAxis>
                     <Line
-                      isAnimationActive={false}
+                      isAnimationActive={true}
                       type="monotone"
                       dataKey="amount"
                       stroke={theme.palette.primary.main}
-                      dot={false}
+                      // dot={false}
+                      label={<CustomizedLabel />}
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -178,6 +195,7 @@ export default function ChartDashBroad() {
                       dataKey="amount"
                       stroke={theme.palette.primary.main}
                       dot={false}
+                      label={<CustomizedLabel />}
                     />
                   </LineChart>
                 </ResponsiveContainer>

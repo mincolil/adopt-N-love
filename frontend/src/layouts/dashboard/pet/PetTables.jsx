@@ -441,7 +441,7 @@ export default function PetTable() {
       width: '15%',
       render: (text, record) => (
         <Space size="middle">
-          <InputNumber min={0} max={100} value={record.discount}
+          <InputNumber min={0} max={30} value={record.discount}
             onChange={(value) => {
               const newData = data.map((item) =>
                 item._id === record._id ? { ...item, discount: value } : item

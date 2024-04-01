@@ -174,13 +174,12 @@ export default function ServiceCheckout() {
                 dayjs(loadData.data[i].serviceId.saleEndTime)
               )) && loadData.data[i].petId.discount !== 0
             ) {
-              totalPrice +=
-                loadData.data[i].quantity *
-                (loadData.data[i].serviceId.price -
-                  (loadData.data[i].serviceId.price *
-                    loadData.data[i].serviceId.discount) /
-                  100
-                  - (loadData.data[i].serviceId.price * loadData.data[i].petId.discount / 100));
+              const finalPrice = loadData.data[i].quantity * (loadData.data[i].serviceId.price - (loadData.data[i].serviceId.price * loadData.data[i].serviceId.discount / 100) - (loadData.data[i].serviceId.price * loadData.data[i].petId.discount / 100));
+              if (finalPrice > 0.7 * loadData.data[i].quantity * loadData.data[i].serviceId.price) {
+                totalPrice += finalPrice;
+              } else {
+                totalPrice += 0.7 * loadData.data[i].quantity * loadData.data[i].serviceId.price;
+              }
             } else if (loadData.data[i].serviceId.discount !== 0 &&
               dayjs().isBetween(
                 dayjs(loadData.data[i].serviceId.saleStartTime),
@@ -400,16 +399,6 @@ export default function ServiceCheckout() {
                     </RadioGroup>
                   </Box>
                 </AccordionSummary>
-                <AccordionDetails>
-                  <Cards
-                    number={number}
-                    name={name}
-                    expiry={date}
-                    cvv={cvv}
-                    focus={focus}
-                  />
-                  <br />
-                </AccordionDetails>
               </Accordion>
             </Box>
           </Grid>

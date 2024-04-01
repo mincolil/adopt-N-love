@@ -188,7 +188,6 @@ export default function PetUser() {
       <Header />
       <React.Fragment>
         <CustomContainer component="main" maxWidth="false" sx={{ pt: 10, pb: 4 }}>
-
           <Container
             component="main"
             maxWidth="lg"
@@ -230,7 +229,7 @@ export default function PetUser() {
                             right: "0px",
                             fontSize: "18px",
                             alignItems: "center",
-                            styled: { padding: "2px 4px" },
+                            padding: "5px",
                           }}
                         >
                           <Typography
@@ -249,6 +248,8 @@ export default function PetUser() {
                             }}
                           >
                             Ưu đãi
+                            <br />
+                            {value.discount}%
                           </Typography>
                         </Card>
                       )}

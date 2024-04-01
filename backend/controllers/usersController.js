@@ -175,5 +175,7 @@ module.exports = {
     createUser,
     updateUser,
     deleteOne,
+
     getUserById
 }
+

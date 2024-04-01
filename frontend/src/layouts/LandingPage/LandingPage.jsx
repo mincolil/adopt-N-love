@@ -6,7 +6,6 @@ import { Typography, Button, Container, Box, Avatar } from "@mui/material";
 import useAuth from "../../hooks/useAuth";
 import Grid from "@mui/material/Unstable_Grid2";
 import Carousel from "react-material-ui-carousel";
-import styled from "styled-components";
 import Banner from "../../images/banner.png";
 import DogBanner from "../../images/dog_banner.png";
 import ServiceIcon1 from "../../images/service_icon_1.png";
@@ -16,7 +15,6 @@ import Cat from "../../images/cat.png";
 import AdaptIcon1 from "../../images/adapt_icon_1.png";
 import AdaptIcon2 from "../../images/adapt_icon_2.png";
 import Avatar1 from "../../images/avatar1.png";
-import Logo from "../../images/AdoptNLove.png";
 import { ToastContainer } from "react-toastify";
 import { notification, Space } from 'antd';
 import axios from "axios";
@@ -25,9 +23,6 @@ import { Button as AntButton } from "antd";
 
 
 
-const DsButton = styled(Button)`
-  text-transform: none !important;
-`;
 const BASE_URL = "http://localhost:3500";
 
 const Counter = ({ target }) => {

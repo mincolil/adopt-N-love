@@ -1,6 +1,58 @@
 const BookingDetail = require('../models/BookingDetail');
 const mongoose = require('mongoose')
 
+const getAllBookingDetail = async (req, res) => {
+    try {
+        const { startDate, endDate } = req.query;
+        let bookingDetails = await BookingDetail.find().populate('serviceId petId bookingId');
+        if (startDate && endDate) {
+            bookingDetails = await BookingDetail.find({
+                bookingDate: {
+                    $gte: new Date(startDate),
+                    $lte: new Date(endDate)
+                }
+            }).populate('serviceId petId bookingId');
+        }
+        //add virtual field price to bookingDetails, price = serviceId.price - serviceId.price * serviceId.discount / 100 - serviceId.price * petId.discount / 100
+
+        const bookingDetailsWithPrice = bookingDetails.map(detail => {
+            const servicePrice = detail.serviceId.price;
+            const serviceDiscount = detail.serviceId.discount;
+            const petDiscount = detail.petId.discount;
+
+            // Calculate total price
+            //4 conditions if service has discount and pet has discount, service has discount, pet has discount, no discount
+            if (detail.serviceId.saleStartTime <= new Date() && detail.serviceId.saleEndTime >= new Date() && serviceDiscount !== 0 && petDiscount !== 0) {
+                totalPrice = servicePrice * (1 - serviceDiscount / 100) * (1 - petDiscount / 100);
+            }
+            else if (detail.serviceId.saleStartTime <= new Date() && detail.serviceId.saleEndTime >= new Date() && serviceDiscount !== 0) {
+                totalPrice = servicePrice * (1 - serviceDiscount / 100);
+            }
+            else if (petDiscount !== 0) {
+                totalPrice = servicePrice * (1 - petDiscount / 100);
+            }
+            else {
+                totalPrice = servicePrice;
+            }
+
+
+            // Add price field to the detail object
+            return {
+                ...detail.toObject(), // Convert Mongoose document to plain JavaScript object
+                price: totalPrice
+            };
+        });
+
+        if (!bookingDetailsWithPrice) {
+            return res.status(404).json({ message: 'BookingDetail not found!' });
+        }
+        res.status(200).json(bookingDetailsWithPrice);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json(err);
+    }
+};
+
 const getBookingDetailByBookingId = async (req, res) => {
     try {
         const bookingId = req.params.bookingId;
@@ -252,11 +304,32 @@ const getBookingDetailByBookingDateAndPetId = async (req, res) => {
     }
 }
 
+const updateBookingDetail = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { serviceId, petId, quantity, bookingDate } = req.body;
+        const result = await BookingDetail
+            .findByIdAndUpdate(id, { serviceId, petId, quantity, bookingDate }, { new: true });
+        if (!result) {
+            return res.status(404).json({
+                error: "Can not update BookingDetail"
+            })
+        }
+        res.status(200).json(result)
+    }
+    catch (err) {
+        console.log(err)
+        res.status(500).json(err)
+    }
+}
+
 module.exports = {
     getBookingDetailByBookingId,
     createBookingDetail,
     deleteOrderDetail,
     getBookingDetailByPetId,
     getBookingDetailByBookingDate,
-    getBookingDetailByBookingDateAndPetId
+    getBookingDetailByBookingDateAndPetId,
+    getAllBookingDetail,
+    updateBookingDetail
 }

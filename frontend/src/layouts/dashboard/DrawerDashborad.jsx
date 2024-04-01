@@ -37,20 +37,17 @@ const DrawerDashborad = () => {
   ];
 
   const links2 = [
-    { text: "Danh sách dịch vụ", path: "/dashboard/service-list" },
+    { text: "Quản lí dịch vụ", path: "/dashboard/service-list" },
     {
-      text: "Lịch đăng kí dịch vụ",
+      text: "Đơn đăng kí dịch vụ",
       path: "/dashboard/booking-list",
     },
+    { text: "Lịch đặt dịch vụ", path: "/dashboard/slot-booking-list" },
     { text: "Số lượng phòng dịch vụ", path: "/dashboard/category-list" },
   ];
 
   const links3 = [
-    { text: "Danh sách thú cưng", path: "/dashboard/pet-list" },
-    // {
-    //   text: "Lịch sử thanh toán thú cưng",
-    //   path: "/dashboard/history-pet-list",
-    // },
+    { text: "Quản lí thú cưng thú cưng", path: "/dashboard/pet-list" },
     { text: "Danh sách nhận nuôi", path: "/dashboard/adopt-pet-list" },
   ];
 

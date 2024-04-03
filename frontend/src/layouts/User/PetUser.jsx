@@ -13,7 +13,7 @@ import { ToastContainer } from "react-toastify";
 import useAuth from "../../hooks/useAuth";
 import { Avatar, Box, Container, Grid, Stack, TextField } from "@mui/joy";
 import PetsIcon from "@mui/icons-material/Pets";
-import { Breadcrumbs, Pagination } from "@mui/material";
+import { Breadcrumbs, Modal, Pagination } from "@mui/material";
 import ModalAddPet from "../../components/Modal/ModalAddPet";
 import ModalEditPet from "../../components/Modal/ModalEditPet";
 import { Link, NavLink } from "react-router-dom";
@@ -28,6 +28,7 @@ import Background from "../../images/background.png";
 import { orange } from '@mui/material/colors';
 import Icon from "../../images/adapt_icon_2.png";
 import ModalDetailPet from "../../components/Modal/ModalDetailPet";
+import ServiceListModal from "../../components/Modal/ModalServiceList";
 
 const CustomContainer = styled(Container)({
   background:
@@ -115,6 +116,7 @@ export default function PetUser() {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [dataEditPet, setDataEditPet] = useState({});
   const [openDetailModal, setOpenDetailModal] = useState(false);
+  const [openServiceModal, setOpenServiceModal] = useState(false);
   const [dataDetailPet, setDataDetailPet] = useState({});
 
   // --------------------- OPEN MODAL  -----------------------------
@@ -134,11 +136,17 @@ export default function PetUser() {
     setOpenDetailModal(true);
   };
 
+  const handleServiceModal = (pet) => {
+    setDataDetailPet(pet);
+    setOpenServiceModal(true);
+  };
+
   // --------------------- CLOSE MODAL  -----------------------------
   const handleCloseModal = () => {
     setOpenCreateModal(false);
     setOpenEditModal(false);
     setOpenDetailModal(false);
+    setOpenServiceModal(false);
   };
 
   // --------------------- GET ALL CATEGORY PET -----------------------------
@@ -377,11 +385,9 @@ export default function PetUser() {
                         width: "clamp(min(100%, 160px), 50%, min(100%, 200px))",
                       }}
                     >
-                      <Link to="/service-homepage">
-                        <Button href="/service-homepage" variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
-                          Đăng ký phòng khám
-                        </Button>
-                      </Link>
+                      <Button onClick={() => handleServiceModal(value)} variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
+                        Đăng ký phòng khám
+                      </Button>
                       <Button onClick={(e) => {
                         e.stopPropagation();
                         handleAdoptPet(value);
@@ -514,6 +520,16 @@ export default function PetUser() {
           dataEditPet={dataDetailPet}
           handUpdateEditTable={loadAllPetByUserId}
           page={currentPage}
+          data={context.auth.id}
+          category={category}
+        />
+        <ServiceListModal
+          open={openServiceModal}
+          onClose={handleCloseModal}
+          dataEditPet={dataDetailPet}
+          handUpdateEditTable={loadAllPetByUserId}
+          page={currentPage}
+          pet= {dataDetailPet}
           data={context.auth.id}
           category={category}
         />

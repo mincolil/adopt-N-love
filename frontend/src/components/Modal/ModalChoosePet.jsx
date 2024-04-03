@@ -42,7 +42,7 @@ import SlotPicker from 'slotpicker';
 import dayjs from "dayjs";
 import { ToastContainer } from "react-toastify";
 
-const ChoosePet = ({ open, onClose, service, pet, loadData }) => {
+const ChoosePet = ({ open, onClose, service, pet, loadData, choosenPet }) => {
   const [data, setData] = useState([]);
   const [dataCart, setDataCart] = useState([]);
 
@@ -334,8 +334,10 @@ const ChoosePet = ({ open, onClose, service, pet, loadData }) => {
             />
           </Container>
         </LocalizationProvider>
+        {pet && (
+          <DialogTitle>Chọn thú cưng</DialogTitle>
+        )}
 
-        <DialogTitle>Chọn thú cưng</DialogTitle>
         <List sx={{ pt: 0 }}>
           {pet &&
             pet.map((value, index) => {
@@ -356,7 +358,7 @@ const ChoosePet = ({ open, onClose, service, pet, loadData }) => {
                 </ListItem>
               );
             })}
-          <ListItem disableGutters>
+          {pet && (<ListItem disableGutters>
             <ListItemButton onClick={handleCreateModal}>
               <ListItemAvatar>
                 <Avatar>
@@ -366,7 +368,20 @@ const ChoosePet = ({ open, onClose, service, pet, loadData }) => {
               <ListItemText primary="Thêm thú cưng" />
             </ListItemButton>
           </ListItem>
+          )}
         </List>
+
+
+
+        {choosenPet && (
+          <Button
+            onClick={() => handleAddToCart(choosenPet._id)}
+            variant="contained"
+            color="primary"
+            sx={{ mb: 2 }}
+          > Thêm vào giỏ hàng
+          </Button>
+        )}
 
         {/* Modal create */}
         <ModalAddPet

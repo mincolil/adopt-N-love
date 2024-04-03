@@ -247,11 +247,6 @@ function ServiceItem({ service }) {
 export default function ServiceList() {
   const [checkedItems, setCheckedItems] = useState({});
 
-  const handleCheckboxChange = (event) => {
-    const { _id, checked } = event.target;
-    setCheckedItems({ ...checkedItems, [_id]: checked });
-  };
-
   const [price, setPrice] = useState([0, 1000000]);
   const [sortBy, setSortBy] = React.useState("price-asc");
 
@@ -324,6 +319,22 @@ export default function ServiceList() {
     if (auth)
       handlePriceChange();
   }, [auth]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      localStorage.removeItem('test');
+      // Prompt the user with a confirmation message
+      const confirmationMessage = 'Are you sure you want to leave?';
+      e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
+      return confirmationMessage; // Gecko, WebKit, Chrome <34
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
   // ----------------------------------- API SORT PRODUCT --------------------------------
 

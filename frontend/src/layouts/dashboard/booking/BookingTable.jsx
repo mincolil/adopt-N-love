@@ -135,6 +135,35 @@ export default function BookingTable() {
     handleOpen();
   };
 
+  // -------------------HANLDE ACCEPT/REFUSE CANCEL REQUEST -----------------------------
+  const handleCancelRequest = async (id) => {
+    if (
+      window.confirm("Bạn có muốn cập nhật trạng thái đơn hàng không ?") === true
+    ) {
+      try {
+        const loadData = await axios.put(
+          `http://localhost:3500/booking/update-status/${id}`,
+          {
+            bookingStatus: "Đã thanh toán",
+          }
+        );
+        if (loadData.error) {
+          toast.error(loadData.error);
+        } else {
+          // console.log(loadData.data);
+          loadBooking(status);
+          handleClose();
+          toast.success("Cập nhật trạng thái đơn hàng thành công");
+          //re load data
+          loadAllBooking(DEFAULT_PAGE, DEFAULT_LIMIT);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
+
   //--------------------- HANDLE EDIT SLOT -----------------------------
   const handleEditSlot = async (bookingDetailId, petId, serviceId) => {
     setDataBooking(bookingDetailId);
@@ -234,47 +263,45 @@ export default function BookingTable() {
   const statusList = ['Chờ xác nhận', 'Đã thanh toán', 'Đã xác nhận', 'Hoàn thành', 'Huỷ'];
 
   const hanldeClickChangeStatus = async (status, id) => {
-    try {
-      const booking = await axios.get(`http://localhost:3500/booking/get-booking/${id}`);
-      if (booking.data.status === "Yêu cầu huỷ") {
-        console.log(booking.data.status);
-        try {
-          await axios.post(`http://localhost:3500/cartService/refund-stripe`, {
-            charge: "ch_3OzcOxP1wqZM1wtK1Owndt4R"
-          });
-        } catch (err) {
-          console.log(err);
-
-        }
-      }
-    } catch (err) {
-      console.log(err);
-    }
-
-    // if (
-    //   window.confirm("Bạn có muốn cập nhật trạng thái đơn hàng không ?") === true
-    // ) {
-    //   try {
-    //     const loadData = await axios.put(
-    //       `http://localhost:3500/booking/update-status/${id}`,
-    //       {
-    //         bookingStatus: status,
-    //       }
-    //     );
-    //     if (loadData.error) {
-    //       toast.error(loadData.error);
-    //     } else {
-    //       // console.log(loadData.data);
-    //       loadBooking(status);
-    //       handleClose();
-    //       toast.success("Cập nhật trạng thái đơn hàng thành công");
-    //       //re load data
-    //       loadAllBooking(DEFAULT_PAGE, DEFAULT_LIMIT);
+    // try {
+    //   const booking = await axios.get(`http://localhost:3500/booking/get-booking/${id}`);
+    //   if (booking.data.status === "Yêu cầu huỷ") {
+    //     console.log(booking.data.status);
+    //     try {
+    //       await axios.post(`http://localhost:3500/cartService/refund-stripe`, {
+    //         payment_intent: booking.data.payment_int
+    //       });
+    //     } catch (err) {
+    //       console.log(err);
     //     }
-    //   } catch (err) {
-    //     console.log(err);
     //   }
+    // } catch (err) {
+    //   console.log(err);
     // }
+    if (
+      window.confirm("Bạn có muốn cập nhật trạng thái đơn hàng không ?") === true
+    ) {
+      try {
+        const loadData = await axios.put(
+          `http://localhost:3500/booking/update-status/${id}`,
+          {
+            bookingStatus: status,
+          }
+        );
+        if (loadData.error) {
+          toast.error(loadData.error);
+        } else {
+          // console.log(loadData.data);
+          loadBooking(status);
+          handleClose();
+          toast.success("Cập nhật trạng thái đơn hàng thành công");
+          //re load data
+          loadAllBooking(DEFAULT_PAGE, DEFAULT_LIMIT);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
   };
 
 
@@ -486,13 +513,29 @@ export default function BookingTable() {
       title: 'Action',
       key: 'action',
       render: (text, record) => (
-        <Space size="middle">
+        < Space size="middle" >
           <Button onClick={(e) => handleViewOrderDetail(
             record._id,
             OPTION_VIEW_ORDER_BY_ID,
             record.status
-          )}>Edit</Button>
-        </Space>
+          )}>Chỉnh sửa</Button>
+          {
+            record.status === "Yêu cầu huỷ" ? (
+              <Space size="middle">
+                <Button onClick={(e) => handleViewOrderDetail(
+                  record._id,
+                  OPTION_VIEW_ORDER_BY_ID,
+                  record.status
+                )}>Chấp nhận</Button>
+                <Button onClick={(e) => handleCancelRequest(
+                  record._id,
+                  OPTION_VIEW_ORDER_BY_ID,
+                  record.status
+                )}>Không chấp nhận</Button>
+              </Space>
+            ) : ""
+          }
+        </Space >
       ),
     },
   ];
@@ -537,7 +580,7 @@ export default function BookingTable() {
       key: 'action',
       render: (text, record) => (
         <Space size="middle">
-          <Button onClick={(e) => handleEditSlot(record._id, record.pet._id, record.service._id)}>Edit</Button>
+          <Button onClick={(e) => handleEditSlot(record._id, record.pet._id, record.service._id)}>Đổi lịch</Button>
         </Space>
       ),
     },

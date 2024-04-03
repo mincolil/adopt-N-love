@@ -124,7 +124,6 @@ const checkout = async (req, res) => {
                     bookingDate: cartItem.bookingDate,
                 });
 
-                await bookingDetail.save();
                 //get discount value of pet
                 const pet = await Pet.findById(cartItem.petId);
                 let petDiscount = 0;
@@ -135,6 +134,9 @@ const checkout = async (req, res) => {
                 if (finalPrice < (0.7 * service.price)) {
                     finalPrice = 0.7 * service.price;
                 }
+
+                bookingDetail.discountedPrice = finalPrice;
+                await bookingDetail.save();
 
 
                 // Update the total price
@@ -253,7 +255,7 @@ const checkoutStripe = async (req, res) => {
 const refundStripe = async (req, res) => {
     try {
         const refund = await stripe.refunds.create({
-            payment_intent: req.body.payment_intent  ,
+            payment_intent: req.body.payment_intent,
         });
         res.status(200).json(refund);
     } catch (err) {

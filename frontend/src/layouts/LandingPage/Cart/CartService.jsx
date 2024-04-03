@@ -126,11 +126,11 @@ export default function CartService() {
           console.log(err);
         }
       }
+      console.log(data)
+      context.auth.fullname = data[0].userId.fullname
+      data[0].userId.phone !== undefined ? context.auth.phone = data[0].userId.phone : context.auth.phone = ""
+      navigate('/service-checkout');
     }
-    console.log(data)
-    context.auth.fullname = data[0].userId.fullname
-    data[0].userId.phone !== undefined ? context.auth.phone = data[0].userId.phone : context.auth.phone = ""
-    navigate('/service-checkout');
   }
 
   const checkout = {

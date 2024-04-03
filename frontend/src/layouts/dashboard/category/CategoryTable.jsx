@@ -240,7 +240,7 @@ export default function CategoryTable() {
             disabled={record.slot === originalData.find((item) => item._id === record._id)?.slot}
             onClick={() => handleSave(record)}
           >
-            Save
+            Lưu
           </Button>
         </Space>
       ),

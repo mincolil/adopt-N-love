@@ -25,6 +25,9 @@ const bookingDetailSchema = new mongoose.Schema(
             type: Date,
             required: true,
         },
+        discountedPrice: {
+            type: Number,
+        },
     },
     {
         timestamps: true,

@@ -24,7 +24,7 @@ import { ToastContainer } from "react-toastify";
 
 //React
 import { useRef, useState, useEffect, useCallback } from "react";
-// import useAuth from "../../../hooks/useAuth";
+import useAuth from "../../../hooks/useAuth";
 // Axios
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -40,6 +40,8 @@ import { Table, Tag } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Space, InputNumber } from 'antd';
 import Highlighter from 'react-highlight-words';
+
+import EditBooking from "../../../components/Modal/ModalEditBooking";
 
 // -------------------------------STYLE MODAL----------------------
 const style = {
@@ -61,10 +63,15 @@ export default function BookingTable() {
   // const DEFAULT_FROMDATE = "";
   // const DEFAULT_TODATE = "";
 
+  const [booking, setDataBooking] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [petId, setPetId] = useState({});
+  const [selectedService, setSelectedService] = useState({});
+
   const [fromDate, setFromDate] = React.useState(dayjs());
   const [toDate, setToDate] = React.useState(dayjs());
 
-  // const context = useAuth();
+  const context = useAuth();
 
   const OPTION_VIEW_ORDER_BY_ID = "view";
 
@@ -112,7 +119,6 @@ export default function BookingTable() {
       } else {
         // console.log(data.data);
         setOrderDetail(bookingDetail.data);
-        console.log(data)
         data.map((value) => {
           if (value._id === id) {
             setRecipientName(value.recipientName)
@@ -129,6 +135,22 @@ export default function BookingTable() {
     handleOpen();
   };
 
+  //--------------------- HANDLE EDIT SLOT -----------------------------
+  const handleEditSlot = async (bookingDetailId, petId, serviceId) => {
+    setDataBooking(bookingDetailId);
+    setPetId(petId);
+    setSelectedService(serviceId);
+    if (serviceId !== undefined) {
+      context.auth.serviceId = serviceId;
+    }
+    setIsModalOpen(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setSelectedService(null);
+    setIsModalOpen(false);
+    handleClose();
+  };
 
   const convertDate = (date) => {
     // Chuỗi thời gian ban đầu
@@ -212,30 +234,47 @@ export default function BookingTable() {
   const statusList = ['Chờ xác nhận', 'Đã thanh toán', 'Đã xác nhận', 'Hoàn thành', 'Huỷ'];
 
   const hanldeClickChangeStatus = async (status, id) => {
-    if (
-      window.confirm("Bạn có muốn cập nhật trạng thái đơn hàng không ?") === true
-    ) {
-      try {
-        const loadData = await axios.put(
-          `http://localhost:3500/booking/update-status/${id}`,
-          {
-            bookingStatus: status,
-          }
-        );
-        if (loadData.error) {
-          toast.error(loadData.error);
-        } else {
-          // console.log(loadData.data);
-          loadBooking(status);
-          handleClose();
-          toast.success("Cập nhật trạng thái đơn hàng thành công");
-          //re load data
-          loadAllBooking(DEFAULT_PAGE, DEFAULT_LIMIT);
+    try {
+      const booking = await axios.get(`http://localhost:3500/booking/get-booking/${id}`);
+      if (booking.data.status === "Yêu cầu huỷ") {
+        console.log(booking.data.status);
+        try {
+          await axios.post(`http://localhost:3500/cartService/refund-stripe`, {
+            charge: "ch_3OzcOxP1wqZM1wtK1Owndt4R"
+          });
+        } catch (err) {
+          console.log(err);
+
         }
-      } catch (err) {
-        console.log(err);
       }
+    } catch (err) {
+      console.log(err);
     }
+
+    // if (
+    //   window.confirm("Bạn có muốn cập nhật trạng thái đơn hàng không ?") === true
+    // ) {
+    //   try {
+    //     const loadData = await axios.put(
+    //       `http://localhost:3500/booking/update-status/${id}`,
+    //       {
+    //         bookingStatus: status,
+    //       }
+    //     );
+    //     if (loadData.error) {
+    //       toast.error(loadData.error);
+    //     } else {
+    //       // console.log(loadData.data);
+    //       loadBooking(status);
+    //       handleClose();
+    //       toast.success("Cập nhật trạng thái đơn hàng thành công");
+    //       //re load data
+    //       loadAllBooking(DEFAULT_PAGE, DEFAULT_LIMIT);
+    //     }
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // }
   };
 
 
@@ -409,7 +448,8 @@ export default function BookingTable() {
               status === "Đã thanh toán" ? <Tag color="green">{status}</Tag> :
                 status === "Đã xác nhận" ? <Tag color="orange">{status}</Tag> :
                   status === "Hoàn thành" ? <Tag color="cyan">{status}</Tag> :
-                    <Tag color="red">{status}</Tag>
+                    status === "Yêu cầu huỷ" ? <Tag color="purple">{status}</Tag> :
+                      <Tag color="red">{status}</Tag>
           }
         </span>
       ),
@@ -429,6 +469,10 @@ export default function BookingTable() {
         {
           text: 'Hoàn thành',
           value: 'Hoàn thành',
+        },
+        {
+          text: 'Yêu cầu huỷ',
+          value: 'Yêu cầu huỷ',
         },
         {
           text: 'Huỷ',
@@ -480,13 +524,22 @@ export default function BookingTable() {
       title: 'Ngày hẹn',
       dataIndex: 'bookingDate',
       key: 'bookingDate',
-      render: text => moment(text).format("DD/MM/YYYY HH:mm:ss")
+      render: text => moment.utc(text).format("DD/MM/YYYY HH:mm:ss")
     },
     {
       title: 'Giá',
       dataIndex: 'price',
       key: 'price',
       render: (price) => numberToVND(price),
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (text, record) => (
+        <Space size="middle">
+          <Button onClick={(e) => handleEditSlot(record._id, record.pet._id, record.service._id)}>Edit</Button>
+        </Space>
+      ),
     },
   ];
 
@@ -539,6 +592,8 @@ export default function BookingTable() {
           </Grid>
         </Grid>
       </Grid>
+
+      <span>Yêu cầu hủy: {data.filter((value) => value.status === "Yêu cầu huỷ").length}</span>
 
       <Table columns={columns} dataSource={data} onChange={onChange} />
 
@@ -598,6 +653,12 @@ export default function BookingTable() {
           </DialogContent>
         </Box>
       </Modal>
+      <EditBooking
+        open={isModalOpen}
+        onClose={handleCloseEditModal}
+        bookingData={booking}
+        petId={petId}
+      />
     </>
   );
 }

@@ -42,7 +42,7 @@ const DrawerDashborad = () => {
       text: "Đơn đăng kí dịch vụ",
       path: "/dashboard/booking-list",
     },
-    { text: "Lịch đặt dịch vụ", path: "/dashboard/slot-booking-list" },
+    // { text: "Lịch đặt dịch vụ", path: "/dashboard/slot-booking-list" },
     { text: "Số lượng phòng dịch vụ", path: "/dashboard/category-list" },
   ];
 

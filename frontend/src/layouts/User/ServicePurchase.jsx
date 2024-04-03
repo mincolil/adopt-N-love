@@ -42,6 +42,7 @@ export default function ServicePurchase() {
   // const DEFAULT_PAGE = 1;
   // const DEFAULT_LIMIT = 5;
   const DEFAULT_STATUS = "Chờ xác nhận";
+  const CANCEL_REQUEST_STATUS = "Yêu cầu huỷ";
   const CANCEL_STATUS = "Huỷ";
 
   const [data, setData] = useState([]);
@@ -132,15 +133,25 @@ export default function ServicePurchase() {
 
   // ----------------------------------------------------------------
 
-  const handleRemoveOrder = async (id) => {
+  const handleRemoveOrder = async (id, status) => {
+    // console.log(id);
+    // try {
+    //   const booking = await axios.get(`http://localhost:3500/booking/get-booking/${id}`);
+    //   if (booking.data.status === "Đã thanh toán") {
+    //     toast.error("Dịch vụ đã thanh toán không thể huỷ");
+    //     return;
+    //   }
+    // } catch (err) {
+    //   console.log(err);
+    // }
     if (window.confirm("Bạn có muốn huỷ dịch vụ không ?") === true) {
       try {
         await axios
           .put(`http://localhost:3500/booking/update-status/${id}`, {
-            bookingStatus: CANCEL_STATUS,
+            bookingStatus: status,
           })
           .then((data) => {
-            handleLoadCartServiceById(CANCEL_STATUS);
+            handleLoadCartServiceById(status);
             handleClose();
           })
           .catch((error) => { });
@@ -149,6 +160,7 @@ export default function ServicePurchase() {
       }
     }
   };
+
 
   // ----------------------------------------------------------------
 
@@ -186,7 +198,7 @@ export default function ServicePurchase() {
     backgroundColor: "rgb(255 87 34 / 22%)",
   };
 
-  const statusList = ["Chờ xác nhận", "Đã thanh toán", "Đang xử lý", "Hoàn thành", "Huỷ"];
+  const statusList = ["Chờ xác nhận", "Đã thanh toán", "Yêu cầu huỷ", "Đang xử lý", "Hoàn thành", "Huỷ"];
 
   const numberToVND = (number) => {
     return number.toLocaleString("vi-VN", {
@@ -370,9 +382,20 @@ export default function ServicePurchase() {
                 variant="contained"
                 margin="normal"
                 color="primary"
-                onClick={() => handleRemoveOrder(id)}
+                onClick={() => handleRemoveOrder(id, "Huỷ")}
               >
                 Huỷ đặt hàng
+              </Button>
+            </DialogActions>
+          ) : status === "Đã thanh toán" ? (
+            <DialogActions>
+              <Button
+                variant="contained"
+                margin="normal"
+                color="primary"
+                onClick={() => handleRemoveOrder(id, "Yêu cầu huỷ")}
+              >
+                Yêu cầu hủy
               </Button>
             </DialogActions>
           ) : (

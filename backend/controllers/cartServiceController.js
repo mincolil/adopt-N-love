@@ -250,6 +250,18 @@ const checkoutStripe = async (req, res) => {
     }
 }
 
+const refundStripe = async (req, res) => {
+    try {
+        const refund = await stripe.refunds.create({
+            charge: req.body.charge,
+        });
+        res.status(200).json(refund);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ err, message: 'Can not refund' });
+    }
+}
+
 
 const getCartServiceByBookingDateAndPetId = async (req, res) => {
     try {
@@ -275,5 +287,6 @@ module.exports = {
     checkout,
     getCartServiceByBookingDate,
     getCartServiceByBookingDateAndPetId,
-    checkoutStripe
+    checkoutStripe,
+    refundStripe
 }

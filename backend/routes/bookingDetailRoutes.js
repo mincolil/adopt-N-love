@@ -3,6 +3,7 @@ const router = express.Router()
 const bookingDetailController = require('../controllers/bookingDetailController')
 
 router.get('/', bookingDetailController.getAllBookingDetail)
+    .get('/id/:id', bookingDetailController.getBookingDetail)
     .get('/:bookingId', bookingDetailController.getBookingDetailByBookingId)
     .patch('/:id', bookingDetailController.updateBookingDetail)
     .post('/:bookingId', bookingDetailController.createBookingDetail) //test

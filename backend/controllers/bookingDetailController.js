@@ -53,6 +53,21 @@ const getAllBookingDetail = async (req, res) => {
     }
 };
 
+const getBookingDetail = async (req, res) => {
+    try {
+        const bookingId = req.params.id;
+        const bookingDetail = await
+            BookingDetail.findById(bookingId).populate('serviceId petId bookingId');
+        if (!bookingDetail) {
+            return res.status(404).json({ message: 'BookingDetail not found!' });
+        }
+        res.status(200).json(bookingDetail);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json(err);
+    }
+};
+
 const getBookingDetailByBookingId = async (req, res) => {
     try {
         const bookingId = req.params.bookingId;
@@ -271,12 +286,15 @@ const getBookingDetailByBookingDate = async (req, res) => {
         const bookingDate = req.params.bookingDate;
         const query = { bookingDate };
         const options = {
-            page: parseInt(req.query.page) || 1, // Parse query parameters for pagination
+            page: parseInt(req.query.page) || 1, // Parse query parameters for pagination 
             limit: parseInt(req.query.limit) || 10,
             populate: 'serviceId petId bookingId', // Specify the field to populate
         };
 
         const result = await BookingDetail.paginate(query, options);
+
+        //exclude case .bookingId.status = "Hủy"
+        result.docs = result.docs.filter(detail => detail.bookingId.status !== "Huỷ");
 
         if (result.docs.length > 0) {
             return res.status(200).json(result);
@@ -301,6 +319,8 @@ const getBookingDetailByBookingDateAndPetId = async (req, res) => {
         };
 
         const result = await BookingDetail.paginate(query, options);
+        //exclude case .bookingId.status = "Hủy"
+        result.docs = result.docs.filter(detail => detail.bookingId.status !== "Huỷ");
 
         if (result.docs.length > 0) {
             return res.status(200).json(result);
@@ -340,5 +360,6 @@ module.exports = {
     getBookingDetailByBookingDate,
     getBookingDetailByBookingDateAndPetId,
     getAllBookingDetail,
-    updateBookingDetail
+    updateBookingDetail,
+    getBookingDetail
 }

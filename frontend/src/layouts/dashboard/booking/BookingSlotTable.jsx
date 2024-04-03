@@ -514,7 +514,6 @@ export default function BookingSlotTable() {
 
     return (
         <>
-            <Calendar cellRender={cellRender} />;
             <ToastContainer />
             <Grid
                 spacing={2}

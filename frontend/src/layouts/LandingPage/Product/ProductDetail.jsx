@@ -26,6 +26,9 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import Comments from "../../../components/Comments/Comments";
 import dayjs from "dayjs";
 
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { Modal, Space } from 'antd';
+
 const BASE_URL = "http://localhost:3500";
 
 function TabPanel(props) {
@@ -65,6 +68,26 @@ const ProductDetail = () => {
   const handleChangeTab = (event, newTab) => {
     setTab(newTab);
   };
+
+const { confirm } = Modal;
+const showConfirm = () => {
+  return new Promise((resolve, reject) => {
+    confirm({
+      title: 'Xác nhận',
+      icon: <ExclamationCircleFilled />,
+      content: 'Bạn có muốn thêm sản phẩm này không ?',
+      okText: 'Đồng ý', 
+      cancelText: 'Hủy bỏ', 
+      onOk() {
+        resolve(true); // Trả về giá trị true khi người dùng nhấn OK
+      },
+      onCancel() {
+        resolve(false); // Trả về giá trị false khi người dùng nhấn Cancel
+      },
+    });
+  });
+};
+
 
   // ----------------------------------- API GET PRODUCT BY ID --------------------------------
   useEffect(() => {
@@ -113,7 +136,8 @@ const ProductDetail = () => {
     if (context.auth.token === undefined) {
       alert("Bạn chưa đăng nhập, vui lòng đăng nhập !");
     } else if (
-      window.confirm("Bạn có muốn thêm sản phẩm này không ?") == true
+      // window.confirm("Bạn có muốn thêm sản phẩm này không ?") == true
+      await showConfirm()
     ) {
       try {
         const addProductToCart = await axios

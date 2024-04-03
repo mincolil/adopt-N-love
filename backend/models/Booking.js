@@ -20,7 +20,10 @@ const bookingSchema = new mongoose.Schema(
         recipientPhoneNumber: {
             type: String,
             required: true,
-        }
+        },
+        payment_int: {
+            type: String,
+        },
     },
     {
         timestamps: true,

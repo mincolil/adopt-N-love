@@ -254,6 +254,7 @@ const handleStripePayment = async (req, res) => {
                 recipientName: session.metadata.recipientName,
                 recipientPhoneNumber: session.metadata.recipientPhoneNumber,
                 deliveryAddress: session.metadata.deliveryAddress,
+                payment_int: session.payment_intent,
             });
             const createdOrder = await order.save();
             for (const cartItem of parsedCartItems) {
@@ -292,6 +293,7 @@ const handleStripePayment = async (req, res) => {
                 status: 'Đã thanh toán',
                 recipientName: session.metadata.recipientName,
                 recipientPhoneNumber: session.metadata.recipientPhoneNumber,
+                payment_int: session.payment_intent,
             });
             const createdBooking = await booking.save();
             for (const cartServiceItem of parsedCartServiceItems) {
@@ -334,7 +336,6 @@ const handleStripePayment = async (req, res) => {
         });
     }
 };
-
 
 
 //update cart's quantity
@@ -388,5 +389,5 @@ module.exports = {
     checkout,
     updateCart,
     checkoutStripe,
-    handleStripePayment,
+    handleStripePayment
 }

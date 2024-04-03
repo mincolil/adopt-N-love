@@ -253,7 +253,7 @@ const checkoutStripe = async (req, res) => {
 const refundStripe = async (req, res) => {
     try {
         const refund = await stripe.refunds.create({
-            charge: req.body.charge,
+            payment_intent: req.body.payment_intent  ,
         });
         res.status(200).json(refund);
     } catch (err) {

@@ -215,3 +215,35 @@ module.exports = {
     getProductById,
     manageAllProduct,
 };
+
+// const updateProduct = async (req, res) => {
+//     try {
+//         const { id, categoryId, productName, quantity, price, discount, saleStartTime, saleEndTime, description, productImage } = req.body;
+//         if (!productName)
+//             return res.status(400).json({
+//                 error: "Product name is required",
+//             });
+
+//         const product = await Product.findById(id);
+//         product.categoryId = categoryId;
+//         product.productName = productName;
+//         product.quantity = quantity;
+//         product.price = price;
+//         product.discount = discount
+//         product.saleStartTime = saleStartTime
+//         product.saleEndTime = saleEndTime
+//         product.description = description;
+//         product.productImage = productImage;
+
+//         const updateProduct = await product.save()
+//         const productWithDiscountedPrice = updateProduct.toObject({ virtuals: true });
+
+//         res.status(201).json({
+//             message: "Update successful",
+//             product: productWithDiscountedPrice,
+//         });
+//     } catch (err) {
+//         console.log(err);
+//         res.status(500).json(err);
+//     }
+// };

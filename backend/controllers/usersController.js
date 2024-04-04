@@ -179,3 +179,33 @@ module.exports = {
     getUserById
 }
 
+// const getAll = async (req, res) => {
+//     try {
+//         const { fullname, email, role, status, sort } = req.query;
+//         const query = {};
+
+//         if (fullname) {
+//             query.fullname = { $regex: new RegExp(fullname, 'i') };
+//         }
+//         if (email) {
+//             query.email = { $regex: new RegExp(email, 'i') };
+//         }
+//         if (role) {
+//             query.role = role;
+//         }
+
+//         const result = await User.find(query); // Modified to use find instead of paginate
+
+//         if (!result || result.length === 0) {
+//             return res.status(404).json({
+//                 error: "There are no Users in the Database",
+//             });
+//         }
+//         res.status(200).json(result);
+//     } catch (err) {
+//         console.log(err);
+//         res.status(500).json({
+//             error: err
+//         });
+//     }
+// };

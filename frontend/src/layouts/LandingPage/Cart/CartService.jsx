@@ -33,6 +33,28 @@ import DateTimeFormat from "../../../components/DateTimeFormat";
 
 import dayjs from "dayjs";
 
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { Modal } from 'antd';
+
+const { confirm } = Modal;
+const showConfirmRemoveSe = () => {
+  return new Promise((resolve, reject) => {
+    confirm({
+      title: 'Xác nhận',
+      icon: <ExclamationCircleFilled />,
+      content: 'Bạn có muốn xoá sản phẩm này khỏi giỏ hàng không ?',
+      okText: 'Đồng ý', 
+      cancelText: 'Hủy bỏ', 
+      onOk() {
+        resolve(true); // Trả về giá trị true khi người dùng nhấn OK
+      },
+      onCancel() {
+        resolve(false); // Trả về giá trị false khi người dùng nhấn Cancel
+      },
+    });
+  });
+};
+
 export default function CartService() {
   // const DEFAULT_PAGE = 1;
   // const DEFAULT_LIMIT = 5;
@@ -147,8 +169,9 @@ export default function CartService() {
 
   const handleDeleteOrder = async (id) => {
     if (
-      window.confirm("Bạn có chắc muốn xoá dịch vụ này không ?") ===
-      true
+      // window.confirm("Bạn có chắc muốn xoá dịch vụ này không ?") ===
+      // true
+      await showConfirmRemoveSe()
     ) {
       try {
         await axios.delete(

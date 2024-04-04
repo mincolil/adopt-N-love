@@ -382,12 +382,12 @@ export default function PetUser() {
                         Đăng ký phòng khám
                       </Button>
                       <Popconfirm
-                        title="Delete the task"
-                        description="Are you sure to delete this task?"
+                        title="Xác nhận"
+                        description="Bạn muốn thay đổi trạng thái nhận nuôi?"
                         onConfirm={() => confirm(value)}
                         onCancel={cancel}
-                        okText="Yes"
-                        cancelText="No"
+                        okText="Vâng"
+                        cancelText="Không"
                       >
                         <Button variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
                           {value.forAdoption ? "Hủy cho nhận nuôi" : "Cho nhận nuôi"}

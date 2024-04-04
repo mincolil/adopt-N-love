@@ -176,10 +176,18 @@ const ChangePassword = () => {
                   />
                 </Grid>
               </Grid>
-              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+              <Box sx={{ display: "flex", justifyContent: "end" }}>
                 <ButtonCustomize
                   onClick={handleChangePassword}
                   nameButton="Đổi mật khẩu"
+                  variant="contained"
+                  sx={{ marginTop: "8px" }}
+                />
+              </Box>
+              <Box sx={{ display: "flex" }}>
+                <ButtonCustomize
+                  onClick={handleChangePassword}
+                  nameButton="Quên mật khẩu cũ"
                   variant="contained"
                   sx={{ marginTop: "8px" }}
                 />

@@ -134,16 +134,6 @@ export default function ServicePurchase() {
   // ----------------------------------------------------------------
 
   const handleRemoveOrder = async (id, status) => {
-    // console.log(id);
-    // try {
-    //   const booking = await axios.get(`http://localhost:3500/booking/get-booking/${id}`);
-    //   if (booking.data.status === "Đã thanh toán") {
-    //     toast.error("Dịch vụ đã thanh toán không thể huỷ");
-    //     return;
-    //   }
-    // } catch (err) {
-    //   console.log(err);
-    // }
     if (window.confirm("Bạn có muốn huỷ dịch vụ không ?") === true) {
       try {
         await axios

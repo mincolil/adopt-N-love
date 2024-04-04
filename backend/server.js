@@ -15,8 +15,11 @@ const userdb = require('./models/User');
 const { ca } = require('date-fns/locale');
 const jwt = require('jsonwebtoken')
 
-const clientid = "424228344980-l67mummet93pgl903qru8ejvjeoo098s.apps.googleusercontent.com";
-const clientserver = "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"
+// const clientid = "424228344980-l67mummet93pgl903qru8ejvjeoo098s.apps.googleusercontent.com";
+const clientid = "424228344980-rs1e1chulrhg9uhc51u3p3q7espor5pd.apps.googleusercontent.com";
+// const clientserver = "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"
+const clientserver = "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"
+
 const bookingController = require('../backend/controllers/bookingController');
 const router = require('./routes/bookingRoutes');
 
@@ -35,7 +38,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 app.use(
     cors({
         credentials: true,
-        origin: ["http://localhost:3000", "http://localhost:3001"]
+        origin: ["http://localhost:3000", "https://b191-14-232-99-63.ngrok-free.app"]
     })
 )
 

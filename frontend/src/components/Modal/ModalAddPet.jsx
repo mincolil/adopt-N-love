@@ -41,6 +41,7 @@ const ModalAddPet = (props) => {
   const [image, setImage] = useState(null);
   const [age, setAge] = useState(null);
   const [breed, setBreed] = useState("");
+  const [sex, setSex] = useState("");
 
   // --------------------- HANLDE CHANGE STATUS -----------------------------
   const handleStatusChange = (event) => {
@@ -161,6 +162,22 @@ const ModalAddPet = (props) => {
       );
     } else if (categoryId === "") {
       toast.error("Bạn phải chọn loại thú cưng mình muốn");
+    } else if (height === "" || height === null) {
+      toast.error("Chiều cao không được để trống");
+    } else if (!validHeight) {
+      toast.error("Chiều cao phải là số");
+    } else if (weight === "" || weight === null) {
+      toast.error("Cân nặng không được để trống");
+    } else if (!validWeight) {
+      toast.error("Cân nặng phải là số");
+    } else if (color.trim() === "") {
+      toast.error("Màu lông không được để trống");
+    } else if (!validColor) {
+      toast.error("Màu lông không được nhập số");
+    } else if (age === "" || age === null) {
+      toast.error("Tuổi không được để trống");
+    } else if (breed.trim() === "") {
+      toast.error("Giống loại thú cưng không được để trống");
     } else {
       try {
         const response = await axios.post("http://localhost:3500/pet", {
@@ -205,6 +222,11 @@ const ModalAddPet = (props) => {
     // console.log("Check ID cate add Product", selectedCategory);
     setCategoryId(selectedCategory);
   };
+
+  const handleChageSex = (e) => {
+    const selectedSex = e.target.value;
+    setSex(selectedSex);
+  }
 
   return (
     <Dialog
@@ -276,6 +298,30 @@ const ModalAddPet = (props) => {
                       </MenuItem>
                     );
                   })}
+              </Select>
+            </FormControl>
+
+            <FormControl fullWidth margin="normal">
+              <InputLabel id="select-sex">
+                Giới tính
+              </InputLabel>
+              <Select
+                label="Giới tính"
+                value={sex}
+                onChange={handleChageSex}
+              >
+                <MenuItem
+                  key='male'
+                  value='male'
+                >
+                  Đực
+                </MenuItem>
+                <MenuItem
+                  key='female'
+                  value='female'
+                >
+                  Cái
+                </MenuItem>
               </Select>
             </FormControl>
 

@@ -95,7 +95,6 @@ const AdoptPageDetail = () => {
         console.log(loadData.error);
       } else {
         setPet(loadData.data);
-        openNotificationWithIcon('success', 'Load data successfully!');
       }
     } catch (err) {
       console.log(err);

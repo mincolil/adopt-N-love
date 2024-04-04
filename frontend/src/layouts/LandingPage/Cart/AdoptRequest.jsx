@@ -13,9 +13,6 @@ import {
     TableRow,
     TableCell,
     TableBody,
-    TextField,
-    Button,
-    IconButton,
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import axios from "axios";
@@ -28,8 +25,14 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import DeleteIcon from "@mui/icons-material/Delete";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
-
+import { Button, Modal } from 'antd';
+import { notification } from 'antd';
+import { ExclamationCircleFilled } from '@ant-design/icons';
 import Fab from '@mui/material/Fab';
+
+
+
+const { confirm } = Modal;
 
 export default function AdoptRequest() {
     const navigate = useNavigate();
@@ -37,10 +40,33 @@ export default function AdoptRequest() {
     const [data, setData] = useState([]);
     const [loged, setLoged] = useState(false);
     const [total, setTotal] = useState(0);
+    const [userRequest, setUserRequest] = useState([]);
 
     const context = useAuth();
 
     const [quantity, setQuantity] = useState(1);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
+    const [api, contextHolder] = notification.useNotification();
+    const openNotificationWithIcon = (type, mess) => {
+        api[type]({
+            message: 'Thông báo',
+            description: mess
+        });
+    };
+
 
     const handleLoadAdoptRequest = async () => {
         if (context.auth.token !== undefined) {
@@ -55,7 +81,7 @@ export default function AdoptRequest() {
                 );
                 console.log(loadData);
                 if (loadData.error) {
-                    toast.error(loadData.error);
+                    openNotificationWithIcon('error', loadData.error);
                 } else {
                     setData(loadData.data);
                 }
@@ -64,6 +90,23 @@ export default function AdoptRequest() {
             }
         }
     };
+
+    const loadUserRequest = async (id) => {
+        try {
+            const user = await axios.get(`http://localhost:3500/profile/${id}`)
+            if (user.error) {
+                openNotificationWithIcon('error', user.error);
+            }
+            else {
+                setUserRequest(user.data)
+                console.log(user.data)
+                showModal()
+            }
+        } catch
+        (err) {
+            console.log(err)
+        }
+    }
 
     useEffect(() => {
         handleLoadAdoptRequest();
@@ -89,10 +132,12 @@ export default function AdoptRequest() {
             }).then((data) => {
                 handleLoadAdoptRequest();
                 context.handleLoadAdoptRequest();
-                toast.success("Chấp nhận đề nghị thành công");
+                openNotificationWithIcon('success', 'Nhận nuôi thành công!');
+
             });
 
             const deleteAdoptRequest = await axios.delete("http://localhost:3500/adopt/deleteAdoptNotification/" + adoptRequest._id);
+            handleLoadAdoptRequest();
         }
         catch (err) {
             console.log(err);
@@ -106,17 +151,52 @@ export default function AdoptRequest() {
                 .then((data) => {
                     handleLoadAdoptRequest();
                     context.handleLoadAdoptRequest();
-                    toast.success("Xoá sản phẩm thành công");
+                    openNotificationWithIcon('success', 'Từ chối nhận nuôi thành công!');
                 });
+            handleLoadAdoptRequest();
         }
         catch (err) {
             console.log(err);
         }
     }
 
+    // -----------------------CONFRIM/REJECT ADOPT REQUEST-------------------------
+    const showConfirm = (adoptRequest) => {
+        confirm({
+            title: 'Bạn chắc chắn muốn cho nhận nuôi bé?',
+            icon: <ExclamationCircleFilled />,
+            content: '-------------------',
+            onOk() {
+                console.log('Vâng');
+                handleAcceptAdoptRequest(adoptRequest);
+            },
+            onCancel() {
+                console.log('không');
+            },
+        });
+    };
+
+    const showReject = (adoptRequest) => {
+        confirm({
+            title: 'Bạn chắc chắn muốn từ chối nhận nuôi bé?',
+            icon: <ExclamationCircleFilled />,
+            content: '-------------------',
+            onOk() {
+                console.log('Vâng');
+                handleRejectAdoptRequest(adoptRequest);
+            },
+            onCancel() {
+                console.log('không');
+            },
+        });
+    }
+
+
+
     return (
         <>
             <toastContainer />
+            {contextHolder}
             <Header />
             <Container
                 sx={{ position: "relative", top: "120px", marginBottom: "150px" }}
@@ -138,7 +218,7 @@ export default function AdoptRequest() {
                         underline="hover"
                         sx={{ display: "flex", alignItems: "center" }}
                         color="#000000"
-                        href="/cart-product"
+                        href="/adopt-request"
                     >
                         Đề nghị
                     </Link>
@@ -164,7 +244,7 @@ export default function AdoptRequest() {
                                         <TableRow key={index} className="cart_item">
 
                                             <TableCell className="product-name" data-title="Product">
-                                                <Typography variant="body1">
+                                                <Typography variant="body1" onClick={() => loadUserRequest(product.userId._id)}>
                                                     {product.userId.fullname}
                                                 </Typography>
                                             </TableCell>
@@ -196,14 +276,14 @@ export default function AdoptRequest() {
                                                 <CheckCircleIcon
                                                     fontSize="large"
                                                     color="success"
-                                                    onClick={() => handleAcceptAdoptRequest(product)}
+                                                    onClick={() => showConfirm(product)}
                                                 />
                                             </TableCell>
                                             <TableCell className="product-remove">
                                                 <DoNotDisturbOnIcon
                                                     fontSize="large"
                                                     color="error"
-                                                    onClick={() => handleRejectAdoptRequest(product)}
+                                                    onClick={() => showReject(product)}
                                                 />
                                             </TableCell>
                                         </TableRow>
@@ -214,6 +294,13 @@ export default function AdoptRequest() {
                     </Box>
                 </Box>
             </Container>
+            <Modal title="Thông tin người nhận nuôi" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                <p>Tên: {userRequest.fullname}</p>
+                <p>Email: {userRequest.email}</p>
+                <p>Số điện thoại: {userRequest.phone}</p>
+                <p>Địa chỉ: {userRequest.address}</p>
+                <p>Giới tính: {userRequest.gender === true ? "Nam" : "Nữ"} </p>
+            </Modal>
             <Footer />
         </>
     );

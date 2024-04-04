@@ -392,7 +392,7 @@ export default function PetUser() {
                         e.stopPropagation();
                         handleAdoptPet(value);
                       }} variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
-                        {value.forAdoption ? "Cancel Adopt" : "Adopt"}
+                        {value.forAdoption ? "Hủy cho nhận nuôi" : "Cho nhận nuôi"}
                       </Button>
                       <Button onMouseDown={() => handleUpdatePet(value)} variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
                         Sửa
@@ -529,7 +529,7 @@ export default function PetUser() {
           dataEditPet={dataDetailPet}
           handUpdateEditTable={loadAllPetByUserId}
           page={currentPage}
-          pet= {dataDetailPet}
+          pet={dataDetailPet}
           data={context.auth.id}
           category={category}
         />

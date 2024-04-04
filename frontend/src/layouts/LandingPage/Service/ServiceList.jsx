@@ -320,21 +320,6 @@ export default function ServiceList() {
       handlePriceChange();
   }, [auth]);
 
-  useEffect(() => {
-    const handleBeforeUnload = (e) => {
-      localStorage.removeItem('test');
-      // Prompt the user with a confirmation message
-      const confirmationMessage = 'Are you sure you want to leave?';
-      e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
-      return confirmationMessage; // Gecko, WebKit, Chrome <34
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, []);
 
   // ----------------------------------- API SORT PRODUCT --------------------------------
 

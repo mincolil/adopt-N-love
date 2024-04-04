@@ -163,6 +163,39 @@ export default function BookingTable() {
     }
   };
 
+  const handleAcceptRequest = async (id) => {
+    if (
+      window.confirm("Bạn có muốn cập nhật trạng thái đơn hàng không ?") === true
+    ) {
+      try {
+        const booking = await axios.get(`http://localhost:3500/booking/get-booking/${id}`);
+        const paymentIntent = booking.data.payment_int
+        console.log(paymentIntent);
+
+        await axios.post(`http://localhost:3500/cartService/refund-stripe`, {
+          payment_intent: paymentIntent
+        });
+        const loadData = await axios.put(`http://localhost:3500/booking/update-status/${id}`, {
+          bookingStatus: "Huỷ",
+        });
+        if (loadData.error) {
+          toast.error(loadData.error);
+        }
+        else {
+          // console.log(loadData.data);
+          loadBooking(status);
+          handleClose();
+          toast.success("Cập nhật trạng thái đơn hàng thành công");
+          //re load data
+          loadAllBooking(DEFAULT_PAGE, DEFAULT_LIMIT);
+        }
+
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }
+
 
   //--------------------- HANDLE EDIT SLOT -----------------------------
   const handleEditSlot = async (bookingDetailId, petId, serviceId) => {
@@ -522,7 +555,7 @@ export default function BookingTable() {
           {
             record.status === "Yêu cầu huỷ" ? (
               <Space size="middle">
-                <Button onClick={(e) => handleViewOrderDetail(
+                <Button onClick={(e) => handleAcceptRequest(
                   record._id,
                   OPTION_VIEW_ORDER_BY_ID,
                   record.status

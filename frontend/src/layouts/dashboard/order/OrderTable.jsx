@@ -36,6 +36,8 @@ import { Table, Tag } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Space, InputNumber } from 'antd';
 import Highlighter from 'react-highlight-words';
+import moment from "moment";
+import DateTimeFormat from "../../../components/DateTimeFormat";
 
 // -------------------------------STYLE MODAL----------------------
 const style = {
@@ -156,6 +158,64 @@ export default function BasicTable() {
       console.log(err);
     }
   }
+
+  //----------------------------------- HANDLE REFUND --------------------------------
+  const handleAcceptRequest = async (id) => {
+    if (
+      window.confirm("Bạn có muốn cập nhật trạng thái đơn hàng không ?") === true
+    ) {
+      try {
+        const order = await axios.get(`http://localhost:3500/order/get-order/${id}`);
+        const paymentIntent = order.data.payment_int
+        console.log(paymentIntent);
+
+        await axios.post(`http://localhost:3500/cartService/refund-stripe`, {
+          payment_intent: paymentIntent
+        });
+        const loadData = await axios.put(`http://localhost:3500/order/update-status/${id}`, {
+          orderStatus: "Huỷ",
+        });
+        if (loadData.error) {
+          toast.error(loadData.error);
+        }
+        else {
+          // console.log(loadData.data);
+          loadOrder(status);
+          handleClose();
+          toast.success("Cập nhật trạng thái đơn hàng thành công");
+          //re load data
+        }
+
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }
+
+  const handleCancelRequest = async (id) => {
+    if (
+      window.confirm("Bạn có muốn cập nhật trạng thái đơn hàng không ?") === true
+    ) {
+      try {
+        const loadData = await axios.put(
+          `http://localhost:3500/order/update-status/${id}`,
+          {
+            orderStatus: "Đã thanh toán",
+          }
+        );
+        if (loadData.error) {
+          toast.error(loadData.error);
+        } else {
+          // console.log(loadData.data);
+          loadOrder(status);
+          handleClose();
+          toast.success("Cập nhật trạng thái đơn hàng thành công");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
 
 
 
@@ -380,6 +440,8 @@ export default function BasicTable() {
       dataIndex: 'createdAt',
       width: '20%',
       key: 'createdAt',
+      //render to date time
+      render: (date) => new DateTimeFormat({ date: date }),
     },
 
     {
@@ -401,7 +463,8 @@ export default function BasicTable() {
               status === "Đã thanh toán" ? <Tag color="green">{status}</Tag> :
                 status === "Đang giao hàng" ? <Tag color="orange">{status}</Tag> :
                   status === "Đã nhận hàng" ? <Tag color="cyan">{status}</Tag> :
-                    <Tag color="red">{status}</Tag>
+                    status === "Yêu cầu huỷ" ? <Tag color="purple">{status}</Tag> :
+                      <Tag color="red">{status}</Tag>
           }
         </span>
       ),
@@ -439,7 +502,23 @@ export default function BasicTable() {
             record._id,
             OPTION_VIEW_ORDER_BY_ID,
             record.status
-          )}>Edit</Button>
+          )}>Chỉnh sửa</Button>
+          {
+            record.status === "Yêu cầu huỷ" ? (
+              <Space size="middle">
+                <Button onClick={(e) => handleAcceptRequest(
+                  record._id,
+                  OPTION_VIEW_ORDER_BY_ID,
+                  record.status
+                )}>Chấp nhận</Button>
+                <Button onClick={(e) => handleCancelRequest(
+                  record._id,
+                  OPTION_VIEW_ORDER_BY_ID,
+                  record.status
+                )}>Không chấp nhận</Button>
+              </Space>
+            ) : ""
+          }
         </Space>
       ),
     },

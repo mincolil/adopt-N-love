@@ -51,6 +51,7 @@ export default function ServiceCheckout() {
 
   const navigate = useNavigate();
   const context = useAuth();
+  const { auth } = context;
 
   const [data, setData] = useState([]);
   // const [quantity, setQuantity] = useState(0)
@@ -213,8 +214,9 @@ export default function ServiceCheckout() {
   };
 
   useEffect(() => {
-    handleLoadCartProduct();
-  }, []);
+    if (auth)
+      handleLoadCartProduct();
+  }, [auth]);
 
   const numberToVND = (number) => {
     return number.toLocaleString("vi-VN", {

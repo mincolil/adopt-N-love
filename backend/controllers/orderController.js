@@ -50,6 +50,23 @@ const getAllOrderByUserId = async (req, res) => {
     }
 }
 
+const getOrderById = async (req, res) => {
+    try {
+        const orderId = req.params.orderId;
+
+        const order = await Order.findById(orderId).populate('userId');
+        if (!order) {
+            return res.status(404).json({
+                error: "Order: " + orderId + " not found!"
+            })
+        }
+        res.status(200).json(order)
+    } catch (err) {
+        console.log(err)
+        res.status(500).json(err)
+    }
+}
+
 const createOrder = async (req, res) => {
     try {
         const { userId, totalPrice } = req.body;
@@ -183,5 +200,6 @@ module.exports = {
     updateOrder,
     deleteOrder,
     updateStatus,
-    getAllOrderNoLimit
+    getAllOrderNoLimit,
+    getOrderById
 }

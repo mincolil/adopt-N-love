@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import Footer from "../../../components/Footer/Footer";
 import Header from "../../../components/Header/Header";
 import Grid from "@mui/material/Unstable_Grid2";
-import styled from "styled-components";
-import Avatar1 from "../../../images/avatar1.png";
 import { ToastContainer } from "react-toastify";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -26,6 +24,7 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import HomeIcon from "@mui/icons-material/Home";
 import "./styled/AdoptPageDetail.css"
 import useAuth from "../../../hooks/useAuth";
+import { notification } from 'antd';
 
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import { Modal, Space } from 'antd';
@@ -38,6 +37,15 @@ const AdoptPageDetail = () => {
   const { petId } = useParams();
   const [pet, setPet] = useState(null);
   const context = useAuth();
+
+  //----------------------------- NOTIFICATION ------------------------------
+  const [api, contextHolder] = notification.useNotification();
+  const openNotificationWithIcon = (type, mess) => {
+    api[type]({
+      message: 'Thông báo',
+      description: mess
+    });
+  };
 
   const showConfirm = () => {
     confirm({
@@ -63,11 +71,12 @@ const AdoptPageDetail = () => {
         ownerId: pet.userId
       });
       if (result.error) {
-        toast.error(result.error);
+        openNotificationWithIcon('error', "Bạn đã đăng ký nhận nuôi bé rồi, vui lòng chờ xác nhận từ chủ nhân bé!");
       } else {
-        toast.success(result.message);
+        openNotificationWithIcon('success', 'Nhận nuôi thành công! Vui lòng chờ xác nhận từ chủ nhân bé!');
       }
     } catch (err) {
+      openNotificationWithIcon('error', "Bạn đã đăng ký nhận nuôi bé rồi, vui lòng chờ xác nhận từ chủ nhân bé!");
       console.log(err);
     }
   };
@@ -83,10 +92,10 @@ const AdoptPageDetail = () => {
     try {
       const loadData = await axios.get(`${BASE_URL}/adopt/${petId}`);
       if (loadData.error) {
-        toast.error(loadData.error);
+        console.log(loadData.error);
       } else {
         setPet(loadData.data);
-        console.log(loadData.data);
+        openNotificationWithIcon('success', 'Load data successfully!');
       }
     } catch (err) {
       console.log(err);
@@ -110,8 +119,11 @@ const AdoptPageDetail = () => {
     }
   };
 
+
+
   return (
     <>
+      {contextHolder}
       <ToastContainer />
       <Grid
         className="banner"
@@ -247,7 +259,7 @@ const AdoptPageDetail = () => {
                 Bạn đã sẵn sàng? Hãy thực hiện các bước sau đây nhé:
               </Typography>
               <Typography variant="h4" style={{ margin: "1px 0 " }}>
-                1️⃣ Tìm hiểu về thú cưng bạn muốn nhận nuôi trên trang web của HPA
+                1️⃣ Tìm hiểu về thú cưng bạn muốn nhận nuôi trên trang web của ANL
               </Typography>
               <Typography variant="h4" style={{ margin: "1px 0 " }}>
                 2️⃣ Liên hệ với Tình nguyện viên phụ trách bé để tìm hiểu thêm về bé.

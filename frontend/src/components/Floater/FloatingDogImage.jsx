@@ -11,22 +11,22 @@ const onClose = (e) => {
 };
 
 const FloatingDogImage = () => {
-    const context = useAuth();
-    const [hasDiscount, setHasDiscount] = useState(false);
+    // const context = useAuth();
+    // const [hasDiscount, setHasDiscount] = useState(false);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await axios.get(`${BASE_URL}/pet/userId?id=${context.auth.id}`);
-                const count = res.data.docs.filter(pet => pet.discount > 0).length;
-                setHasDiscount(count > 0);
-            } catch (error) {
-                console.log(error);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const res = await axios.get(`${BASE_URL}/pet/userId?id=${context.auth.id}`);
+    //             const count = res.data.docs.filter(pet => pet.discount > 0).length;
+    //             setHasDiscount(count > 0);
+    //         } catch (error) {
+    //             console.log(error);
+    //         }
+    //     };
 
-        fetchData();
-    }, [context.auth.id]);
+    //     fetchData();
+    // }, [context.auth.id]);
 
     return (
         <div style={{
@@ -39,7 +39,7 @@ const FloatingDogImage = () => {
             alignItems: 'flex-end',
             gap: '10px',
         }}>
-            {hasDiscount && (
+            {/* {hasDiscount && (
                 <Alert
                     message="Thú cưng của bạn có ưu đãi!"
                     description="Hãy kiểm tra ngay"
@@ -51,10 +51,10 @@ const FloatingDogImage = () => {
                         width: '250px',
                     }}
                 />
-            )}
+            )} */}
 
             <a href="/pet-user" >
-                <img src={dogImage} alt="Floating Dog" style={{ width: '130px', height: 'auto' }} />
+                <img src={dogImage} alt="Floating Dog" style={{ width: '130px', height: '160px' }} />
             </a>
         </div>
     );

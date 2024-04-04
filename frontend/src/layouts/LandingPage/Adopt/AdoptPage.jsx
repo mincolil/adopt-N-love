@@ -46,6 +46,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import HomeIcon from "@mui/icons-material/Home";
 import DropDownService from "../../../components/DropDown/DropDownService";
+import FloatingDogImage from "../../../components/Floater/FloatingDogImage";
 
 
 const BASE_URL = "http://localhost:3500";
@@ -446,6 +447,9 @@ const AdoptPage = () => {
                 </Grid>
             </Container>
             <Footer />
+            <div>
+                <FloatingDogImage />
+            </div>
         </>
     );
 }

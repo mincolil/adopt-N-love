@@ -24,6 +24,7 @@ import ButtonCustomize from "../../components/Button/Button";
 import Header from "../../components/Header/Header";
 import Background from "../../images/background.png";
 import { ToastContainer } from "react-toastify";
+import FloatingDogImage from "../../components/Floater/FloatingDogImage";
 
 
 
@@ -296,6 +297,9 @@ export default function UserPRofile() {
           </Container>
         </CustomContainer>
         <Footer />
+        <div>
+        <FloatingDogImage />
+      </div>
       </ThemeProvider >
     </>
   );

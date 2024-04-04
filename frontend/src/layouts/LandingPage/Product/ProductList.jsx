@@ -8,7 +8,6 @@ import {
   List,
   ListItem,
   Checkbox,
-  FormControlLabel,
   Card,
   CardActionArea,
   CardContent,
@@ -40,6 +39,7 @@ import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 import useAuth from "../../../hooks/useAuth";
 import dayjs from "dayjs";
+import FloatingDogImage from "../../../components/Floater/FloatingDogImage";
 
 const BASE_URL = "http://localhost:3500";
 
@@ -112,7 +112,7 @@ function ProductItem({ product }) {
             alt={productName}
           />
           {discount !== 0 &&
-          dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
+            dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
             <Card
               style={{
                 position: "absolute",
@@ -158,7 +158,7 @@ function ProductItem({ product }) {
               className="product-price"
             >
               {discount !== 0 &&
-              dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
+                dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
                 <Box
                   display="flex"
                   flexGrow={1}
@@ -443,10 +443,10 @@ export default function ProductList() {
       if (loadData.data.error) {
         toast.warning(
           "Kết quả " +
-            "[" +
-            keyword +
-            "]" +
-            " bạn vừa tìm không có! Vui lòng nhập lại. "
+          "[" +
+          keyword +
+          "]" +
+          " bạn vừa tìm không có! Vui lòng nhập lại. "
         );
         loadAllProduct(currentPage);
       } else {
@@ -667,6 +667,9 @@ export default function ProductList() {
         </Grid>
       </Container>
       <Footer />
+      <div>
+        <FloatingDogImage />
+      </div>
     </>
   );
 }

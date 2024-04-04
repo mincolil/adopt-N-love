@@ -132,7 +132,17 @@ const ChangePassword = () => {
       <toastContainer />
       <Header />
       <ThemeProvider theme={defaultTheme}>
-        <CustomContainer component="main" maxWidth="false" sx={{ pt: 10, pb: 4, backgroundImage: `url(${Background})`, backgroundRepeat: "no-repeat", backgroundSize: "cover" }}>
+        <CustomContainer
+          component="main"
+          maxWidth="false"
+          sx={{
+            pt: 10,
+            pb: 4,
+            backgroundImage: `url(${Background})`,
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+          }}
+        >
           <Container maxWidth="sm">
             <Paper
               variant="outlined"
@@ -176,15 +186,13 @@ const ChangePassword = () => {
                   />
                 </Grid>
               </Grid>
-              <Box sx={{ display: "flex", justifyContent: "end" }}>
+              <Box sx={{marginTop:"20px", display:"flex", justifyContent:"space-between"}}>
                 <ButtonCustomize
                   onClick={handleChangePassword}
                   nameButton="Đổi mật khẩu"
                   variant="contained"
                   sx={{ marginTop: "8px" }}
                 />
-              </Box>
-              <Box sx={{ display: "flex" }}>
                 <ButtonCustomize
                   onClick={handleChangePassword}
                   nameButton="Quên mật khẩu cũ"

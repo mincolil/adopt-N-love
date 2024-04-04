@@ -103,6 +103,13 @@ const AdoptPageDetail = () => {
     );
   }
 
+  const handleScrollToService = () => {
+    const serviceSection = document.getElementById('serviceSection');
+    if (serviceSection) {
+      serviceSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <>
       <ToastContainer />
@@ -195,7 +202,7 @@ const AdoptPageDetail = () => {
               </Typography>
               <Typography variant="h3" className="adopt-detail">
                 Giới tính:
-                <span> {pet.sex} </span>
+                <span> {pet.sex === "male" ? "Đực" : "Cái"} </span>
               </Typography>
               <Typography variant="h3" className="adopt-detail">
                 Điện thoại liên lạc:
@@ -215,6 +222,7 @@ const AdoptPageDetail = () => {
                   className="adopt-ask"
                   variant="contained"
                   color="primary"
+                  onClick={handleScrollToService}
                 >
                   Bạn có câu hỏi ?
                 </Button>
@@ -225,7 +233,7 @@ const AdoptPageDetail = () => {
 
 
       </Container>
-      <Container className="service" sx={{ padding: "100px 24px 0px 24px" }}>
+      <Container id="serviceSection" className="service" sx={{ padding: "100px 24px 0px 24px" }}>
         <Grid container justifyContent="center">
           <Grid item lg={7} md={10}>
             <Box className="section_title" sx={{ marginBottom: "0" }}>

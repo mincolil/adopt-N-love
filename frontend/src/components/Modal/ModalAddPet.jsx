@@ -192,6 +192,7 @@ const ModalAddPet = (props) => {
           petImage,
           age: age === "" ? null : age,
           breed,
+          sex
         });
         if (response.error) {
           toast.error(response.error);

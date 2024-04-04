@@ -92,6 +92,22 @@ const getAllBookingByUserId = async (req, res) => {
     }
 }
 
+const getBookingById = async (req, res) => {
+    try {
+        const bookingId = req.params.bookingId;
+        const booking = await Booking.findById(bookingId).populate('userId');
+        if (!booking) {
+            return res.status(404).json({
+                error: "Booking: " + bookingId + " not found!"
+            })
+        }
+        res.status(200).json(booking)
+    } catch (err) {
+        console.log(err)
+        res.status(500).json(err)
+    }
+}
+
 const createBooking = async (req, res) => {
     try {
         // const { userId, petId, totalPrice } = req.body;
@@ -204,5 +220,6 @@ module.exports = {
     deleteBooking,
     updateStatus,
     getBooking,
-    getBookingByPetId
+    getBookingByPetId,
+    getBookingById
 }

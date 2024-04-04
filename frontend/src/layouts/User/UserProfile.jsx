@@ -1,15 +1,8 @@
 import * as React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
-import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import Toolbar from "@mui/material/Toolbar";
 import Paper from "@mui/material/Paper";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import Button from "@mui/material/Button";
-import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
@@ -20,14 +13,12 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import { useEffect } from "react";
-import { Breadcrumbs, Radio, RadioGroup } from "@mui/material";
+import { Radio, RadioGroup } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Footer from "../../components/Footer/Footer";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
-import { NavLink } from "react-router-dom";
 import Chip from "@mui/material/Chip";
-import HomeIcon from "@mui/icons-material/Home";
 import { emphasize } from "@mui/material/styles";
 import ButtonCustomize from "../../components/Button/Button";
 import Header from "../../components/Header/Header";
@@ -35,25 +26,6 @@ import Background from "../../images/background.png";
 import { ToastContainer } from "react-toastify";
 
 
-const StyledBreadcrumb = styled(Chip)(({ theme }) => {
-  const backgroundColor =
-    theme.palette.mode === "light"
-      ? theme.palette.grey[100]
-      : theme.palette.grey[800];
-  return {
-    backgroundColor,
-    height: theme.spacing(3),
-    color: theme.palette.text.primary,
-    fontWeight: theme.typography.fontWeightRegular,
-    "&:hover, &:focus": {
-      backgroundColor: emphasize(backgroundColor, 0.06),
-    },
-    "&:active": {
-      boxShadow: theme.shadows[1],
-      backgroundColor: emphasize(backgroundColor, 0.12),
-    },
-  };
-});
 
 const CustomContainer = styled(Container)({
   background:
@@ -96,11 +68,9 @@ export default function UserPRofile() {
 
   const handleGenderChange = (event) => {
     setGender(event.target.value);
-    // console.log(gender);
   };
 
   const context = useAuth();
-  // console.log(context);
 
   // --------------------- HANDLE GET USER BY ID -----------------------------
   const handleGetUserById = async () => {

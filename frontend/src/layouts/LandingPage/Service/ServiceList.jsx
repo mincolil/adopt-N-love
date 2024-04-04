@@ -247,11 +247,6 @@ function ServiceItem({ service }) {
 export default function ServiceList() {
   const [checkedItems, setCheckedItems] = useState({});
 
-  const handleCheckboxChange = (event) => {
-    const { _id, checked } = event.target;
-    setCheckedItems({ ...checkedItems, [_id]: checked });
-  };
-
   const [price, setPrice] = useState([0, 1000000]);
   const [sortBy, setSortBy] = React.useState("price-asc");
 
@@ -324,6 +319,7 @@ export default function ServiceList() {
     if (auth)
       handlePriceChange();
   }, [auth]);
+
 
   // ----------------------------------- API SORT PRODUCT --------------------------------
 

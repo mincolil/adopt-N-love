@@ -38,8 +38,6 @@ const EditBooking = ({ open, onClose, service, petId, loadData, bookingData }) =
 
     useEffect(() => {
         setDataBookingId(bookingData);
-        console.log(bookingData);
-        console.log(petId);
     }, [bookingData]);
 
     //Create date string
@@ -109,9 +107,7 @@ const EditBooking = ({ open, onClose, service, petId, loadData, bookingData }) =
         loadAllCategoryPet();
     }, []);
 
-    useEffect(() => {
-        loadCategorySlot();
-    }, [context.auth.serviceId]);
+
 
     // ------------------------------- HANDLE GET CATEFORY SLOT ------------------------------
     const loadCategorySlot = async () => {
@@ -119,21 +115,28 @@ const EditBooking = ({ open, onClose, service, petId, loadData, bookingData }) =
             if (!context.auth.serviceId) return;
             const loadDataCategorySlot = await axios.get(`http://localhost:3500/service/${context.auth.serviceId}`);
             const categorySlot = loadDataCategorySlot.data.categoryId.slot;
-            // console.log("slot con:" + categorySlot);
+            console.log("slot con:" + categorySlot);
             setCategorySlot(categorySlot);
         } catch (err) {
             console.log(err);
         }
     };
 
+    useEffect(() => {
+        loadCategorySlot();
+    }, [context.auth.serviceId]);
+
     // ------------------------------- HANDLE CHECK EMPTY SLOT ------------------------------
     const checkEmptySlot = async (date) => {
         try {
             const totalSlots = await axios.get('http://localhost:3500/bookingDetail/bookingDate/' + date);
-            console.log(totalSlots);
+            console.log("total slot : " + totalSlots.data.docs.length);
+            console.log("category slot : " + categorySlot);
             if (totalSlots >= categorySlot) {
+                console.log("het slot");
                 return false;
             }
+            console.log("con slot");
             return true;
         } catch (err) {
             console.log(err);
@@ -153,10 +156,10 @@ const EditBooking = ({ open, onClose, service, petId, loadData, bookingData }) =
             const totalSlot = checkPetBooking.data.docs.length + checkPetCart.data.length;
             console.log("ee " + totalSlot);
             if (totalSlot < 1) {
-                console.log("con");
+                console.log("khong trung pet");
                 return false;
             }
-            console.log("het");
+            console.log("bi trung pet");
             return true;
         } catch (err) {
             console.log(err);

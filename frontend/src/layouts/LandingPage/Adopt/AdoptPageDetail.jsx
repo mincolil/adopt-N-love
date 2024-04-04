@@ -198,8 +198,8 @@ const AdoptPageDetail = () => {
                 <span> {pet.sex} </span>
               </Typography>
               <Typography variant="h3" className="adopt-detail">
-                Mã:
-                <span> B4311</span>
+                Điện thoại liên lạc:
+                <span> {pet.userId.phone} </span>
               </Typography>
 
               <Box className="adopt-add-to-cart">

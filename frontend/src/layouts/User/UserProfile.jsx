@@ -108,7 +108,7 @@ export default function UserPRofile() {
       toast.error("Tên không được bỏ trống. Vui lòng nhập lại.");
     } else if (!validFullName) {
       toast.error(
-        "Tên không được nhập kí tự đặc biệt và phải có ít nhất 3 kí tự"
+        "Tên không được nhập kí tự đặc biệt, số và phải có ít nhất 3 kí tự"
       );
     } else {
       try {
@@ -132,7 +132,7 @@ export default function UserPRofile() {
           // console.log(data);
           handleGetUserById();
           toast.success("Cập nhật thông tin thành công");
-          navigate("/");
+          handleGetUserById();
         }
       } catch (err) {
         console.log(err);

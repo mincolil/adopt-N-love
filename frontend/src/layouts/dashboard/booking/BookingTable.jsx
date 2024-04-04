@@ -485,7 +485,7 @@ export default function BookingTable() {
       dataIndex: 'createdAt',
       width: '20%',
       key: 'createdAt',
-      render: text => moment.utc(text).format("DD/MM/YYYY HH:mm:ss")
+      render: (date) => new DateTimeFormat({ date: date })
     },
 
     {

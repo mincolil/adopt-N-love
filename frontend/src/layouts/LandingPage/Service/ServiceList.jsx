@@ -41,6 +41,7 @@ import ChoosePet from "../../../components/Modal/ModalChoosePet";
 import { Button as AntButton } from "antd";
 import { notification, Space } from 'antd';
 import { NavLink, useNavigate } from "react-router-dom";
+import FloatingDogImage from "../../../components/Floater/FloatingDogImage";
 
 const BASE_URL = "http://localhost:3500";
 
@@ -707,6 +708,9 @@ export default function ServiceList() {
         </Grid>
       </Container>
       <Footer />
+      <div>
+        <FloatingDogImage />
+      </div>
     </>
   );
 }

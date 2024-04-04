@@ -26,6 +26,7 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import ChoosePet from "../../../components/Modal/ModalChoosePet";
 import dayjs from "dayjs";
 import Comments from "../../../components/Comments/Comments";
+import FloatingDogImage from "../../../components/Floater/FloatingDogImage";
 
 const BASE_URL = "http://localhost:3500";
 
@@ -203,10 +204,10 @@ const ServiceDetail = () => {
               </Typography>
             </Box> */}
               {service.discount !== 0 &&
-              dayjs().isBetween(
-                dayjs(service.saleStartTime),
-                dayjs(service.saleEndTime)
-              ) ? (
+                dayjs().isBetween(
+                  dayjs(service.saleStartTime),
+                  dayjs(service.saleEndTime)
+                ) ? (
                 <Box
                   display="flex"
                   flexGrow={1}
@@ -315,6 +316,7 @@ const ServiceDetail = () => {
         />
       </Container>
       <Footer />
+      <FloatingDogImage />
     </>
   );
 };

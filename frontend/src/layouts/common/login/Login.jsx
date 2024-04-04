@@ -1,4 +1,9 @@
 import * as React from "react";
+import Banner from "../../../images/banner.png";
+import DogBanner from "../../../images/dog_banner.png";
+import Background from "../../../images/dog_background.png";
+import Cat from "../../../images/cat.png";
+import { ToastContainer } from "react-toastify";
 //MUI
 import {
   Avatar,
@@ -28,6 +33,9 @@ import { toast } from "react-toastify";
 import useAuth from "../../../hooks/useAuth";
 
 import { jwtDecode } from "jwt-decode";
+
+import GoogleLogin, { GoogleLogout } from 'react-google-login';
+import { gapi } from 'gapi-script'
 
 const defaultTheme = createTheme();
 const Login = () => {
@@ -86,6 +94,8 @@ const Login = () => {
     }
   };
 
+
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -95,26 +105,85 @@ const Login = () => {
     // });
   };
 
+  //----------------------LOGIN WITH GG---------------------
+  const clientid = "424228344980-l67mummet93pgl903qru8ejvjeoo098s.apps.googleusercontent.com";
+
+  const responseGoogle = async (response) => {
+    const { tokenId, profileObj } = response;
+    const token = tokenId;
+    const email = profileObj.email;
+    const googleId = profileObj.googleId;
+
+    try {
+      const { data } = await axios.post("http://localhost:3500/google", {
+        email,
+        googleId
+      })
+        .then((data) => {
+          if (data.data.error === 'Unverified') {
+            localStorage.setItem("verify-email", email);
+            navigate('/verify', { replace: true });
+          } else {
+            // console.log(data)
+            const dataDecode = jwtDecode(data.data.token);
+
+            localStorage.setItem("token", data.data.token);
+
+            context.setAuth({
+              id: dataDecode.id,
+              email: dataDecode.email,
+              role: dataDecode.role,
+              token: data.data.token,
+            });
+
+            toast.success("Đăng nhập thành công");
+            navigate(from, { replace: true });
+          }
+        })
+        .catch((error) => {
+          toast.error(error.response.data.error);
+        })
+    } catch (err) {
+      // console.log(err)
+    }
+  }
+
+  const onFailure = (res) => {
+    console.log('Login failed: res:', res);
+  }
+
+
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Grid container component="main" sx={{ height: "100vh" }}>
+      <ToastContainer />
+      <Grid container component="main" sx={{
+        height: "100vh", backgroundImage:
+          `url(${Background})`,
+        backgroundRepeat: "no-repeat",
+        backgroundColor: (t) =>
+          t.palette.mode === "light"
+            ? t.palette.grey[50]
+            : t.palette.grey[900],
+        backgroundSize: "cover",
+        backgroundPosition: "center"
+      }}>
         <CssBaseline />
         <Grid
           item
           xs={false}
           sm={4}
           md={7}
-          sx={{
-            backgroundImage:
-              "url(https://img.freepik.com/premium-vector/veterinary-clinic-doctor-examining-vaccination-health-care-pets-like-dogs-cats-flat-cartoon-background-vector-illustration-poster-banner_2175-3383.jpg?w=2000)",
-            backgroundRepeat: "no-repeat",
-            backgroundColor: (t) =>
-              t.palette.mode === "light"
-                ? t.palette.grey[50]
-                : t.palette.grey[900],
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
+        // sx={{
+        //   backgroundImage:
+        //     `url(${Background})`,
+        //   backgroundRepeat: "no-repeat",
+        //   backgroundColor: (t) =>
+        //     t.palette.mode === "light"
+        //       ? t.palette.grey[50]
+        //       : t.palette.grey[900],
+        //   backgroundSize: "cover",
+        //   backgroundPosition: "center",
+        // }}
         />
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <Box
@@ -126,11 +195,19 @@ const Login = () => {
               alignItems: "center",
             }}
           >
-            <Link href="/">
-              <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-                <PetsIcon />
-              </Avatar>
-            </Link>
+            <Link href="/" ><Box
+              sx={{ xs: 1, zIndex: "1" }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <img src={Cat} alt="" style={{ maxWidth: "30%" }} />
+              </Box>
+            </Box></Link>
 
             <Typography component="h1" variant="h5">
               Đăng nhập
@@ -142,6 +219,7 @@ const Login = () => {
               sx={{ mt: 1 }}
             >
               <TextField
+                color="warning"
                 margin="normal"
                 required
                 fullWidth
@@ -154,6 +232,7 @@ const Login = () => {
                 onChange={(e) => setData({ ...data, email: e.target.value })}
               />
               <TextField
+                color="warning"
                 margin="normal"
                 required
                 fullWidth
@@ -166,18 +245,28 @@ const Login = () => {
                 onChange={(e) => setData({ ...data, password: e.target.value })}
               />
               {/* <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              /> */}
+                  control={<Checkbox value="remember" color="primary" />}
+                  label="Remember me"
+                /> */}
               <Button
+                color="warning"
                 type="submit"
                 fullWidth
                 variant="contained"
-                sx={{ mt: 3, mb: 2 }}
+                sx={{ mt: 3, mb: 2, }}
                 onClick={loginUser}
               >
                 Đăng nhập
               </Button>
+              <GoogleLogin
+                clientId={clientid}
+                buttonText="Login with Google"
+                onSuccess={responseGoogle}
+                onFailure={onFailure}
+                cookiePolicy={'single_host_origin'}
+                isSignedIn={true}
+                prompt="select_account"
+              />
               <Grid container>
                 <Grid item xs>
                   <NavLink to="/reset-password" variant="body2">

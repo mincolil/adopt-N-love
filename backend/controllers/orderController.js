@@ -13,42 +13,20 @@ const getAll = async (req, res) => {
 
 const getAllOrder = async (req, res) => {
     try {
-        const { userId, status, startDate, endDate, sort, page, limit } = req.query;
+        const { startDate, endDate } = req.query;
 
-        const query = {};
-
-        if (userId) {
-            query.userId = userId;
-        }
-        if (status) { // duy sửa lại lọc order = status
-            query.status = status;
-        } else query.status = "Chờ xác nhận"
         if (startDate && endDate) {
-            query.createdAt = {
-                $gte: new Date(startDate), // Ngày bắt đầu
-                $lte: new Date(endDate),   // Ngày kết thúc
-            };
+            const order = await Order.find({
+                createdAt: {
+                    $gte: new Date(startDate), // Ngày bắt đầu
+                    $lte: new Date(endDate),   // Ngày kết thúc
+                }
+            }).populate('userId')
+            res.status(200).json(order)
+        } else {
+            const order = await Order.find().populate('userId')
+            res.status(200).json(order)
         }
-        const options = {
-            sort: { createdAt: -1 }, // Sắp xếp mặc định theo thời gian tạo giảm dần
-            page: parseInt(page) || 1, // Trang mặc định là 1
-            limit: parseInt(limit) || 10, // Giới hạn số lượng kết quả trên mỗi trang mặc định là 10
-            populate: 'userId'
-        };
-        if (sort === 'asc') {
-            options.sort = { totalPrice: 1 }; // Sắp xếp tăng dần theo totalPrice
-        } else if (sort === 'desc') {
-            options.sort = { totalPrice: -1 }; // Sắp xếp giảm dần theo totalPrice
-        }
-
-        const result = await Order.paginate(query, options);
-
-        if (!result.docs || result.docs.length === 0) {
-            return res.status(404).json({
-                error: "There are no Orders in the Database",
-            });
-        }
-        res.status(200).json(result);
     } catch (err) {
         console.log(err)
         res.status(500).json(err)
@@ -66,6 +44,23 @@ const getAllOrderByUserId = async (req, res) => {
             })
         }
         res.status(200).json(orders)
+    } catch (err) {
+        console.log(err)
+        res.status(500).json(err)
+    }
+}
+
+const getOrderById = async (req, res) => {
+    try {
+        const orderId = req.params.orderId;
+
+        const order = await Order.findById(orderId).populate('userId');
+        if (!order) {
+            return res.status(404).json({
+                error: "Order: " + orderId + " not found!"
+            })
+        }
+        res.status(200).json(order)
     } catch (err) {
         console.log(err)
         res.status(500).json(err)
@@ -205,5 +200,6 @@ module.exports = {
     updateOrder,
     deleteOrder,
     updateStatus,
-    getAllOrderNoLimit
+    getAllOrderNoLimit,
+    getOrderById
 }

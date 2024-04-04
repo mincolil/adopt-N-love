@@ -14,6 +14,7 @@ import Stack from "@mui/material/Stack";
 import SearchIcon from "@mui/icons-material/Search";
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
+import { ToastContainer } from "react-toastify";
 
 import ButtonCustomize from "../../../components/Button/Button";
 
@@ -221,10 +222,10 @@ export default function ProductTable() {
       if (loadData.data.error) {
         toast.warning(
           "Kết quả " +
-            "[" +
-            keyword +
-            "]" +
-            " bạn vừa tìm không có! Vui lòng nhập lại. "
+          "[" +
+          keyword +
+          "]" +
+          " bạn vừa tìm không có! Vui lòng nhập lại. "
         );
         loadAllProduct(currentPage);
       } else {
@@ -241,6 +242,7 @@ export default function ProductTable() {
 
   return (
     <>
+      <ToastContainer />
       <Grid
         spacing={2}
         container

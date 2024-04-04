@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import {
-  Table,
+  //Table
   TableBody,
   TableCell,
   TableContainer,
@@ -8,7 +8,7 @@ import {
   TableRow,
   Paper,
   Box,
-  Button,
+  // Button,
   Typography,
   Modal,
   DialogTitle,
@@ -20,17 +20,12 @@ import {
   Pagination,
   ButtonGroup,
 } from "@mui/material";
-import Stack from "@mui/material/Stack";
-import Chip from "@mui/material/Chip";
 import SearchIcon from "@mui/icons-material/Search";
 
-import CloseIcon from "@mui/icons-material/Close";
-import { styled } from "@mui/material/styles";
+import { ToastContainer } from "react-toastify";
 
 import ButtonCustomize from "../../../components/Button/Button";
 
-//React
-import { useNavigate } from "react-router-dom";
 // Axios
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -39,6 +34,12 @@ import ModalEditPet from "../../../components/Modal/ModalEditPet";
 import useAuth from "../../../hooks/useAuth";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DropDownService from "../../../components/DropDown/DropDownService";
+import ModalDetailPet from "../../../components/Modal/ModalDetailPet";
+
+import { Table, Tag } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
+import { Button, Input, Space, InputNumber } from 'antd';
+import Highlighter from 'react-highlight-words';
 
 // -------------------------------STYLE MODAL----------------------
 const style = {
@@ -58,6 +59,7 @@ const BASE_URL = "http://localhost:3500";
 
 export default function PetTable() {
   const [data, setData] = useState([]);
+  const [originalData, setOriginalData] = useState([]);
 
   const [totalPets, setTotalPets] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -67,6 +69,8 @@ export default function PetTable() {
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [dataEditPet, setDataEditPet] = useState({});
+  const [openDetailModal, setOpenDetailModal] = useState(false);
+  const [dataDetailPet, setDataDetailPet] = useState({});
 
   const context = useAuth();
 
@@ -75,15 +79,23 @@ export default function PetTable() {
     setOpenCreateModal(true);
   };
 
-  const handleUpdatePet = (pet) => {
+  const handleUpdatePet = (pet, e) => {
+    e.stopPropagation();
     // console.log("Check data", pet);
     setDataEditPet(pet);
     setOpenEditModal(true);
   };
 
+  const handleDetailPet = (pet) => {
+    // console.log("Check data", pet);
+    setDataDetailPet(pet);
+    setOpenDetailModal(true);
+  };
+
   // --------------------- CLOSE MODAL  -----------------------------
   const handleCloseModal = () => {
     setOpenCreateModal(false);
+    setOpenDetailModal(false);
     setOpenEditModal(false);
   };
 
@@ -101,6 +113,7 @@ export default function PetTable() {
         setTotalPages(loadData.data.pages);
         // console.log("Check totalPage", totalPages);
         setData(loadData.data.docs);
+        setOriginalData(loadData.data.docs);
         setTotalPets(loadData.data.limit);
         // console.log(loadData.data.docs);
         setCurrentPage(loadData.data.page);
@@ -145,6 +158,23 @@ export default function PetTable() {
     }
   };
 
+  // ----------------------------------- DELETE PET BY ID --------------------------------
+  const handleDeletePet = async (id) => {
+    if (window.confirm("Bạn có chắc chắn muốn xóa không?") === false) return;
+    try {
+      const deleteData = await axios.delete(`${BASE_URL}/pet/${id}`);
+      if (deleteData.error) {
+        toast.error(deleteData.error);
+      } else {
+        toast.success(deleteData.data.message);
+        loadAllPet(currentPage);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+
   // ----------------------------------- GET ALL PET BY USER NAME --------------------------------
   const searchPetById = async (page) => {
     try {
@@ -154,10 +184,10 @@ export default function PetTable() {
       if (loadData.data.error) {
         toast.warning(
           "Kết quả " +
-            "[" +
-            keyword +
-            "]" +
-            " bạn vừa tìm không có! Vui lòng nhập lại. "
+          "[" +
+          keyword +
+          "]" +
+          " bạn vừa tìm không có! Vui lòng nhập lại. "
         );
         loadAllPet(currentPage);
       } else {
@@ -214,6 +244,7 @@ export default function PetTable() {
           setTotalPages(loadData.data.pages);
           // console.log("Check totalPage", totalPages);
           setData(loadData.data.docs);
+          setOriginalData(loadData.data.docs);
           setTotalPets(loadData.data.limit);
           setCurrentPage(loadData.data.page);
         }
@@ -227,8 +258,249 @@ export default function PetTable() {
     hanldeClickCategory();
   }, []);
 
+  // --------------------- ANT TABLE -----------------------------
+  const [searchText, setSearchText] = useState('');
+  const [searchedColumn, setSearchedColumn] = useState('');
+  const [sortedInfo, setSortedInfo] = useState({});
+
+
+  const handleSave = async (record, e) => {
+    e.stopPropagation();
+    try {
+      const updateSlot = await axios.patch(`${BASE_URL}/pet`, {
+        id: record._id,
+        userId: record.userId._id,
+        petName: record.petName,
+        rank: record.rank,
+        status: record.status,
+        categoryId: record.categoryId,
+        color: record.color,
+        weight: record.weight,
+        height: record.height,
+        petImage: record.petImage,
+        breed: record.breed,
+        age: record.age,
+        forAdoption: record.forAdoption,
+        facebook: record.facebook,
+        adoptDes: record.adoptDes,
+        discount: record.discount,
+      });
+      toast.success("Data saved successfully!");
+      setOriginalData(data);
+    } catch (error) {
+      toast.error("Failed to save data!");
+    }
+  };
+
+  const searchInput = useRef(null);
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText('');
+  };
+  const getColumnSearchProps = (dataIndex, field) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Reset
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({
+                closeDropdown: false,
+              });
+              setSearchText(selectedKeys[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Filter
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            close
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1677ff' : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) => {
+      if (field == 'name') {
+        return record.userId.fullname.toLowerCase().includes(value.toLowerCase());
+      } else if (field == 'phone') {
+        return record.userId.phone.toLowerCase().includes(value.toLowerCase());
+      } else {
+        if (record[dataIndex]) return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
+      }
+
+    },
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{
+            backgroundColor: '#ffc069',
+            padding: 0,
+          }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ''}
+        />
+      ) : (
+        text
+      ),
+  });
+
+  const columns = [
+    {
+      title: 'Tên thú cưng',
+      dataIndex: 'petName',
+      ...getColumnSearchProps('petName'),
+      width: '20%',
+      key: 'petName',
+      sorter: (a, b) => a.petName.length - b.petName.length,
+      sortOrder: sortedInfo.columnKey === 'petName' ? sortedInfo.order : null,
+    },
+    {
+      title: 'Chủ thú cưng',
+      dataIndex: ['userId', 'fullname'],
+      ...getColumnSearchProps('fullname', 'name'),
+      width: '20%',
+      key: 'fullname',
+      sorter: (a, b) => a.userId.fullname.length - b.userId.fullname.length,
+      sortOrder: sortedInfo.columnKey === 'fullname' ? sortedInfo.order : null,
+    },
+    {
+      title: 'SĐT',
+      dataIndex: ['userId', 'phone'],
+      ...getColumnSearchProps('phone', 'phone'),
+      width: '15%',
+    },
+    {
+      title: 'Giống loại',
+      dataIndex: 'breed',
+      width: '20%',
+    },
+    {
+      title: 'Giảm giá',
+      key: 'action',
+      width: '15%',
+      render: (text, record) => (
+        <Space size="middle">
+          <InputNumber min={0} max={30} value={record.discount}
+            onChange={(value) => {
+              const newData = data.map((item) =>
+                item._id === record._id ? { ...item, discount: value } : item
+              );
+              setData(newData);
+            }}
+            onClick={(e) => e.stopPropagation()} />
+          <Button
+            type="primary"
+            disabled={record.discount === originalData.find((item) => item._id === record._id)?.discount}
+            onClick={(e) => handleSave(record, e)}
+          >
+            Save
+          </Button>
+        </Space>
+
+      ),
+
+    },
+    {
+      title: 'Trạng thái',
+      dataIndex: 'status',
+      width: '40%',
+      render: (status) => (
+        <span>
+          {
+            status ? (
+              <Tag color="green">Sức khoẻ tốt</Tag>
+            ) : (
+              <Tag color="red">Sức khoẻ xấu</Tag>
+            )
+          }
+        </span>
+      )
+    },
+    //button edit
+    {
+      title: 'Action',
+      key: 'action',
+      render: (text, record) => (
+        <Space size="middle">
+          <Button onMouseDown={(e) => handleUpdatePet(record, e)}>Edit</Button>
+          <Button onMouseDown={(e) => handleDetailPet(record, e)}>Detail</Button>
+        </Space>
+
+      ),
+    },
+  ];
+
+  const onChange = (pagination, filters, sorter, extra) => {
+    console.log('params', pagination, filters, sorter, extra);
+    setSortedInfo(sorter);
+  };
+
+
+
   return (
     <>
+      <ToastContainer />
       <Box sx={{ position: "" }}>
         <Grid
           spacing={2}
@@ -248,7 +520,7 @@ export default function PetTable() {
               // sx={{ position: "fixed" }}
               InputProps={{
                 endAdornment: (
-                  <IconButton onClick={handleSearchClick}>
+                  <IconButton onClick={onChange}>
                     <SearchIcon />
                   </IconButton>
                 ),
@@ -277,91 +549,12 @@ export default function PetTable() {
           </Grid>
         </Grid>
       </Box>
-      <Paper sx={{ width: "100%", overflow: "hidden" }}>
-        <TableContainer sx={{ maxHeight: 440 }}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead
-            // sx={{
-            //   position: "-webkit-sticky",
-            //   position: "sticky",
-            // }}
-            >
-              <TableRow>
-                <TableCell children>ID</TableCell>
-                <TableCell align="left">Chủ thú cưng</TableCell>
-                <TableCell align="left">SĐT</TableCell>
-                <TableCell align="left">Tên thú cưng</TableCell>
-                <TableCell align="left">Cân nặng</TableCell>
-                <TableCell align="left">Chiều cao</TableCell>
-                <TableCell align="left">Loại thú cưng</TableCell>
-                <TableCell align="left">Trạng thái</TableCell>
-                {/* <TableCell align="center">Chức năng</TableCell> */}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data &&
-                data.map((value, index) => {
-                  const statusColor = value.status ? "primary" : "error";
-                  return (
-                    <TableRow
-                      hover
-                      onClick={() => handleUpdatePet(value)}
-                      key={index}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {(currentPage - 1) * 10 + (index + 1)}
-                      </TableCell>
-                      <TableCell align="left">
-                        {value.userId !== null ? value.userId.fullname : ""}
-                      </TableCell>
-                      <TableCell align="left">
-                        {value.userId !== null ? value.userId.phone : ""}
-                      </TableCell>
-                      <TableCell align="left">{value.petName}</TableCell>
-                      <TableCell align="left">{value.weight}kg</TableCell>
-                      <TableCell align="left">{value.height}cm</TableCell>
-                      <TableCell align="left">
-                        {category.map((valueCategory, Cid) => {
-                          if (value.categoryId === valueCategory._id) {
-                            return valueCategory.feature;
-                          }
-                        })}
-                      </TableCell>
-                      <TableCell align="left">
-                        <Chip
-                          size="small"
-                          variant="outlined"
-                          label={value.status ? "Sức khoẻ tốt" : "Sức khoẻ xấu"}
-                          color={statusColor}
-                        />
-                      </TableCell>
-                      {/* <TableCell align="center">
-                        <ButtonGroup>
-                          <ButtonCustomize
-                            variant="contained"
-                            // component={RouterLink}
-                            nameButton="Cập nhật"
-                            fullWidth
-                          />
-                        </ButtonGroup>
-                      </TableCell> */}
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
-      {/* Paging */}
-      <Stack spacing={2} mt={2} sx={{ float: "right" }}>
-        <Pagination
-          count={totalPages}
-          onChange={handlePageClick}
-          page={currentPage}
-          color="primary"
-        />
-      </Stack>
+
+      <Table columns={columns} dataSource={data} onChange={onChange}
+
+      />;
+
+
       {/* Modal create */}
       <ModalAddPet
         open={openCreateModal}
@@ -376,6 +569,15 @@ export default function PetTable() {
         open={openEditModal}
         onClose={handleCloseModal}
         dataEditPet={dataEditPet}
+        handUpdateEditTable={loadAllPet}
+        page={currentPage}
+        data={context.auth.id}
+        category={category}
+      />
+      <ModalDetailPet
+        open={openDetailModal}
+        onClose={handleCloseModal}
+        dataEditPet={dataDetailPet}
         handUpdateEditTable={loadAllPet}
         page={currentPage}
         data={context.auth.id}

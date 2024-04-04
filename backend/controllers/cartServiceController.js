@@ -3,7 +3,9 @@ const Service = require('../models/Service')
 const Booking = require('../models/Booking');
 const BookingDetail = require('../models/BookingDetail');
 const jwt = require('jsonwebtoken');
-
+const Pet = require('../models/Pet');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+let endpointSecret = "whsec_c29f4e9b61dc83ebf1bfdf2b9d16e971b443576807c28f8647222d9ae757309c";
 
 const viewCart = async (req, res) => {
     try {
@@ -28,7 +30,7 @@ const addToCart = async (req, res) => {
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
         const userId = decoded.id;
 
-        const { serviceId, petId, quantity } = req.body;
+        const { serviceId, petId, quantity, bookingDate } = req.body;
 
         const service = await Service.findById(serviceId);
 
@@ -47,7 +49,8 @@ const addToCart = async (req, res) => {
                 userId,
                 petId,
                 serviceId,
-                quantity: quantity
+                quantity: quantity,
+                bookingDate
             });
         }
         const result = await cartService.save();
@@ -118,12 +121,26 @@ const checkout = async (req, res) => {
                     petId: cartItem.petId,
                     serviceId: cartItem.serviceId,
                     quantity: cartItem.quantity,
+                    bookingDate: cartItem.bookingDate,
                 });
 
+                //get discount value of pet
+                const pet = await Pet.findById(cartItem.petId);
+                let petDiscount = 0;
+                if (pet) {
+                    petDiscount = pet.discount;
+                }
+                let finalPrice = (service.discountedPrice) - (service.price * petDiscount / 100);
+                if (finalPrice < (0.7 * service.price)) {
+                    finalPrice = 0.7 * service.price;
+                }
+
+                bookingDetail.discountedPrice = finalPrice;
                 await bookingDetail.save();
 
+
                 // Update the total price
-                total += service.discountedPrice * cartItem.quantity;
+                total += finalPrice * cartItem.quantity;
             }
         }
 
@@ -142,11 +159,136 @@ const checkout = async (req, res) => {
         console.error(err);
         res.status(500).json({ err, message: 'Can not checkout' });
     }
+
+}
+
+const getCartServiceByBookingDate = async (req, res) => {
+    try {
+        // Lấy thông tin người dùng từ token JWT
+        const token = req.headers.authorization;
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const userId = decoded.id;
+        const bookingDate = req.params.bookingDate;
+
+        const cartItems = await CartService.find({ userId, bookingDate }).populate('petId').populate('serviceId').populate('userId');
+        res.status(200).json(cartItems);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json(err);
+    }
+}
+
+const checkoutStripe = async (req, res) => {
+    try {
+        const token = req.headers.authorization;
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const userId = decoded.id;
+
+        const cartItems = await CartService.find({ userId });
+
+        if (cartItems.length === 0) {
+            return res.status(400).json({ message: 'Cart is empty' });
+        }
+
+        let total = 0;
+
+        line_items = []
+        for (const cartItem of cartItems) {
+
+
+            const service = await Service.findById(cartItem.serviceId);
+
+
+
+            if (service) {
+                const pet = await Pet.findById(cartItem.petId);
+                let petDiscount = 0;
+                if (pet) {
+                    petDiscount = pet.discount;
+                }
+                let finalPrice = (service.discountedPrice) - (service.price * petDiscount / 100);
+                if (finalPrice < (0.7 * service.price)) {
+                    finalPrice = 0.7 * service.price;
+                }
+                total += finalPrice * cartItem.quantity;
+
+                //add line item for stripe
+                line_items.push({
+                    price_data: {
+                        currency: 'VND',
+                        product_data: {
+                            name: service.serviceName,
+                        },
+                        unit_amount: finalPrice,
+                    },
+                    quantity: cartItem.quantity,
+                });
+            }
+        }
+
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            mode: 'payment',
+            line_items: line_items,
+            metadata: {
+                userId: userId,
+                recipientName: req.body.recipientName,
+                recipientPhoneNumber: req.body.recipientPhoneNumber,
+                //list of cart items
+                cartServiceItems: JSON.stringify(cartItems),
+            },
+            success_url: 'http://localhost:3000/service-purchase',
+            cancel_url: 'http://localhost:3000/cancel',
+        });
+
+        res.status(200).json({
+            message: 'Checkout successful',
+            // order: createdOrder,
+            url: session.url
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ err, message: 'Can not checkout' });
+    }
+}
+
+const refundStripe = async (req, res) => {
+    try {
+        const refund = await stripe.refunds.create({
+            payment_intent: req.body.payment_intent,
+        });
+        res.status(200).json(refund);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ err, message: 'Can not refund' });
+    }
+}
+
+
+const getCartServiceByBookingDateAndPetId = async (req, res) => {
+    try {
+        // Lấy thông tin người dùng từ token JWT
+        const token = req.headers.authorization;
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const userId = decoded.id;
+        const bookingDate = req.params.bookingDate;
+        const petId = req.params.petId;
+
+        const cartItems = await CartService.find({ userId, bookingDate, petId }).populate('petId').populate('serviceId').populate('userId');
+        res.status(200).json(cartItems);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json(err);
+    }
 }
 
 module.exports = {
     addToCart,
     removeFromCart,
     viewCart,
-    checkout
+    checkout,
+    getCartServiceByBookingDate,
+    getCartServiceByBookingDateAndPetId,
+    checkoutStripe,
+    refundStripe
 }

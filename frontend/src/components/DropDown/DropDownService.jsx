@@ -35,7 +35,7 @@ export default function DropDownService(props) {
               <MenuItem
                 key={value._id}
                 value={value._id}
-                // onClick={(e) => hanldeClickCategory(e.target.value)}
+              // onClick={(e) => hanldeClickCategory(e.target.value)}
               >
                 {value.feature}
               </MenuItem>

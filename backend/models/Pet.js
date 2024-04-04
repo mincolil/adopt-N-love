@@ -21,10 +21,23 @@ const petSchema = new mongoose.Schema({
         ref: 'Category',
         required: true,
     },
+    discount: {
+        type: Number,
+        default: 0,
+    },
     color: String,
     weight: Number,
     height: Number,
+    breed: String,
+    age: Number,
+    sex: String,
     petImage: String,
+    facebook: String,
+    adoptDescription: String,
+    forAdoption: {
+        type: Boolean,
+        default: false,
+    },
 })
 
 petSchema.plugin(mongoosePaginate)

@@ -2,7 +2,8 @@ const Pet = require('../models/Pet')
 const User = require('../models/User')
 const BookingDetail = require('../models/BookingDetail')
 const CartService = require('../models/CartService');
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const { use } = require('../routes/orderRoutes');
 
 const getAll = async (req, res) => {
   try {
@@ -21,7 +22,7 @@ const getAll = async (req, res) => {
 
     const result = await Pet.paginate(query, {
       page: parseInt(page) || 1,
-      limit: parseInt(limit) || 10,
+      limit: parseInt(limit) || 50,
       populate: {
         path: 'userId',
         model: 'User',
@@ -70,17 +71,49 @@ const createPet = async (req, res) => {
 
 const updatePet = async (req, res) => {
   try {
-    const { id, userId, petName, rank, status, categoryId, color, weight, height, petImage } = req.body
+    const { id, userId, petName, rank, status, categoryId, color, weight, height, petImage, breed, age, forAdoption, facebook, adoptDes, discount } = req.body
     const pet = await Pet.findById(id)
-    pet.userId = userId
-    pet.petName = petName
-    pet.rank = rank
-    pet.status = status
-    pet.categoryId = categoryId
-    pet.color = color
-    pet.weight = weight
-    pet.height = height
-    pet.petImage = petImage
+    if (userId) {
+      pet.userId = userId
+    }
+    if (petName) {
+      pet.petName = petName
+    }
+    if (rank) {
+      pet.rank = rank
+    }
+    if (status) {
+      pet.status = status
+    }
+    if (color) {
+      pet.color = color
+    }
+    if (weight) {
+      pet.weight = weight
+    }
+    if (height) {
+      pet.height = height
+    }
+    if (petImage) {
+      pet.petImage = petImage
+    }
+    if (breed) {
+      pet.breed = breed
+    }
+    if (age) {
+      pet.age = age
+    }
+    if (forAdoption) {
+      pet.forAdoption = forAdoption
+    }
+    //if category id null, don't update
+    if (categoryId) {
+      pet.categoryId = categoryId
+    }
+    if (discount) {
+      pet.discount = discount
+    }
+
 
     await pet.save()
     res.status(201).json({
@@ -107,6 +140,22 @@ const updateStatus = async (req, res) => {
   }
 }
 
+const adoptPet = async (req, res) => {
+  try {
+    const { id, forAdoption } = req.body;
+    const updatePet = await Pet.findOneAndUpdate(
+      { _id: id },
+      { $set: { forAdoption: forAdoption } },
+      { new: true }
+    )
+    res.json(updatePet)
+  }
+  catch (error) {
+    console.log(error)
+    res.json({ error: "Internal Server Error" })
+  }
+}
+
 // route /pet/username?name=
 // GET
 const getPetByUsername = async (req, res) => {
@@ -128,7 +177,8 @@ const getPetByUsername = async (req, res) => {
     const petPaginateResult = await Pet.paginate({ userId: { $in: userIds } }, {
       page, limit, populate: {
         path: 'userId',
-        select: 'fullname',
+        model: 'User',
+        select: 'fullname phone',
       }
     });
 
@@ -207,5 +257,6 @@ module.exports = {
   updateStatus,
   uploadPetImage,
   getPetListForServiceBooking,
-  deleteOne
+  deleteOne,
+  adoptPet
 }

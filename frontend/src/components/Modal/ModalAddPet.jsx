@@ -21,6 +21,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { Grid, Input } from "@mui/material";
 import ButtonCustomize from "../Button/Button";
+import { ToastContainer } from "react-toastify";
 
 const PET_NAME_REGEX =
   /^[ A-Za-zÀ-Ỹà-ỹĂ-Ắă-ằẤ-Ứấ-ứÂ-Ấâ-ấĨ-Ỹĩ-ỹĐđÊ-Ểê-ểÔ-Ốô-ốơ-ởƠ-Ớơ-ớƯ-Ứư-ứỲ-Ỵỳ-ỵ\s]{2,}$/;
@@ -38,6 +39,9 @@ const ModalAddPet = (props) => {
   const [weight, setWeight] = useState(null);
   const [height, setHeight] = useState(null);
   const [image, setImage] = useState(null);
+  const [age, setAge] = useState(null);
+  const [breed, setBreed] = useState("");
+  const [sex, setSex] = useState("");
 
   // --------------------- HANLDE CHANGE STATUS -----------------------------
   const handleStatusChange = (event) => {
@@ -56,6 +60,10 @@ const ModalAddPet = (props) => {
 
   const handleValidationPetName = (e) => {
     setPetName(e.target.value);
+  };
+
+  const handleValidationAge = (e) => {
+    setAge(e.target.value);
   };
 
   useEffect(() => {
@@ -80,6 +88,10 @@ const ModalAddPet = (props) => {
 
   const handleValidationColor = (e) => {
     setColor(e.target.value);
+  };
+
+  const handleValidationBreed = (e) => {
+    setBreed(e.target.value);
   };
 
   useEffect(() => {
@@ -150,6 +162,22 @@ const ModalAddPet = (props) => {
       );
     } else if (categoryId === "") {
       toast.error("Bạn phải chọn loại thú cưng mình muốn");
+    } else if (height === "" || height === null) {
+      toast.error("Chiều cao không được để trống");
+    } else if (!validHeight) {
+      toast.error("Chiều cao phải là số");
+    } else if (weight === "" || weight === null) {
+      toast.error("Cân nặng không được để trống");
+    } else if (!validWeight) {
+      toast.error("Cân nặng phải là số");
+    } else if (color.trim() === "") {
+      toast.error("Màu lông không được để trống");
+    } else if (!validColor) {
+      toast.error("Màu lông không được nhập số");
+    } else if (age === "" || age === null) {
+      toast.error("Tuổi không được để trống");
+    } else if (breed.trim() === "") {
+      toast.error("Giống loại thú cưng không được để trống");
     } else {
       try {
         const response = await axios.post("http://localhost:3500/pet", {
@@ -162,11 +190,13 @@ const ModalAddPet = (props) => {
           height: height === "" ? null : height,
           weight: weight === "" ? null : weight,
           petImage,
+          age: age === "" ? null : age,
+          breed,
+          sex
         });
         if (response.error) {
           toast.error(response.error);
         } else {
-          // console.log("Thành công!!", response);
           toast.success("Thêm mới thú cưng thành công!");
           setUserId("");
           setPetName("");
@@ -194,12 +224,18 @@ const ModalAddPet = (props) => {
     setCategoryId(selectedCategory);
   };
 
+  const handleChageSex = (e) => {
+    const selectedSex = e.target.value;
+    setSex(selectedSex);
+  }
+
   return (
     <Dialog
       open={open}
       onClose={onClose}
       sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
     >
+      <ToastContainer />
       <Box
         sx={{
           bgcolor: "background.paper",
@@ -240,7 +276,7 @@ const ModalAddPet = (props) => {
               margin="normal"
               value={petName}
               onChange={(e) => handleValidationPetName(e)}
-              // error={!valid}
+            // error={!valid}
             />
             <FormControl fullWidth margin="normal">
               <InputLabel id="demo-select-small-label">
@@ -257,12 +293,36 @@ const ModalAddPet = (props) => {
                       <MenuItem
                         key={value._id}
                         value={value._id}
-                        // onClick={(e) => hanldeClickCategory(e.target.value)}
+                      // onClick={(e) => hanldeClickCategory(e.target.value)}
                       >
                         {value.feature}
                       </MenuItem>
                     );
                   })}
+              </Select>
+            </FormControl>
+
+            <FormControl fullWidth margin="normal">
+              <InputLabel id="select-sex">
+                Giới tính
+              </InputLabel>
+              <Select
+                label="Giới tính"
+                value={sex}
+                onChange={handleChageSex}
+              >
+                <MenuItem
+                  key='male'
+                  value='male'
+                >
+                  Đực
+                </MenuItem>
+                <MenuItem
+                  key='female'
+                  value='female'
+                >
+                  Cái
+                </MenuItem>
               </Select>
             </FormControl>
 
@@ -290,6 +350,22 @@ const ModalAddPet = (props) => {
               margin="normal"
               value={color}
               onChange={(e) => handleValidationColor(e)}
+            />
+
+            <TextField
+              fullWidth
+              label="Tuổi"
+              margin="normal"
+              value={age}
+              onChange={(e) => handleValidationAge(e)}
+            />
+
+            <TextField
+              fullWidth
+              label="Giống loại thú cưng"
+              margin="normal"
+              value={breed}
+              onChange={(e) => handleValidationBreed(e)}
             />
 
             <TextField

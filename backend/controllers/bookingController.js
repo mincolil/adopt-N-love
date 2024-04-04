@@ -1,24 +1,56 @@
 const Booking = require('../models/Booking');
 const BookingDetail = require('../models/BookingDetail');
+const Pet = require('../models/Pet');
 
 const getAllBooking = async (req, res) => {
     try {
-        const { userId, status, startDate, endDate, sort, page, limit } = req.query;
-
-        const query = {};
-
-        if (userId) {
-            query.userId = userId;
-        }
-        if (status) { // duy sửa lại lọc booking = status
-            query.status = status;
-        } else query.status = "Chờ xác nhận"
+        const { startDate, endDate } = req.query;
         if (startDate && endDate) {
-            query.createdAt = {
-                $gte: new Date(startDate), // Ngày bắt đầu
-                $lte: new Date(endDate),   // Ngày kết thúc
-            };
+            const booking = await Booking.find({
+                createdAt: {
+                    $gte: new Date(startDate), // Ngày bắt đầu
+                    $lte: new Date(endDate),   // Ngày kết thúc
+                }
+            }).populate('userId')
+            res.status(200).json(booking)
+        } else {
+            const booking = await Booking.find().populate('userId')
+            res.status(200).json(booking)
         }
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+
+}
+
+const getBooking = async (req, res) => {
+    try {
+        const booking = await Booking.find().populate('userId')
+        res.status(200).json(booking)
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+const getBookingByPetId = async (req, res) => {
+    try {
+        const petId = req.params.petId;
+        const { userId, status, startDate, endDate, sort, page, limit } = req.query;
+        const query = {};
+        // if (userId) {
+        //     query.userId = userId;
+        // }
+        // if (status) { // duy sửa lại lọc booking = status
+        //     query.status = status;
+        // } else query.status = "Chờ xác nhận"
+        // if (startDate && endDate) {
+        //     query.createdAt = {
+        //         $gte: new Date(startDate), // Ngày bắt đầu
+        //         $lte: new Date(endDate),   // Ngày kết thúc
+        //     };
+        // }
         const options = {
             sort: { createdAt: -1 }, // Sắp xếp mặc định theo thời gian tạo giảm dần
             page: parseInt(page) || 1, // Trang mặc định là 1
@@ -30,9 +62,7 @@ const getAllBooking = async (req, res) => {
         } else if (sort === 'desc') {
             options.sort = { totalPrice: -1 }; // Sắp xếp giảm dần theo totalPrice
         }
-
         const result = await Booking.paginate(query, options);
-
         if (!result.docs || result.docs.length === 0) {
             return res.status(404).json({
                 error: "There are no Orders in the Database",
@@ -45,14 +75,6 @@ const getAllBooking = async (req, res) => {
     }
 }
 
-const getBooking = async (req, res) => {
-    try {
-        const booking = await Booking.find().populate('userId')
-        res.status(200).json(booking)
-    } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-}
 
 const getAllBookingByUserId = async (req, res) => {
     try {
@@ -70,12 +92,29 @@ const getAllBookingByUserId = async (req, res) => {
     }
 }
 
+const getBookingById = async (req, res) => {
+    try {
+        const bookingId = req.params.bookingId;
+        const booking = await Booking.findById(bookingId).populate('userId');
+        if (!booking) {
+            return res.status(404).json({
+                error: "Booking: " + bookingId + " not found!"
+            })
+        }
+        res.status(200).json(booking)
+    } catch (err) {
+        console.log(err)
+        res.status(500).json(err)
+    }
+}
+
 const createBooking = async (req, res) => {
     try {
-        const { userId, petId, totalPrice } = req.body;
+        // const { userId, petId, totalPrice } = req.body;
+        const { userId, totalPrice } = req.body;
         const booking = new Booking();
         booking.userId = userId;
-        booking.petId = petId;
+        // booking.petId = petId;
         booking.totalPrice = totalPrice;
         booking.status = 'Chờ xác nhận';
         const result = await booking.save();
@@ -149,6 +188,22 @@ const updateStatus = async (req, res) => {
             booking.status = bookingStatus;
             const result = await booking.save();
             res.status(200).json(result)
+            //level up pet if status = 'hoàn thành'
+            if (bookingStatus === 'Hoàn thành') {
+                const bookingDetails = await BookingDetail.find({ bookingId });
+                if (bookingDetails != null) {
+                    bookingDetails.forEach(async (bookingDetail) => {
+                        const pet = await Pet.findById(bookingDetail.petId);
+                        if (pet != null) {
+                            pet.rank = pet.rank + 1;
+                            if (pet.rank % 10 === 0) {
+                                pet.discount = 10;
+                            } else pet.discount = 0;
+                            await pet.save();
+                        }
+                    })
+                }
+            }
         }
     } catch (err) {
         console.log(err)
@@ -164,5 +219,7 @@ module.exports = {
     updateBooking,
     deleteBooking,
     updateStatus,
-    getBooking
+    getBooking,
+    getBookingByPetId,
+    getBookingById
 }

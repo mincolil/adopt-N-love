@@ -1,19 +1,17 @@
 import Divider from "@mui/material/Divider";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import MailIcon from "@mui/icons-material/Mail";
 import Toolbar from "@mui/material/Toolbar";
 import ListSubheader from "@mui/material/ListSubheader";
 import * as React from "react";
 import axios from "axios";
 import { useNavigate, NavLink } from "react-router-dom";
 
-import { Link } from "@mui/material";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 // icon
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PersonIcon from "@mui/icons-material/Person";
@@ -26,6 +24,7 @@ import CategoryIcon from "@mui/icons-material/Category";
 import NewspaperIcon from "@mui/icons-material/Newspaper";
 import ClassIcon from "@mui/icons-material/Class";
 import useAuth from "../../hooks/useAuth";
+import Logo from "../../images/RealLogo.png";
 
 const DrawerDashborad = () => {
   const context = useAuth();
@@ -34,21 +33,19 @@ const DrawerDashborad = () => {
     { text: "Doanh thu", path: "/dashboard/dashboard-list" },
     { text: "Danh sách người dùng", path: "/dashboard/user-list" },
   ];
-
   const links2 = [
-    { text: "Danh sách dịch vụ", path: "/dashboard/service-list" },
+    { text: "Quản lí dịch vụ", path: "/dashboard/service-list" },
     {
-      text: "Lịch đăng kí dịch vụ",
+      text: "Đơn đăng kí dịch vụ",
       path: "/dashboard/booking-list",
     },
+    { text: "Lịch đặt dịch vụ", path: "/dashboard/slot-booking-list" },
+    { text: "Số lượng phòng dịch vụ", path: "/dashboard/category-list" },
   ];
 
   const links3 = [
-    { text: "Danh sách thú cưng", path: "/dashboard/pet-list" },
-    // {
-    //   text: "Lịch sử thanh toán thú cưng",
-    //   path: "/dashboard/history-pet-list",
-    // },
+    { text: "Quản lí thú cưng thú cưng", path: "/dashboard/pet-list" },
+    // { text: "Danh sách nhận nuôi", path: "/dashboard/adopt-pet-list" },
   ];
 
   const links4 = [
@@ -84,7 +81,10 @@ const DrawerDashborad = () => {
 
   return (
     <>
-      <Toolbar />
+      <ToastContainer />
+      <Toolbar>
+        <img src={Logo} alt="logo" style={{ width: "100%", height: "300%" }} />
+      </Toolbar>
       <Divider />
 
       {context.auth.role !== "staff" ? (
@@ -94,7 +94,15 @@ const DrawerDashborad = () => {
           </ListSubheader>
           {links.map((link, index) => (
             <ListItem key={link.text} disablePadding>
-              <ListItemButton component={NavLink} to={link.path}>
+              <ListItemButton
+                component={NavLink}
+                to={link.path}
+                sx={{
+                  "&.active": {
+                    bgcolor: "#efab9161",
+                  },
+                }}
+              >
                 <ListItemIcon>
                   {index % 2 === 0 ? <DashboardIcon /> : <PersonIcon />}
                 </ListItemIcon>
@@ -115,7 +123,15 @@ const DrawerDashborad = () => {
         </ListSubheader>
         {links2.map((link, index) => (
           <ListItem key={link.text} disablePadding>
-            <ListItemButton component={NavLink} to={link.path}>
+            <ListItemButton
+              component={NavLink}
+              to={link.path}
+              sx={{
+                "&.active": {
+                  bgcolor: "#efab9161",
+                },
+              }}
+            >
               <ListItemIcon>
                 {index % 2 === 0 ? (
                   <MedicalServicesIcon />
@@ -136,7 +152,15 @@ const DrawerDashborad = () => {
         </ListSubheader>
         {links3.map((link, index) => (
           <ListItem key={link.text} disablePadding>
-            <ListItemButton component={NavLink} to={link.path}>
+            <ListItemButton
+              component={NavLink}
+              to={link.path}
+              sx={{
+                "&.active": {
+                  bgcolor: "#efab9161",
+                },
+              }}
+            >
               <ListItemIcon>
                 {index % 2 === 0 ? <PetsIcon /> : <SpaIcon />}
               </ListItemIcon>
@@ -153,7 +177,15 @@ const DrawerDashborad = () => {
         </ListSubheader>
         {links4.map((link, index) => (
           <ListItem key={link.text} disablePadding>
-            <ListItemButton component={NavLink} to={link.path}>
+            <ListItemButton
+              component={NavLink}
+              to={link.path}
+              sx={{
+                "&.active": {
+                  bgcolor: "#efab9161",
+                },
+              }}
+            >
               <ListItemIcon>
                 {index % 2 === 0 ? <InventoryIcon /> : <ClassIcon />}
               </ListItemIcon>
@@ -170,7 +202,15 @@ const DrawerDashborad = () => {
         </ListSubheader>
         {links5.map((link, index) => (
           <ListItem key={link.text} disablePadding>
-            <ListItemButton component={NavLink} to={link.path}>
+            <ListItemButton
+              component={NavLink}
+              to={link.path}
+              sx={{
+                "&.active": {
+                  bgcolor: "#efab9161",
+                },
+              }}
+            >
               <ListItemIcon>
                 {index % 2 === 0 ? <NewspaperIcon /> : <CategoryIcon />}
               </ListItemIcon>

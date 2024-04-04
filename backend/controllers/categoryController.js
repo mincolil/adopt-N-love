@@ -45,13 +45,14 @@ const createCategory = async (req, res) => {
 // PATCH
 const updateCategory = async (req, res) => {
     try {
-        const { id, categoryName, feature } = req.body
+        const { id, categoryName, feature, slot } = req.body
         const category = await Category.findById(id)
         if (!category) return res.status(404).json({
             error: "Category ID not found"
         })
-        category.categoryName = categoryName
-        category.feature = feature
+        if (categoryName) { category.categoryName = categoryName }
+        if (feature) { category.feature = feature }
+        if (slot) { category.slot = slot }
 
         await category.save()
         return res.status(200).json({

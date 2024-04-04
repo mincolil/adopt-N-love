@@ -14,14 +14,15 @@ const adoptSchema = new mongoose.Schema({
         default: false,
     },
     age: Number,
-    species: String,
+    categoryId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
+        required: true,
+    },
+    color: String,
     weight: Number,
     height: Number,
     petImage: String,
-    vaccine: {
-        type: Boolean,
-        default: false,
-    }
 })
 
 adoptSchema.plugin(mongoosePaginate)

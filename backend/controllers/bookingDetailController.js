@@ -1,6 +1,73 @@
 const BookingDetail = require('../models/BookingDetail');
 const mongoose = require('mongoose')
 
+const getAllBookingDetail = async (req, res) => {
+    try {
+        const { startDate, endDate } = req.query;
+        let bookingDetails = await BookingDetail.find().populate('serviceId petId bookingId');
+        if (startDate && endDate) {
+            bookingDetails = await BookingDetail.find({
+                bookingDate: {
+                    $gte: new Date(startDate),
+                    $lte: new Date(endDate)
+                }
+            }).populate('serviceId petId bookingId');
+        }
+        //add virtual field price to bookingDetails, price = serviceId.price - serviceId.price * serviceId.discount / 100 - serviceId.price * petId.discount / 100
+
+        const bookingDetailsWithPrice = bookingDetails.map(detail => {
+            const servicePrice = detail.serviceId.price;
+            const serviceDiscount = detail.serviceId.discount;
+            const petDiscount = detail.petId.discount;
+
+            // Calculate total price
+            //4 conditions if service has discount and pet has discount, service has discount, pet has discount, no discount
+            if (detail.serviceId.saleStartTime <= new Date() && detail.serviceId.saleEndTime >= new Date() && serviceDiscount !== 0 && petDiscount !== 0) {
+                totalPrice = servicePrice * (1 - serviceDiscount / 100) * (1 - petDiscount / 100);
+            }
+            else if (detail.serviceId.saleStartTime <= new Date() && detail.serviceId.saleEndTime >= new Date() && serviceDiscount !== 0) {
+                totalPrice = servicePrice * (1 - serviceDiscount / 100);
+            }
+            else if (petDiscount !== 0) {
+                totalPrice = servicePrice * (1 - petDiscount / 100);
+            }
+            else {
+                totalPrice = servicePrice;
+            }
+
+
+            // Add price field to the detail object
+            return {
+                ...detail.toObject(), // Convert Mongoose document to plain JavaScript object
+                price: totalPrice
+            };
+        });
+
+        if (!bookingDetailsWithPrice) {
+            return res.status(404).json({ message: 'BookingDetail not found!' });
+        }
+        res.status(200).json(bookingDetailsWithPrice);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json(err);
+    }
+};
+
+const getBookingDetail = async (req, res) => {
+    try {
+        const bookingId = req.params.id;
+        const bookingDetail = await
+            BookingDetail.findById(bookingId).populate('serviceId petId bookingId');
+        if (!bookingDetail) {
+            return res.status(404).json({ message: 'BookingDetail not found!' });
+        }
+        res.status(200).json(bookingDetail);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json(err);
+    }
+};
+
 const getBookingDetailByBookingId = async (req, res) => {
     try {
         const bookingId = req.params.bookingId;
@@ -32,35 +99,6 @@ const getBookingDetailByBookingId = async (req, res) => {
                 $unwind: "$pet"
             },
             {
-                $addFields: {
-                    isWithinSale: {
-                        $and: [
-                            { $gte: ["$createdAt", "$service.saleStartTime"] },
-                            { $lte: ["$createdAt", "$service.saleEndTime"] }
-                        ]
-                    },
-                    discountedPrice: {
-                        $cond: {
-                            if: {
-                                $and: [
-                                    "$service.saleStartTime",
-                                    "$service.saleEndTime",
-                                    { $gte: ["$createdAt", "$service.saleStartTime"] },
-                                    { $lte: ["$createdAt", "$service.saleEndTime"] }
-                                ]
-                            },
-                            then: {
-                                $multiply: [
-                                    "$quantity",
-                                    { $subtract: ["$service.price", { $multiply: ["$service.price", { $divide: ["$service.discount", 100] }] }] }
-                                ]
-                            },
-                            else: { $multiply: ["$quantity", "$service.price"] }
-                        }
-                    }
-                }
-            },
-            {
                 $project: {
                     bookingId: 1,
                     petId: 1,
@@ -70,9 +108,11 @@ const getBookingDetailByBookingId = async (req, res) => {
                     service: 1,
                     pet: 1,
                     createdAt: 1,
-                    updatedAt: 1
+                    updatedAt: 1,
+                    bookingDate: 1
                 }
-            }
+            },
+            //bookingDate
         ]);
 
         if (!bookingDetails || bookingDetails.length === 0) {
@@ -88,9 +128,9 @@ const getBookingDetailByBookingId = async (req, res) => {
 
 const createBookingDetail = async (req, res) => {
     try {
-        const { serviceId, quantity } = req.body;
+        const { serviceId, petId, quantity, bookingDate } = req.body;
         const bookingId = req.params.bookingId;
-        const newBookingDetail = new BookingDetail({ bookingId, serviceId, quantity });
+        const newBookingDetail = new BookingDetail({ bookingId, serviceId, petId, quantity, bookingDate });
         const result = await newBookingDetail.save();
         if (!result) {
             return res.status(404).json({
@@ -121,12 +161,12 @@ const deleteOrderDetail = async (req, res) => {
 
 const getBookingDetailByPetId = async (req, res) => {
     try {
-        const { petId } = req.params;
-        const query = { petId }; // Corrected variable name from `id` to `petId`
+        const petId = req.params.petId;
+        const query = { petId }; // Add bookingDate to the query
         const options = {
-            page: parseInt(req.query.page) || 1, // Parse query parameters for pagination
+            page: parseInt(req.query.page) || 1,
             limit: parseInt(req.query.limit) || 10,
-            populate: 'serviceId' // Specify the field to populate
+            populate: 'serviceId bookingId',
         };
 
         const result = await BookingDetail.paginate(query, options);
@@ -134,7 +174,7 @@ const getBookingDetailByPetId = async (req, res) => {
         if (result.docs.length > 0) {
             return res.status(200).json(result);
         } else {
-            return res.status(404).json({ message: "Your pet hasn't booked any services yet." });
+            return res.status(200).json(result);
         }
     } catch (error) {
         console.error(error);
@@ -142,9 +182,86 @@ const getBookingDetailByPetId = async (req, res) => {
     }
 };
 
+// Get booking detail by booking date
+const getBookingDetailByBookingDate = async (req, res) => {
+    try {
+        const bookingDate = req.params.bookingDate;
+        const query = { bookingDate };
+        const options = {
+            page: parseInt(req.query.page) || 1, // Parse query parameters for pagination 
+            limit: parseInt(req.query.limit) || 10,
+            populate: 'serviceId petId bookingId', // Specify the field to populate
+        };
+
+        const result = await BookingDetail.paginate(query, options);
+
+        //exclude case .bookingId.status = "Hủy"
+        result.docs = result.docs.filter(detail => detail.bookingId.status !== "Huỷ");
+
+        if (result.docs.length > 0) {
+            return res.status(200).json(result);
+        } else {
+            return res.status(200).json(result);
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+const getBookingDetailByBookingDateAndPetId = async (req, res) => {
+    try {
+        const bookingDate = req.params.bookingDate;
+        const petId = req.params.petId;
+        const query = { bookingDate, petId };
+        const options = {
+            page: parseInt(req.query.page) || 1, // Parse query parameters for pagination
+            limit: parseInt(req.query.limit) || 10,
+            populate: 'serviceId bookingId', // Specify the field to populate
+        };
+
+        const result = await BookingDetail.paginate(query, options);
+        //exclude case .bookingId.status = "Hủy"
+        result.docs = result.docs.filter(detail => detail.bookingId.status !== "Huỷ");
+
+        if (result.docs.length > 0) {
+            return res.status(200).json(result);
+        } else {
+            return res.status(200).json(result);
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+const updateBookingDetail = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { serviceId, petId, quantity, bookingDate } = req.body;
+        const result = await BookingDetail
+            .findByIdAndUpdate(id, { serviceId, petId, quantity, bookingDate }, { new: true });
+        if (!result) {
+            return res.status(404).json({
+                error: "Can not update BookingDetail"
+            })
+        }
+        res.status(200).json(result)
+    }
+    catch (err) {
+        console.log(err)
+        res.status(500).json(err)
+    }
+}
+
 module.exports = {
     getBookingDetailByBookingId,
     createBookingDetail,
     deleteOrderDetail,
-    getBookingDetailByPetId
+    getBookingDetailByPetId,
+    getBookingDetailByBookingDate,
+    getBookingDetailByBookingDateAndPetId,
+    getAllBookingDetail,
+    updateBookingDetail,
+    getBookingDetail
 }

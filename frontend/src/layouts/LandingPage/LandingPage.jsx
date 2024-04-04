@@ -1,186 +1,407 @@
-import Header from "../../components/Header/Header";
-import CarouselComponent from "../../components/Carousel/Carousel";
 import "./LandingPage.css";
 import Footer from "../../components/Footer/Footer";
-import { Outlet } from "react-router-dom";
-import * as React from "react";
-import { useTheme } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import MobileStepper from "@mui/material/MobileStepper";
-import Paper from "@mui/material/Paper";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
-import SwipeableViews from "react-swipeable-views";
-import { autoPlay } from "react-swipeable-views-utils";
-import { Container, Grid, styled } from "@mui/material";
-import FeaturedPost from "../../components/MainPost/FeaturePost";
+import Header from "../../components/Header/Header";
+import React, { useState, useEffect } from "react";
+import { Typography, Button, Container, Box, Avatar } from "@mui/material";
+import useAuth from "../../hooks/useAuth";
+import Grid from "@mui/material/Unstable_Grid2";
+import Carousel from "react-material-ui-carousel";
+import Banner from "../../images/banner.png";
+import DogBanner from "../../images/dog_banner.png";
+import ServiceIcon1 from "../../images/service_icon_1.png";
+import ServiceIcon2 from "../../images/service_icon_2.png";
+import ServiceIcon3 from "../../images/service_icon_3.png";
+import Cat from "../../images/cat.png";
+import AdaptIcon1 from "../../images/adapt_icon_1.png";
+import AdaptIcon2 from "../../images/adapt_icon_2.png";
+import Avatar1 from "../../images/avatar1.png";
+import { ToastContainer } from "react-toastify";
+import { notification, Space } from 'antd';
+import axios from "axios";
+import { NavLink, useNavigate } from "react-router-dom";
+import { Button as AntButton } from "antd";
+import FloatingDogImage from "../../components/Floater/FloatingDogImage";
+import { Alert } from 'antd';
 
-const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
+
+
+const BASE_URL = "http://localhost:3500";
+
+const onClose = (e) => {
+  console.log(e, 'I was closed.');
+};
+
+const Counter = ({ target }) => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (count < target) {
+        setCount(count + 1);
+      } else {
+        clearInterval(interval);
+      }
+    }, 60); // Thời gian tăng số (60ms)
+    return () => clearInterval(interval);
+  }, [count, target]);
+
+  return (
+    <Typography variant="h3" className="counter">
+      {count}
+    </Typography>
+  );
+};
+
+const testimonials = [
+  {
+    name: "Minh Du",
+    title: "Head of web design",
+    testimonial:
+      "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exerci.",
+    img: "https://scontent.fhan18-1.fna.fbcdn.net/v/t1.6435-9/171149322_2868980396694590_5496657584718677655_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=5f2048&_nc_ohc=PowdbT7vA94AX9BjArj&_nc_ht=scontent.fhan18-1.fna&oh=00_AfCosvICIsbgK21DzE912hDS6lyixRI0d5Yd3rDtfFEHSg&oe=661A2C3B",
+  },
+  {
+    name: "Nguyen Minh Hieu",
+    title: "Head of web design",
+    testimonial:
+      "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exerci.",
+    img: "https://preview.colorlib.com/theme/anipat/img/testmonial/1.png.webp",
+  },
+  {
+    name: "Dang Huy",
+    title: "Head of web design",
+    testimonial:
+      "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exerci.",
+    img: "https://preview.colorlib.com/theme/anipat/img/testmonial/1.png.webp",
+  },
+];
 
 function Home() {
-  const CustomBox = styled(Box)({
-    background: "linear-gradient(to right, #ADF9F0, #FADAF7, #EEDCF1, #EBEAEB)",
-  });
+  const context = useAuth();
+  const [hasDiscount, setHasDiscount] = useState(false);
 
-  const CustomContainer = styled(Container)({
-    background:
-      "linear-gradient(to bottom, #F4BEB2, #F4BEB2, #ECDAD6, #E5E6E7, #73A1CC)",
-  });
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/pet/userId?id=${context.auth.id}`);
+        const count = res.data.docs.filter(pet => pet.discount > 0).length;
+        setHasDiscount(count > 0);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-  const images = [
-    {
-      imgPath:
-        "https://www.eluniversal.com.co/binrepository/1200x679/0c0/0d0/none/13704/PIEV/mascotas_6978543_20221111132305.jpg",
-    },
-    {
-      imgPath:
-        "https://w.forfun.com/fetch/fc/fc13571b3a332105b55ca9d43fe9400d.jpeg",
-    },
-    {
-      imgPath:
-        "https://kenhz.net/wp-content/uploads/2022/06/pet-shop-quan-7.jpg",
-    },
-    {
-      imgPath:
-        "https://cdn-bcldb.nitrocdn.com/kLRdXZGeQymYELvyTfXVsQALHhzNRamH/assets/images/optimized/rev-8a40e72/www.teamais.net/wp-content/uploads/2020/08/vet-min.jpg",
-    },
-  ];
+    fetchData();
+  }, [context.auth.id]);
 
-  const post1 = {
-    title: "Dịch vụ chăm sóc - Khám chữa bệnh",
-    description: "Pet Care cung cấp các dịch vụ chăm sóc sức khoẻ,  ",
-    description2: "làm đẹp thẩm mỹ và lưu chuồng ",
-    description3: "và bạn có thể nhanh chóng đặt lịch dễ dàng",
-    image:
-      "https://www.adventuresofyoo.com/wp-content/uploads/2016/07/4-Herman-After.jpg",
-    imageLabel: "Image Text",
-  };
+  const btn = (
+    <Space>
+      {/* button to /pet-user */}
+      <div>
+        <AntButton type="primary" size="small" component={NavLink} to="/pet-user">
+          Xem chi tiết
+        </AntButton>
+      </div>
+    </Space>
+  );
 
-  const post2 = {
-    title: "Sản Phẩm Chăm Sóc Thú Cưng",
-    description:
-      "Bạn có thể đặt mua đa dạng các sản phẩm cho thú cưng của bạn tại đây với cam kết nguồn hàng 100% chính hãng,nói không với những sản phẩm không rõ nguồn gốc, kém chất lượng. ",
-    description2: "",
-    description3:
-      "Đặc biệt giá cả ở mức thấp và có nhiều chương trình ưu đãi đặc biệt.",
-    image:
-      "https://baoninhbinh.org.vn/DATA/ARTICLES/2021/6/16/da-dang-san-pham-phuc-vu-thu-cung-0a10e.jpg",
-    imageLabel: "Image Text",
-  };
+  const [api, contextHolder] = notification.useNotification();
 
-  const post3 = {
-    title: "Tin tức ",
-    description: "Chia Sẻ Những Kinh Nghiệm Chăm Sóc Thú Cưng.",
-    description2:
-      "những bài viết được chọn lọc, tổng hợp giúp các Sen trau dồi thêm kinh nghiệm quý giá để có thể chăm các bé thú cưng thật tốt.",
-    description3: "",
-    image:
-      "https://dreampet.com.vn/wp-content/uploads/2021/02/phong-kham-thu-y.jpg",
-    imageLabel: "Image Text",
-  };
+  //--------------------------------------------LOAD PAGE
+  const { auth } = context;
 
-  const theme = useTheme();
-  const [activeStep, setActiveStep] = React.useState(0);
-  const maxSteps = images.length;
-
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleStepChange = (step) => {
-    setActiveStep(step);
-  };
 
   return (
     <>
-      <CustomContainer component="main" maxWidth={false} disableGutters>
-        <Box sx={{ flexGrow: 1 }}>
-          <AutoPlaySwipeableViews
-            axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-            index={activeStep}
-            onChangeIndex={handleStepChange}
-            enableMouseEvents
-          >
-            {images.map((step, index) => (
-              <div key={step.label}>
-                {Math.abs(activeStep - index) <= 2 ? (
-                  <Box
-                    component="img"
-                    sx={{
-                      height: 600,
-                      display: "block",
-                      overflow: "hidden",
-                      width: "100%",
-                    }}
-                    src={step.imgPath}
-                    alt={step.label}
-                  />
-                ) : null}
-              </div>
-            ))}
-          </AutoPlaySwipeableViews>
-          <MobileStepper
-            steps={maxSteps}
-            position="static"
-            activeStep={activeStep}
-            nextButton={
-              <Button
-                size="small"
-                onClick={handleNext}
-                disabled={activeStep === maxSteps - 1}
-              >
-                Next
-                {theme.direction === "rtl" ? (
-                  <KeyboardArrowLeft />
-                ) : (
-                  <KeyboardArrowRight />
-                )}
-              </Button>
-            }
-            backButton={
-              <Button
-                size="small"
-                onClick={handleBack}
-                disabled={activeStep === 0}
-              >
-                {theme.direction === "rtl" ? (
-                  <KeyboardArrowRight />
-                ) : (
-                  <KeyboardArrowLeft />
-                )}
-                Back
-              </Button>
-            }
+      <Header />
+      {hasDiscount && (
+        <div style={{
+          position: 'fixed',
+          bottom: '180px',
+          right: '10px',
+          zIndex: '9999',
+        }}>
+          <Alert
+            message="Thú cưng của bạn có ưu đãi!"
+            description="Hãy kiểm tra ngay"
+            type="success"
+            showIcon
+            closable
+            onClose={onClose}
+            style={{
+              width: '250px',
+            }}
           />
-        </Box>
-
-        <CustomBox
-          sx={{
-            p: 3,
-            justifyContent: "center",
-            textAlign: "center",
-            borderRadius: "16px",
-            fontSize: "30px",
-          }}
+        </div>
+      )}
+      <ToastContainer />
+      {contextHolder}
+      <Grid
+        className="banner"
+        container
+        sx={{
+          backgroundImage: `url(${Banner})`,
+          backgroundSize: "cover",
+          backgroundRepeat: "round",
+          height: "600px",
+          position: "relative",
+          top: "80px",
+        }}
+        item="true"
+      >
+        <Container
+          sx={{ display: "flex", flexWrap: "wrap", alignContent: "center" }}
         >
-          <strong>
-            PetCare - Điểm đến uy tín hàng đầu chuyên cung cấp dịch vụ chăm sóc
-            thú cưng.
-          </strong>
-        </CustomBox>
-
-        <Grid container spacing={4} sx={{ m: 1, justifyContent: "center" }}>
-          <FeaturedPost post1={post1} post2={post2} post3={post3} />
+          <Grid item xs={12} md={4} sx={{ color: "#fff" }}>
+            <Typography
+              variant="h3"
+              sx={{
+                lineHeight: "1.3",
+                fontWeight: "lighter",
+                fontFamily: "'Poppins', sans-serif",
+                fontSize: "4rem",
+              }}
+            >
+              Chăm sóc<br />{" "}
+              Nhận nuôi
+            </Typography>
+            <Typography
+              sx={{
+                marginTop: "20px",
+                marginBottom: "40px",
+                fontFamily: "'Poppins', sans-serif",
+              }}
+            >
+              Chúng tôi chăm sóc thú cưng của bạn với dịch vụ tốt nhất <br /> Nhận nuôi nhưng chú chó và mèo cần tìm một mái nhà mới
+            </Typography>
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "#fff",
+                color: "#ff3500",
+                borderRadius: "30px",
+                padding: "17px 50px",
+                textTransform: "none",
+                fontSize: "1rem",
+              }}
+            >
+              Liên hệ
+            </Button>
+          </Grid>
+        </Container>
+        <Box
+          sx={{ position: "absolute", zIndex: "1", right: "0", bottom: "-15%" }}
+        >
+          <img src={DogBanner} alt="" style={{ maxWidth: "80%" }} />
+        </Box>
+      </Grid>
+      <Container className="service">
+        <Grid container justifyContent="center">
+          <Grid item lg={7} md={10}>
+            <Box className="section_title">
+              <Typography variant="h3">Trải nhiệm những dịch vụ của chúng tôi</Typography>
+              <Typography variant="h4">
+                Việc chăm sóc bệnh nhân là rất quan trọng, bệnh nhân sẽ được bệnh nhân theo dõi, nhưng đó là thời điểm vô cùng đau đớn và khổ sở.
+              </Typography>
+            </Box>
+          </Grid>
         </Grid>
-
-        <Footer />
-      </CustomContainer>
+        <Grid container justifyContent="center" spacing={3}>
+          <Grid className="single_service" item md={3}>
+            <Box className="service_thumb">
+              <Box className="service_icon">
+                <img
+                  src={ServiceIcon1}
+                  alt=""
+                />
+              </Box>
+            </Box>
+            <Box className="service_content">
+              <Typography variant="h3">Pet Boarding</Typography>
+              <Typography variant="h4">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut
+              </Typography>
+            </Box>
+          </Grid>
+          <Grid className="single_service" item md={3}>
+            <Box className="service_thumb">
+              <Box className="service_icon">
+                <img
+                  src={ServiceIcon2}
+                  alt=""
+                />
+              </Box>
+            </Box>
+            <Box className="service_content">
+              <Typography variant="h3">Healthy Meals</Typography>
+              <Typography variant="h4">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut
+              </Typography>
+            </Box>
+          </Grid>
+          <Grid className="single_service" item md={3}>
+            <Box className="service_thumb">
+              <Box className="service_icon">
+                <img
+                  src={ServiceIcon3}
+                  alt=""
+                />
+              </Box>
+            </Box>
+            <Box className="service_content">
+              <Typography variant="h3">Pet Spa</Typography>
+              <Typography variant="h4">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut
+              </Typography>
+            </Box>
+          </Grid>
+        </Grid>
+      </Container>
+      <Box className="adapt_area">
+        <Container>
+          <Grid container justifyContent={"space-between"}>
+            <Grid item lg={4}>
+              <Box className="adapt_help">
+                <Box className="section_title">
+                  <Typography variant="h3">
+                    <span>Chúng tôi cần bạn</span> <br />
+                    giúp chúng tôi nhận nuôi
+                  </Typography>
+                  <Typography variant="h4">
+                    Những con vật đáng thương này chưa có gia đình để chăm sóc, chúng xứng đáng có được tình yêu thương. Đó là một điêu tuyệt vời
+                  </Typography>
+                  <Button
+                    href="contact.html"
+                    variant="contained"
+                    className="btn-aboutUs"
+                  >
+                    Liên hệ
+                  </Button>
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item lg={6}>
+              <Box className="adapt_about">
+                <Grid container alignItems="center" spacing={4}>
+                  <Grid item lg={6} md={6}>
+                    <Box className="single_adapt text-center">
+                      <img
+                        src={AdaptIcon1}
+                        alt=""
+                      />
+                      <Box className="adapt_content">
+                        <Counter target={452} />
+                        <Typography variant="h4">Pets Available</Typography>
+                      </Box>
+                    </Box>
+                  </Grid>
+                  <Grid item lg={6} md={6}>
+                    <Box className="single_adapt text-center">
+                      <img
+                        src={AdaptIcon1}
+                        alt=""
+                      />
+                      <Box className="adapt_content">
+                        <Counter target={52} />
+                        <Typography variant="h4">Pets Available</Typography>
+                      </Box>
+                    </Box>
+                    <Box className="single_adapt text-center">
+                      <img
+                        src={AdaptIcon2}
+                        alt=""
+                      />
+                      <Box className="adapt_content">
+                        <Counter target={52} />
+                        <Typography variant="h4">Pets Available</Typography>
+                      </Box>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Box>
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
+      <Box className="pet_care_area">
+        <Container>
+          <Grid container alignItems="center">
+            <Grid item lg={5} md={5}>
+              <Box className="pet_thumb">
+                <img
+                  src={Cat}
+                  alt=""
+                />
+              </Box>
+            </Grid>
+            <Grid item lg={6} lgOffset={1} mdOffset={1} md={6}>
+              <Box className="pet_info">
+                <Typography variant="h3">
+                  <span>Chúng tôi cần các bạn </span> <br /> nhận nuôi chúng
+                </Typography>
+                <Typography variant="h4">
+                  Những con vật đáng thương này chưa có gia đình để chăm sóc{" "}
+                  <br /> chúng xứng đáng có được tình yêu thương. <br /> Đó là một điêu tuyệt vời <br />
+                  viverra maecenas accumsan.
+                </Typography>
+                <Button
+                  href="about.html"
+                  variant="contained"
+                  className="btn-aboutUs"
+                >
+                  Liên hệ
+                </Button>
+              </Box>
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
+      <Box className="testmonial_area">
+        <Container>
+          <Grid container justifyContent="center">
+            <Grid item lg={10}>
+              <Carousel>
+                {testimonials.map((testimonial, index) => (
+                  <Box key={index} className="single_testmonial">
+                    <Avatar
+                      src={Avatar1}
+                      alt=""
+                      sx={{
+                        marginRight: "25px",
+                        width: "130px",
+                        height: "auto",
+                      }}
+                    />
+                    <Box className="test_content">
+                      <Typography variant="h3">{testimonial.name}</Typography>
+                      <Typography variant="h4">{testimonial.title}</Typography>
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          fontFamily: "'Open Sans', sans-serif",
+                          fontSize: "18px",
+                          color: "#66666f",
+                          lineHeight: "35px",
+                          textAlign: "justify",
+                        }}
+                      >
+                        {testimonial.testimonial}
+                      </Typography>
+                    </Box>
+                  </Box>
+                ))}
+              </Carousel>
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
+      <div>
+        <FloatingDogImage />
+      </div>
+      <Footer />
     </>
   );
 }

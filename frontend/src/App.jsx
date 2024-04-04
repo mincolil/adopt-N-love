@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./layouts/common/login/Login";
 import Register from "./layouts/common/register/Register";
 import Dashboard from "./layouts/dashboard/Dashboard";
-import { ToastContainer } from "react-toastify";
 
 import BasicTable from "./layouts/dashboard/UserDashboard/UserTable";
 import ServiceTable from "./layouts/dashboard/service/ServiceTables";
@@ -28,6 +27,7 @@ import CategoryTable from "./layouts/dashboard/category/CategoryTable";
 import BlogPage from "./layouts/LandingPage/Blog/BlogPage";
 import BlogDetail from "./layouts/LandingPage/Blog/BlogDetail";
 import ServiceList from "./layouts/LandingPage/Service/ServiceList";
+import AdoptPage from "./layouts/LandingPage/Adopt/AdoptPage";
 import ProductPurchase from "./layouts/User/ProductPurchase";
 import ProductCheckout from "./layouts/User/ProductCheckout";
 import ProductDetail from "./layouts/LandingPage/Product/ProductDetail";
@@ -39,6 +39,11 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import DashboardList from "./layouts/dashboard/DashboardList";
 import Introduce from "./layouts/User/Introduce";
 import ServiceCheckout from "./layouts/User/ServiceCheckout";
+import AdoptPetTable from "./layouts/dashboard/pet/AdoptPetTable";
+import AdoptPageDetail from "./layouts/LandingPage/Adopt/AdoptPageDetail";
+import AdoptRequest from "./layouts/LandingPage/Cart/AdoptRequest";
+import BookingSlotTable from "./layouts/dashboard/booking/BookingSlotTable";
+
 
 // import AdminLayout from "./layouts/dashboard/layouts/Admin"
 
@@ -55,7 +60,11 @@ function App() {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <BrowserRouter>
           <Routes>
-            <Route element={<RequireAuth allowedRoles={[ROLES.ADMIN, ROLES.STAFF]}/>}>
+            <Route
+              element={
+                <RequireAuth allowedRoles={[ROLES.ADMIN, ROLES.STAFF]} />
+              }
+            >
               <Route path="/dashboard" element={<Dashboard />}>
                 <Route
                   path="/dashboard/dashboard-list"
@@ -71,7 +80,9 @@ function App() {
                   path="/dashboard/service-list"
                   element={<ServiceTable />}
                 />
+
                 <Route path="/dashboard/pet-list" element={<PetTable />} />
+                <Route path="/dashboard/adopt-pet-list" element={<AdoptPetTable />} />
                 <Route
                   path="/dashboard/product-list"
                   element={<ProductTable />}
@@ -80,54 +91,43 @@ function App() {
                   path="/dashboard/category-list"
                   element={<CategoryTable />}
                 />
+                <Route path="/dashboard/slot-booking-list" element={<BookingSlotTable />} />
                 <Route path="/dashboard/blog-list" element={<BlogTable />} />
               </Route>
             </Route>
-            
+
             <Route path="/sign-up" element={<Register />} />
             <Route path="/sign-in" element={<Login />} />
-            <Route path="/" element={<Header />}>
-              <Route index element={<LandingPage />} />
-              <Route path="service-homepage" element={<ServiceList />} />
-              <Route path="product-homepage" element={<ProductList />} />
-              <Route
-                path="product-homepage/:productId"
-                element={<ProductDetail />}
-              />
-              <Route
-                path="service-homepage/:serviceId"
-                element={<ServiceDetail />}
-              />
-              <Route path="blog-homepage" element={<BlogPage />} />
-              <Route path="blog-homepage/:blogId" element={<BlogDetail />} />
-              <Route path="cart-service" element={<CartService />} />
-              <Route path="cart-product" element={<CartProduct />} />
-              <Route path="user-profile" element={<UserPRofile />} />
-              <Route path="change-password" element={<ChangePassword />} />
-              <Route path="pet-user" element={<PetUser />} />
-              <Route path="verify" element={<VerifyCode />} />
-              <Route path="product-purchase" element={<ProductPurchase />} />
-              <Route path="service-purchase" element={<ServicePurchase />} />
-              <Route path="product-checkout" element={<ProductCheckout />} />
-              <Route path="reset-password" element={<ResetPassword />} />
-              <Route path="introduce-homepage" element={<Introduce />} />
-              <Route path="service-checkout" element={<ServiceCheckout />} />
-            </Route>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="adopt-homepage" element={<AdoptPage />} />
+            <Route path="service-homepage" element={<ServiceList />} />
+            <Route path="product-homepage" element={<ProductList />} />
+            <Route
+              path="product-homepage/:productId"
+              element={<ProductDetail />}
+            />
+            <Route
+              path="service-homepage/:serviceId"
+              element={<ServiceDetail />}
+            />
+            <Route path="blog-homepage" element={<BlogPage />} />
+            <Route path="blog-homepage/:blogId" element={<BlogDetail />} />
+            <Route path="cart-service" element={<CartService />} />
+            <Route path="cart-product" element={<CartProduct />} />
+            <Route path="adopt-request" element={<AdoptRequest />} />
+            <Route path="user-profile" element={<UserPRofile />} />
+            <Route path="change-password" element={<ChangePassword />} />
+            <Route path="pet-user" element={<PetUser />} />
+            <Route path="verify" element={<VerifyCode />} />
+            <Route path="product-purchase" element={<ProductPurchase />} />
+            <Route path="service-purchase" element={<ServicePurchase />} />
+            <Route path="product-checkout" element={<ProductCheckout />} />
+            <Route path="reset-password" element={<ResetPassword />} />
+            <Route path="introduce-homepage" element={<Introduce />} />
+            <Route path="service-checkout" element={<ServiceCheckout />} />
+            <Route path="adopt-homepage/:petId" element={<AdoptPageDetail />} />
           </Routes>
         </BrowserRouter>
-
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        />
       </LocalizationProvider>
     </>
   );

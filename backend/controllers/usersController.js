@@ -6,8 +6,8 @@ const bcrypt = require('bcrypt')
 // GET
 const getAll = async (req, res) => {
     try {
-        const { fullname, email, role, status, sort, page, limit } = req.query
-        const query = {}
+        const { fullname, email, role, status, sort } = req.query;
+        const query = {};
 
         if (fullname) {
             query.fullname = { $regex: new RegExp(fullname, 'i') };
@@ -16,36 +16,24 @@ const getAll = async (req, res) => {
             query.email = { $regex: new RegExp(email, 'i') };
         }
         if (role) {
-            query.role = role
+            query.role = role;
         }
 
-        const options = {
-            sort: { createdAt: -1 }, // sắp xếp tên thời gian tạo acc giảm dần
-            page: parseInt(page) || 1, // Trang mặc định là 1
-            limit: parseInt(limit) || 10, // Giới hạn số lượng kết quả trên mỗi trang mặc định là 5 để test phân trang
-        }
-        if (sort === 'asc') {
-            options.sort = { email: 1 } // sắp xếp email theo bảng chứ cái
-        }
-        if (sort === 'desc') {
-            options.sort = { email: -1 }
-        }
+        const result = await User.find(query); // Modified to use find instead of paginate
 
-        const result = await User.paginate(query, options)
-
-        if (!result.docs || result.docs.length === 0) {
+        if (!result || result.length === 0) {
             return res.status(404).json({
                 error: "There are no Users in the Database",
             });
         }
         res.status(200).json(result);
     } catch (err) {
-        console.log(err)
+        console.log(err);
         res.status(500).json({
             error: err
-        })
+        });
     }
-}
+};
 
 // route '/user'
 // POST
@@ -161,7 +149,7 @@ const getUserById = async (req, res) => {
             error: "No user found"
         })
         res.status(200).json(result)
-    } catch (error) {
+    } catch (err) {
         console.log(err)
         res.status(500).json({
             error: err
@@ -187,5 +175,7 @@ module.exports = {
     createUser,
     updateUser,
     deleteOne,
-    getUserById,
+
+    getUserById
 }
+

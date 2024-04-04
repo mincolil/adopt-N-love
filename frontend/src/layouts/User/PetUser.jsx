@@ -7,7 +7,7 @@ import CardOverflow from "@mui/joy/CardOverflow";
 import Typography from "@mui/joy/Typography";
 import { useState } from "react";
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, createContext } from "react";
 import useAuth from "../../hooks/useAuth";
 import { Avatar, Container, Grid, Stack } from "@mui/joy";
 import { Pagination } from "@mui/material";
@@ -22,7 +22,7 @@ import Background from "../../images/background.png";
 import Icon from "../../images/adapt_icon_2.png";
 import ModalDetailPet from "../../components/Modal/ModalDetailPet";
 import ServiceListModal from "../../components/Modal/ModalServiceList";
-import { Button as antButton, notification, Space } from 'antd';
+import { Button as antButton, notification, Space, Popconfirm, message } from 'antd';
 
 const CustomContainer = styled(Container)({
   background:
@@ -150,6 +150,7 @@ export default function PetUser() {
         id: pet._id,
         forAdoption: !pet.forAdoption,
       });
+      loadAllPetByUserId(currentPage);
       if (updatePet.error) {
         openNotificationWithIcon('error', 'Cập nhật thất bại');
       } else {
@@ -164,6 +165,7 @@ export default function PetUser() {
 
   //--------------------------- ANT NOTI ------------------------------
   const [api, contextHolder] = notification.useNotification();
+
   const openNotificationWithIcon = (type, mess) => {
     api[type]({
       message: 'Notification Title',
@@ -172,10 +174,18 @@ export default function PetUser() {
     });
   };
 
+
+  const confirm = (value) => {
+    handleAdoptPet(value);
+    console.log(value);
+  };
+  const cancel = (e) => {
+    console.log(e);
+  };
+
   return (
     <>
       {contextHolder}
-      <toastContainer />
       <Header />
       <React.Fragment>
         <CustomContainer component="main" maxWidth="false" sx={{ pt: 10, pb: 4 }}>
@@ -371,12 +381,18 @@ export default function PetUser() {
                       <Button onClick={() => handleServiceModal(value)} variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
                         Đăng ký phòng khám
                       </Button>
-                      <Button onClick={(e) => {
-                        e.stopPropagation();
-                        handleAdoptPet(value);
-                      }} variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
-                        {value.forAdoption ? "Hủy cho nhận nuôi" : "Cho nhận nuôi"}
-                      </Button>
+                      <Popconfirm
+                        title="Delete the task"
+                        description="Are you sure to delete this task?"
+                        onConfirm={() => confirm(value)}
+                        onCancel={cancel}
+                        okText="Yes"
+                        cancelText="No"
+                      >
+                        <Button variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
+                          {value.forAdoption ? "Hủy cho nhận nuôi" : "Cho nhận nuôi"}
+                        </Button>
+                      </Popconfirm>
                       <Button onMouseDown={() => handleUpdatePet(value)} variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
                         Sửa
                       </Button>

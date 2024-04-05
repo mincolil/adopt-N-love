@@ -87,3 +87,36 @@ module.exports = {
     getMedicalByUserId,
     getMedicalDetail
 }
+
+const getAllPetMedical = async (req, res) => {
+    //get all medical report
+    try {
+        const result = await MedicalReport.find();
+        if (!result) return res.json({
+            error: "No medical report found"
+        });
+        res.status(200).json(result);
+    } catch (error) {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    }
+}
+
+const gePetMedicalDetail = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await MedicalReport.findById(id);
+        if (!result) return res.json({
+            error: "No medical report found"
+        });
+        res.status(200).json(result);
+    }
+    catch (error) {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    }
+}

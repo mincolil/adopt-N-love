@@ -381,3 +381,18 @@ module.exports = {
     checkoutStripe,
     handleStripePayment
 }
+
+const viewBuyCart = async (req, res) => {
+    try {
+        // Lấy thông tin người dùng từ token JWT
+        const token = req.headers.authorization;
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const userId = decoded.id;
+
+        const cartItems = await CartProduct.find({ userId }).populate('productId').populate('userId');
+        res.status(200).json(cartItems);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json(err);
+    }
+}

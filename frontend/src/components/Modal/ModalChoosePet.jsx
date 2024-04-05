@@ -42,6 +42,9 @@ import SlotPicker from 'slotpicker';
 import dayjs from "dayjs";
 import { ToastContainer } from "react-toastify";
 
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { Modal } from 'antd';
+
 const ChoosePet = ({ open, onClose, service, pet, loadData, choosenPet }) => {
   const [data, setData] = useState([]);
   const [dataCart, setDataCart] = useState([]);

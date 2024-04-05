@@ -113,3 +113,26 @@ module.exports = {
     deleteOne,
     getCategoryByName
 }
+
+const updateFromCategory = async (req, res) => {
+    try {
+        const { id, categoryName, feature, slot } = req.body
+        const category = await Category.findById(id)
+        if (!category) return res.status(404).json({
+            error: "Category ID not found"
+        })
+        if (categoryName) { category.categoryName = categoryName }
+        if (feature) { category.feature = feature }
+        if (slot) { category.slot = slot }
+
+        await category.save()
+        return res.status(200).json({
+            message: `Updated category ${categoryName}`
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
+    }
+}

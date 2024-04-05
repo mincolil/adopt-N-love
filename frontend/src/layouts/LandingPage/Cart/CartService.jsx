@@ -42,7 +42,7 @@ const showConfirmRemoveSe = () => {
     confirm({
       title: 'Xác nhận',
       icon: <ExclamationCircleFilled />,
-      content: 'Bạn có muốn xoá sản phẩm này khỏi giỏ hàng không ?',
+      content: 'Bạn có chắc muốn xoá dịch vụ này không ?',
       okText: 'Đồng ý', 
       cancelText: 'Hủy bỏ', 
       onOk() {

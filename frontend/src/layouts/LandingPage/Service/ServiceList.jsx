@@ -41,6 +41,7 @@ import ChoosePet from "../../../components/Modal/ModalChoosePet";
 import { Button as AntButton } from "antd";
 import { notification, Space } from 'antd';
 import { NavLink, useNavigate } from "react-router-dom";
+import FloatingDogImage from "../../../components/Floater/FloatingDogImage";
 
 const BASE_URL = "http://localhost:3500";
 
@@ -247,11 +248,6 @@ function ServiceItem({ service }) {
 export default function ServiceList() {
   const [checkedItems, setCheckedItems] = useState({});
 
-  const handleCheckboxChange = (event) => {
-    const { _id, checked } = event.target;
-    setCheckedItems({ ...checkedItems, [_id]: checked });
-  };
-
   const [price, setPrice] = useState([0, 1000000]);
   const [sortBy, setSortBy] = React.useState("price-asc");
 
@@ -324,6 +320,7 @@ export default function ServiceList() {
     if (auth)
       handlePriceChange();
   }, [auth]);
+
 
   // ----------------------------------- API SORT PRODUCT --------------------------------
 
@@ -711,6 +708,9 @@ export default function ServiceList() {
         </Grid>
       </Container>
       <Footer />
+      <div>
+        <FloatingDogImage />
+      </div>
     </>
   );
 }

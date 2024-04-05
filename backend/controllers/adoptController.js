@@ -41,45 +41,6 @@ const createNewAdopt = async (req, res) => {
     }
 }
 
-// const getAllAdopt = async (req, res) => {
-//     try {
-//         const { page, limit, petName, sort } = req.query
-
-//         const query = {}
-
-//         if (petName) {
-//             query.petName = { $regex: new RegExp(petName, 'i') }
-//         }
-
-//         const options = {
-//             page: parseInt(page, 10) || 1,
-//             limit: parseInt(limit, 10) || 10,
-//             sort: { createdAt: -1 }, // mắc định sắp xếp theo thời gian gần đây nhất
-//         }
-
-//         if (sort === 'acs') {
-//             options.sort = 1
-//         }
-//         if (sort === 'desc') {
-//             options.sort = -1
-//         }
-
-//         const result = await AdoptPet.paginate(query, options)
-//         if (!result) return res.json({
-//             error: "No adopt pet found"
-//         })
-//         res.status(200).json({
-//             result,
-//             "query": query
-//         })
-//     } catch (error) {
-//         console.log(err)
-//         res.status(500).json({
-//             error: err
-//         })
-//     }
-// }
-
 //get all adopt pet that forAdoption = true
 const getAllAdopt = async (req, res) => {
     try {
@@ -259,7 +220,7 @@ const getAdoptById = async (req, res) => {
     try {
         const { adoptId } = req.params
         //find the result that id = adoptId and forAdoption = true
-        const result = await Pet.findOne({ _id: adoptId, forAdoption: true })
+        const result = await Pet.findOne({ _id: adoptId, forAdoption: true }).populate('userId', 'fullname phone')
 
         if (!result) return res.json({
             error: "No adopt pet found"

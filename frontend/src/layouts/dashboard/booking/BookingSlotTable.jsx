@@ -40,6 +40,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Space, InputNumber, Badge, Calendar } from 'antd';
 import Highlighter from 'react-highlight-words';
 import useAuth from "../../../hooks/useAuth";
+import DateTimeFormat from "../../../components/DateTimeFormat";
 
 // -------------------------------STYLE MODAL----------------------
 const style = {
@@ -372,7 +373,7 @@ export default function BookingSlotTable() {
             dataIndex: 'createdAt',
             key: 'createdAt',
             width: '20%',
-            render: text => moment.utc(text).format("DD/MM/YYYY HH:mm:ss")
+            render: (date) => new DateTimeFormat({ date: date })
         },
         {
             title: 'Ngày hẹn lịch',
@@ -514,7 +515,6 @@ export default function BookingSlotTable() {
 
     return (
         <>
-            <Calendar cellRender={cellRender} />;
             <ToastContainer />
             <Grid
                 spacing={2}

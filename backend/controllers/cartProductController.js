@@ -236,14 +236,6 @@ const handleStripePayment = async (req, res) => {
         const session = event.data.object;
         console.log("tong gia tri: " + session.amount_total);
 
-        // Here you can retrieve order details from the session object
-        // and save them in your database
-        let total = 0;
-
-        // You can also remove cart items here if needed
-        // Create booking details for each cart item
-
-
         if (session.metadata.cartItems) {
             const parsedCartItems = JSON.parse(session.metadata.cartItems);
 
@@ -254,6 +246,7 @@ const handleStripePayment = async (req, res) => {
                 recipientName: session.metadata.recipientName,
                 recipientPhoneNumber: session.metadata.recipientPhoneNumber,
                 deliveryAddress: session.metadata.deliveryAddress,
+                payment_int: session.payment_intent,
             });
             const createdOrder = await order.save();
             for (const cartItem of parsedCartItems) {
@@ -269,15 +262,11 @@ const handleStripePayment = async (req, res) => {
 
                     await orderDetail.save();
 
-                    // Update the total price
-                    total += product.discountedPrice * cartItem.quantity;
                 }
                 product.quantity -= cartItem.quantity;
                 await product.save();
             }
 
-            // Update the booking's total price
-            createdOrder.totalPrice = total;
             await createdOrder.save();
 
             // Remove all cart items for the user
@@ -292,6 +281,7 @@ const handleStripePayment = async (req, res) => {
                 status: 'Đã thanh toán',
                 recipientName: session.metadata.recipientName,
                 recipientPhoneNumber: session.metadata.recipientPhoneNumber,
+                payment_int: session.payment_intent,
             });
             const createdBooking = await booking.save();
             for (const cartServiceItem of parsedCartServiceItems) {
@@ -307,19 +297,21 @@ const handleStripePayment = async (req, res) => {
                         bookingDate: cartServiceItem.bookingDate,
                     });
 
-                    await bookingDetail.save();
                     const pet = await Pet.findById(cartServiceItem.petId);
                     let petDiscount = 0;
                     if (pet) {
                         petDiscount = pet.discount;
                     }
-                    // Update the total price
-                    total += ((service.discountedPrice) - (service.price * petDiscount / 100)) * cartServiceItem.quantity;
+                    let finalPrice = (service.discountedPrice) - (service.price * petDiscount / 100);
+                    if (finalPrice < (0.7 * service.price)) {
+                        finalPrice = 0.7 * service.price;
+                    }
+
+                    bookingDetail.discountedPrice = finalPrice;
+                    await bookingDetail.save();
                 }
             }
 
-            // Update the booking's total price
-            createdBooking.totalPrice = total;
             await createdBooking.save();
 
             // Remove all cart items for the user
@@ -334,7 +326,6 @@ const handleStripePayment = async (req, res) => {
         });
     }
 };
-
 
 
 //update cart's quantity
@@ -388,5 +379,20 @@ module.exports = {
     checkout,
     updateCart,
     checkoutStripe,
-    handleStripePayment,
+    handleStripePayment
+}
+
+const viewBuyCart = async (req, res) => {
+    try {
+        // Lấy thông tin người dùng từ token JWT
+        const token = req.headers.authorization;
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const userId = decoded.id;
+
+        const cartItems = await CartProduct.find({ userId }).populate('productId').populate('userId');
+        res.status(200).json(cartItems);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json(err);
+    }
 }

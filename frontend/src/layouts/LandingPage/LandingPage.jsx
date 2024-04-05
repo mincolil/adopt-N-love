@@ -21,10 +21,15 @@ import axios from "axios";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Button as AntButton } from "antd";
 import FloatingDogImage from "../../components/Floater/FloatingDogImage";
+import { Alert } from 'antd';
 
 
 
 const BASE_URL = "http://localhost:3500";
+
+const onClose = (e) => {
+  console.log(e, 'I was closed.');
+};
 
 const Counter = ({ target }) => {
   const [count, setCount] = useState(0);
@@ -73,6 +78,21 @@ const testimonials = [
 
 function Home() {
   const context = useAuth();
+  const [hasDiscount, setHasDiscount] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/pet/userId?id=${context.auth.id}`);
+        const count = res.data.docs.filter(pet => pet.discount > 0).length;
+        setHasDiscount(count > 0);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, [context.auth.id]);
 
   const btn = (
     <Space>
@@ -94,7 +114,26 @@ function Home() {
   return (
     <>
       <Header />
-
+      {hasDiscount && (
+        <div style={{
+          position: 'fixed',
+          bottom: '180px',
+          right: '10px',
+          zIndex: '9999',
+        }}>
+          <Alert
+            message="Thú cưng của bạn có ưu đãi!"
+            description="Hãy kiểm tra ngay"
+            type="success"
+            showIcon
+            closable
+            onClose={onClose}
+            style={{
+              width: '250px',
+            }}
+          />
+        </div>
+      )}
       <ToastContainer />
       {contextHolder}
       <Grid

@@ -50,6 +50,23 @@ const getAllOrderByUserId = async (req, res) => {
     }
 }
 
+const getOrderById = async (req, res) => {
+    try {
+        const orderId = req.params.orderId;
+
+        const order = await Order.findById(orderId).populate('userId');
+        if (!order) {
+            return res.status(404).json({
+                error: "Order: " + orderId + " not found!"
+            })
+        }
+        res.status(200).json(order)
+    } catch (err) {
+        console.log(err)
+        res.status(500).json(err)
+    }
+}
+
 const createOrder = async (req, res) => {
     try {
         const { userId, totalPrice } = req.body;
@@ -183,5 +200,52 @@ module.exports = {
     updateOrder,
     deleteOrder,
     updateStatus,
-    getAllOrderNoLimit
+    getAllOrderNoLimit,
+    getOrderById
 }
+
+
+
+// const getAllOrderNoLimit = async (req, res) => {
+//     try {
+//         const { userId, status, startDate, endDate, sort, page, limit } = req.query;
+
+//         const query = {};
+
+//         if (userId) {
+//             query.userId = userId;
+//         }
+//         if (status) {
+//             query.status = status === 'true';
+//         }
+//         if (startDate && endDate) {
+//             query.createdAt = {
+//                 $gte: new Date(startDate), // Ngày bắt đầu
+//                 $lte: new Date(endDate),   // Ngày kết thúc
+//             };
+//         }
+//         const options = {
+//             sort: { createdAt: -1 }, 
+//             page: parseInt(page) || 1, 
+//             limit: parseInt(limit) || 10, 
+//             populate: 'userId'
+//         };
+//         if (sort === 'asc') {
+//             options.sort = { totalPrice: 1 }; 
+//         } else if (sort === 'desc') {
+//             options.sort = { totalPrice: -1 };
+//         }
+
+//         const result = await Order.paginate(query, options);
+
+//         if (!result.docs || result.docs.length === 0) {
+//             return res.status(404).json({
+//                 error: "There are no Orders in the Database",
+//             });
+//         }
+//         res.status(200).json(result);
+//     } catch (err) {
+//         console.log(err)
+//         res.status(500).json(err)
+//     }
+// }

@@ -1,18 +1,15 @@
 import Divider from "@mui/material/Divider";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import MailIcon from "@mui/icons-material/Mail";
 import Toolbar from "@mui/material/Toolbar";
 import ListSubheader from "@mui/material/ListSubheader";
 import * as React from "react";
 import axios from "axios";
 import { useNavigate, NavLink } from "react-router-dom";
 
-import { Link } from "@mui/material";
 import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 // icon
@@ -27,6 +24,7 @@ import CategoryIcon from "@mui/icons-material/Category";
 import NewspaperIcon from "@mui/icons-material/Newspaper";
 import ClassIcon from "@mui/icons-material/Class";
 import useAuth from "../../hooks/useAuth";
+import Logo from "../../images/RealLogo.png";
 
 const DrawerDashborad = () => {
   const context = useAuth();
@@ -35,7 +33,6 @@ const DrawerDashborad = () => {
     { text: "Doanh thu", path: "/dashboard/dashboard-list" },
     { text: "Danh sách người dùng", path: "/dashboard/user-list" },
   ];
-
   const links2 = [
     { text: "Quản lí dịch vụ", path: "/dashboard/service-list" },
     {
@@ -48,7 +45,7 @@ const DrawerDashborad = () => {
 
   const links3 = [
     { text: "Quản lí thú cưng thú cưng", path: "/dashboard/pet-list" },
-    { text: "Danh sách nhận nuôi", path: "/dashboard/adopt-pet-list" },
+    // { text: "Danh sách nhận nuôi", path: "/dashboard/adopt-pet-list" },
   ];
 
   const links4 = [
@@ -85,7 +82,9 @@ const DrawerDashborad = () => {
   return (
     <>
       <ToastContainer />
-      <Toolbar />
+      <Toolbar>
+        <img src={Logo} alt="logo" style={{ width: "100%", height: "300%" }} />
+      </Toolbar>
       <Divider />
 
       {context.auth.role !== "staff" ? (

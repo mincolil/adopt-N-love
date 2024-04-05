@@ -1,13 +1,10 @@
 import * as React from "react";
-import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
-import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Pagination from "@mui/material/Pagination";
@@ -17,32 +14,25 @@ import { useState, useEffect } from "react";
 // Axios
 import axios from "axios";
 import { toast } from "react-toastify";
-import { ToastContainer } from "react-toastify";
 
 //@material-ui/core
 import { styled } from "@mui/material/styles";
 import Footer from "../../../components/Footer/Footer";
-import MainPost from "../../../components/MainPost/MainPost";
 import { NavLink } from "react-router-dom";
 import Chip from "@mui/material/Chip";
 import HomeIcon from "@mui/icons-material/Home";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { emphasize } from "@mui/material/styles";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
-import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import { Avatar, CardActionArea, IconButton, Tooltip } from "@mui/material";
 import CardHeader from "@mui/material/CardHeader";
-import Collapse from "@mui/material/Collapse";
 import { red } from "@mui/material/colors";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ShareIcon from "@mui/icons-material/Share";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import useAuth from "../../../hooks/useAuth";
 import ContentCus from "../../../components/Typography/ContentCus";
 import DateFormat from "../../../components/DateFormat";
 import SearchIcon from "@mui/icons-material/Search";
 import TitleCus from "../../../components/Typography/TitleCus";
 import Header from "../../../components/Header/Header";
+import FloatingDogImage from "../../../components/Floater/FloatingDogImage";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -343,6 +333,9 @@ export default function BlogPage() {
 
       {/* End footer */}
       <Footer />
+      <div>
+        <FloatingDogImage />
+      </div>
     </ThemeProvider>
   );
 }

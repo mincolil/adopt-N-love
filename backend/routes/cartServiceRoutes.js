@@ -5,6 +5,7 @@ const cartServiceController = require('../controllers/cartServiceController')
 router.get('/view-cart/', cartServiceController.viewCart) //test
     .post('/checkout', cartServiceController.checkout) //test
     .post('/checkout-stripe', cartServiceController.checkoutStripe)
+    .post('/refund-stripe', cartServiceController.refundStripe)
     .post('/add-to-cart', cartServiceController.addToCart) //test
     .delete('/remove-from-cart/:serviceId', cartServiceController.removeFromCart)
     .get('/bookingDate/:bookingDate', cartServiceController.getCartServiceByBookingDate)

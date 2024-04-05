@@ -7,6 +7,7 @@ router.get('/', bookingController.getAllBooking) //test
     .get('/:petId', bookingController.getBookingByPetId) //test
     .get('/get-all-booking-by-uid/:userId', bookingController.getAllBookingByUserId) //test
     .get('/get-booking', bookingController.getBooking)
+    .get('/get-booking/:bookingId', bookingController.getBookingById)
     .post('/', validateBooking.validateCreateBooking, bookingController.createBooking) //test
     .put('/:bookingId', validateBooking.validateUpdateBooking, bookingController.updateBooking) //test
     .put('/update-status/:bookingId', bookingController.updateStatus)

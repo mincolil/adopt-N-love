@@ -289,6 +289,23 @@ const newPassword = async (req, res) => {
     }
 }
 
+const getProfileById = async (req, res) => {
+    const { id } = req.params
+    try {
+        const user = await User.findById(id)
+        if (!user) {
+            res.json({ error: "User not found" })
+        } else {
+            res.json(user)
+        }
+    }
+    catch (error) {
+        console.log(error)
+        res.json({ error: "Internal server error" })
+    }
+
+}
+
 
 
 module.exports = {
@@ -301,5 +318,6 @@ module.exports = {
     forgotPassword,
     newPassword,
     verify,
-    check
+    check,
+    getProfileById
 }

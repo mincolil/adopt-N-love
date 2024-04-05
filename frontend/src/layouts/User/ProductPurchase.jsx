@@ -119,7 +119,7 @@ export default function ProductPurchase() {
 
   // ----------------------------------------------------------------
 
-  const handleRemoveOrder = async (id) => {
+  const handleRemoveOrder = async (id, status) => {
     if (
       window.confirm("Bạn có muốn cập nhật trạng thái đơn hàng không ?") ===
       true
@@ -127,7 +127,7 @@ export default function ProductPurchase() {
       try {
         await axios
           .put(`http://localhost:3500/order/update-status/${id}`, {
-            orderStatus: CANCEL_STATUS,
+            orderStatus: status,
           })
           .then((data) => {
             handleLoadCartProductById(CANCEL_STATUS);
@@ -177,7 +177,7 @@ export default function ProductPurchase() {
     });
   };
 
-  const statusList = ["Chờ xác nhận", "Đã thanh toán", "Đang giao hàng", "Đã nhận hàng", "Huỷ"];
+  const statusList = ["Chờ xác nhận", "Đã thanh toán", "Yêu cầu huỷ", "Đang giao hàng", "Đã nhận hàng", "Huỷ"];
 
   return (
     <>
@@ -331,9 +331,20 @@ export default function ProductPurchase() {
                 variant="contained"
                 margin="normal"
                 color="primary"
-                onClick={() => handleRemoveOrder(id)}
+                onClick={() => handleRemoveOrder(id, "Huỷ")}
               >
                 Huỷ đặt hàng
+              </Button>
+            </DialogActions>
+          ) : status === "Đã thanh toán" ? (
+            <DialogActions>
+              <Button
+                variant="contained"
+                margin="normal"
+                color="primary"
+                onClick={() => handleRemoveOrder(id, "Yêu cầu huỷ")}
+              >
+                Yêu cầu hủy
               </Button>
             </DialogActions>
           ) : (

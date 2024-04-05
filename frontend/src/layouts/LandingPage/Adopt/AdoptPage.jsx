@@ -46,6 +46,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import HomeIcon from "@mui/icons-material/Home";
 import DropDownService from "../../../components/DropDown/DropDownService";
+import FloatingDogImage from "../../../components/Floater/FloatingDogImage";
 
 
 const BASE_URL = "http://localhost:3500";
@@ -113,7 +114,7 @@ function PetItem({ pet }) {
                             color="text.secondary"
                             className="product-price"
                         >
-                            Giới tính: { }
+                            Giới tính: {pet.sex === "male" ? "Đực" : "Cái"}
                         </Typography>
                     </CardContent>
                 </CardActionArea>
@@ -314,7 +315,7 @@ const AdoptPage = () => {
                                 Bạn đã sẵn sàng? Hãy thực hiện các bước sau đây nhé:
                             </Typography>
                             <Typography variant="h4" style={{ margin: "1px 0 " }}>
-                                1️⃣ Tìm hiểu về thú cưng bạn muốn nhận nuôi trên trang web của HPA
+                                1️⃣ Tìm hiểu về thú cưng bạn muốn nhận nuôi trên trang web của ANL
                             </Typography>
                             <Typography variant="h4" style={{ margin: "1px 0 " }}>
                                 2️⃣ Liên hệ với Tình nguyện viên phụ trách bé để tìm hiểu thêm về bé.
@@ -446,6 +447,9 @@ const AdoptPage = () => {
                 </Grid>
             </Container>
             <Footer />
+            <div>
+                <FloatingDogImage />
+            </div>
         </>
     );
 }

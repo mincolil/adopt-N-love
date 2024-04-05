@@ -7,53 +7,26 @@ import CardOverflow from "@mui/joy/CardOverflow";
 import Typography from "@mui/joy/Typography";
 import { useState } from "react";
 import axios from "axios";
-import { useEffect } from "react";
-import { toast } from "react-toastify";
-import { ToastContainer } from "react-toastify";
+import { useEffect, createContext } from "react";
 import useAuth from "../../hooks/useAuth";
-import { Avatar, Box, Container, Grid, Stack, TextField } from "@mui/joy";
-import PetsIcon from "@mui/icons-material/Pets";
-import { Breadcrumbs, Pagination } from "@mui/material";
+import { Avatar, Container, Grid, Stack } from "@mui/joy";
+import { Pagination } from "@mui/material";
 import ModalAddPet from "../../components/Modal/ModalAddPet";
 import ModalEditPet from "../../components/Modal/ModalEditPet";
-import { Link, NavLink } from "react-router-dom";
 import Chip from "@mui/material/Chip";
-import HomeIcon from "@mui/icons-material/Home";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { emphasize, styled } from "@mui/material/styles";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
 import Background from "../../images/background.png";
-import { orange } from '@mui/material/colors';
 import Icon from "../../images/adapt_icon_2.png";
 import ModalDetailPet from "../../components/Modal/ModalDetailPet";
+import ServiceListModal from "../../components/Modal/ModalServiceList";
+import { Button as antButton, notification, Space, Popconfirm, message } from 'antd';
 
 const CustomContainer = styled(Container)({
   background:
     "linear-gradient(to bottom, #FFFFFF, #FFFFFF, #FFFFFF, #FFFFFF, #FFFFFF)",
-});
-
-const defaultTheme = createTheme();
-
-const StyledBreadcrumb = styled(Chip)(({ theme }) => {
-  const backgroundColor =
-    theme.palette.mode === "light"
-      ? theme.palette.grey[100]
-      : theme.palette.grey[800];
-  return {
-    backgroundColor,
-    height: theme.spacing(3),
-    color: theme.palette.text.primary,
-    fontWeight: theme.typography.fontWeightRegular,
-    "&:hover, &:focus": {
-      backgroundColor: emphasize(backgroundColor, 0.06),
-    },
-    "&:active": {
-      boxShadow: theme.shadows[1],
-      backgroundColor: emphasize(backgroundColor, 0.12),
-    },
-  };
 });
 
 export default function PetUser() {
@@ -79,7 +52,7 @@ export default function PetUser() {
         `http://localhost:3500/pet/userid?id=${context.auth.id}&limit=2&page=${page}`
       );
       if (loadDataPet.error) {
-        toast.error(loadDataPet.error);
+        openNotificationWithIcon('error', 'Lỗi tải dữ liệu thú cưng');
       } else {
         setTotalPages(loadDataPet.data.pages);
         // console.log("Check totalPage", totalPages);
@@ -115,6 +88,7 @@ export default function PetUser() {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [dataEditPet, setDataEditPet] = useState({});
   const [openDetailModal, setOpenDetailModal] = useState(false);
+  const [openServiceModal, setOpenServiceModal] = useState(false);
   const [dataDetailPet, setDataDetailPet] = useState({});
 
   // --------------------- OPEN MODAL  -----------------------------
@@ -134,11 +108,17 @@ export default function PetUser() {
     setOpenDetailModal(true);
   };
 
+  const handleServiceModal = (pet) => {
+    setDataDetailPet(pet);
+    setOpenServiceModal(true);
+  };
+
   // --------------------- CLOSE MODAL  -----------------------------
   const handleCloseModal = () => {
     setOpenCreateModal(false);
     setOpenEditModal(false);
     setOpenDetailModal(false);
+    setOpenServiceModal(false);
   };
 
   // --------------------- GET ALL CATEGORY PET -----------------------------
@@ -149,7 +129,7 @@ export default function PetUser() {
         `http://localhost:3500/category?categoryName=Thú cưng`
       );
       if (loadDataCategoryPet.error) {
-        toast.error(loadDataCategoryPet.error);
+        openNotificationWithIcon('error', 'Lỗi tải dữ liệu danh mục');
       } else {
         setCategory(loadDataCategoryPet.data.docs);
         // console.log(loadDataCategoryPet.data);
@@ -170,10 +150,11 @@ export default function PetUser() {
         id: pet._id,
         forAdoption: !pet.forAdoption,
       });
+      loadAllPetByUserId(currentPage);
       if (updatePet.error) {
-        toast.error(updatePet.error);
+        openNotificationWithIcon('error', 'Cập nhật thất bại');
       } else {
-        toast.success("Cập nhật thành công");
+        openNotificationWithIcon('success', 'Cập nhật thành công');
         loadAllPetByUserId(currentPage);
       }
     }
@@ -182,9 +163,29 @@ export default function PetUser() {
     }
   };
 
+  //--------------------------- ANT NOTI ------------------------------
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotificationWithIcon = (type, mess) => {
+    api[type]({
+      message: 'Notification Title',
+      description:
+        mess,
+    });
+  };
+
+
+  const confirm = (value) => {
+    handleAdoptPet(value);
+    console.log(value);
+  };
+  const cancel = (e) => {
+    console.log(e);
+  };
+
   return (
     <>
-      <toastContainer />
+      {contextHolder}
       <Header />
       <React.Fragment>
         <CustomContainer component="main" maxWidth="false" sx={{ pt: 10, pb: 4 }}>
@@ -363,7 +364,7 @@ export default function PetUser() {
                           <Chip
                             size="small"
                             variant="outlined"
-                            label="Đã đăng ký nhận nuôi"
+                            label="Đang cho nhận nuôi"
                             color="primary"
                           />
                         </Grid>
@@ -377,17 +378,21 @@ export default function PetUser() {
                         width: "clamp(min(100%, 160px), 50%, min(100%, 200px))",
                       }}
                     >
-                      <Link to="/service-homepage">
-                        <Button href="/service-homepage" variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
-                          Đăng ký phòng khám
-                        </Button>
-                      </Link>
-                      <Button onClick={(e) => {
-                        e.stopPropagation();
-                        handleAdoptPet(value);
-                      }} variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
-                        {value.forAdoption ? "Cancel Adopt" : "Adopt"}
+                      <Button onClick={() => handleServiceModal(value)} variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
+                        Đăng ký phòng khám
                       </Button>
+                      <Popconfirm
+                        title="Xác nhận"
+                        description="Bạn muốn thay đổi trạng thái nhận nuôi?"
+                        onConfirm={() => confirm(value)}
+                        onCancel={cancel}
+                        okText="Vâng"
+                        cancelText="Không"
+                      >
+                        <Button variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
+                          {value.forAdoption ? "Hủy cho nhận nuôi" : "Cho nhận nuôi"}
+                        </Button>
+                      </Popconfirm>
                       <Button onMouseDown={() => handleUpdatePet(value)} variant="solid" color="warning" style={{ backgroundColor: "#f57c00" }}>
                         Sửa
                       </Button>
@@ -514,6 +519,16 @@ export default function PetUser() {
           dataEditPet={dataDetailPet}
           handUpdateEditTable={loadAllPetByUserId}
           page={currentPage}
+          data={context.auth.id}
+          category={category}
+        />
+        <ServiceListModal
+          open={openServiceModal}
+          onClose={handleCloseModal}
+          dataEditPet={dataDetailPet}
+          handUpdateEditTable={loadAllPetByUserId}
+          page={currentPage}
+          pet={dataDetailPet}
           data={context.auth.id}
           category={category}
         />

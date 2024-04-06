@@ -88,13 +88,13 @@ const getAdoptByUsername = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
 
-        // Find the user based on the provided username
+        
         const users = await User.find({ fullname: new RegExp(searchTerm, 'i') });
 
-        // Extract the user IDs from the found users
+        
         const userIds = users.map(user => user._id);
 
-        // Find pets where userId is in the list of found user IDs and forAdoption is true
+        
         const petPaginateResult = await Pet.paginate({ userId: { $in: userIds }, forAdoption: true }, {
             page, limit, populate: {
                 path: 'userId',
@@ -136,22 +136,6 @@ const getAdoptByPetName = async (req, res) => {
 }
 
 
-const getAdoptByUserId = async (req, res) => {
-    //get adoptpet by userId
-    try {
-        const { userId } = req.body
-        const result = await AdoptPet.find({ userId: userId })
-        if (!result) return res.json({
-            error: "No adopt pet found"
-        })
-        res.status(200).json(result)
-    } catch (error) {
-        console.log(err)
-        res.status(500).json({
-            error: err
-        })
-    }
-}
 
 //update status
 const updateStatus = async (req, res) => {

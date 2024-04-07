@@ -211,6 +211,22 @@ const getServiceById = async (req, res) => {
     }
 }
 
+// const getServiceById = async (req, res) => {
+//     try {
+//         const { id } = req.params;
+//         const service = await Service.findById(id).populate('categoryId');
+
+//         if (!service) {
+//             res.status(204).json({ error: "Service Not Found" });
+//         } else {
+//             res.status(200).json(service);
+//         }
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).json("Internal Server Error")
+//     }
+// }
+
 module.exports = {
     getAll,
     createService,

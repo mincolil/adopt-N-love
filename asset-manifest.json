@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/adopt-n-love/static/css/main.1ca474f1.css",
+    "main.js": "/adopt-n-love/static/js/main.5868bb9a.js",
+    "static/js/453.fe90bdd0.chunk.js": "/adopt-n-love/static/js/453.fe90bdd0.chunk.js",
+    "static/media/dog_background.png": "/adopt-n-love/static/media/dog_background.256a4ea6fe3cfbee1573.png",
+    "static/media/dog_banner.png": "/adopt-n-love/static/media/dog_banner.8e390b300551c8ddddb2.png",
+    "static/media/pet.png": "/adopt-n-love/static/media/pet.c22722910fc9fe444717.png",
+    "static/media/cat.png": "/adopt-n-love/static/media/cat.2538fa1dd7d8f6eecd77.png",
+    "static/media/bradcam.png": "/adopt-n-love/static/media/bradcam.d381740d44831827fee9.png",
+    "static/media/banner.png": "/adopt-n-love/static/media/banner.c3f4845081684466fd0e.png",
+    "static/media/avatar1.png": "/adopt-n-love/static/media/avatar1.2f507c5b3a3317d1c45c.png",
+    "static/media/background.png": "/adopt-n-love/static/media/background.804b98fb4e4b574dae93.png",
+    "static/media/RealLogo.png": "/adopt-n-love/static/media/RealLogo.ac112dea5a1f0b634c25.png",
+    "static/media/service_icon_2.png": "/adopt-n-love/static/media/service_icon_2.be8e1664bbe84892cfb3.png",
+    "static/media/service_icon_1.png": "/adopt-n-love/static/media/service_icon_1.e953504893e9fe6d49a9.png",
+    "static/media/service_icon_3.png": "/adopt-n-love/static/media/service_icon_3.108812d5e84b2c1039f1.png",
+    "index.html": "/adopt-n-love/index.html",
+    "main.1ca474f1.css.map": "/adopt-n-love/static/css/main.1ca474f1.css.map",
+    "main.5868bb9a.js.map": "/adopt-n-love/static/js/main.5868bb9a.js.map",
+    "453.fe90bdd0.chunk.js.map": "/adopt-n-love/static/js/453.fe90bdd0.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.1ca474f1.css",
+    "static/js/main.5868bb9a.js"
+  ]
+}

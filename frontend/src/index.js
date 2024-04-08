@@ -9,7 +9,7 @@ import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-axios.defaults.baseURL = "http://localhost:3500";
+axios.defaults.baseURL = "https://adopt-n-love-1.onrender.com";
 root.render(
   <React.StrictMode>
     <AuthProvider>

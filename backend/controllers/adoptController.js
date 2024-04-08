@@ -316,4 +316,4 @@ module.exports = {
     createAdoptNotification,
     getAdoptNotification,
     deleteAdoptNotification
-}
+}  

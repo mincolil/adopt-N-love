@@ -73,7 +73,7 @@ export default function ServicePurchase() {
         setSelectedStatus(option);
         await axios
           .get(
-            `http://localhost:3500/booking/get-all-booking-by-uid/${context.auth.id}`,
+            `/booking/get-all-booking-by-uid/${context.auth.id}`,
             {
               headers: { Authorization: context.auth.token },
               withCredentials: true,
@@ -117,7 +117,7 @@ export default function ServicePurchase() {
 
   const handleViewBookingDetail = async (id, option) => {
     try {
-      const data = await axios.get(`http://localhost:3500/bookingDetail/${id}`);
+      const data = await axios.get(`/bookingDetail/${id}`);
       if (data.error) {
         toast.error(data.error);
       } else {
@@ -137,7 +137,7 @@ export default function ServicePurchase() {
     if (window.confirm("Bạn có muốn huỷ dịch vụ không ?") === true) {
       try {
         await axios
-          .put(`http://localhost:3500/booking/update-status/${id}`, {
+          .put(`/booking/update-status/${id}`, {
             bookingStatus: status,
           })
           .then((data) => {

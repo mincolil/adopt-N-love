@@ -73,7 +73,7 @@ export default function AdoptRequest() {
             setLoged(true);
             try {
                 const loadData = await axios.get(
-                    `http://localhost:3500/adopt/getAdoptNotification/all`,
+                    `/adopt/getAdoptNotification/all`,
                     {
                         headers: { Authorization: context.auth.token },
                         withCredentials: true,
@@ -93,7 +93,7 @@ export default function AdoptRequest() {
 
     const loadUserRequest = async (id) => {
         try {
-            const user = await axios.get(`http://localhost:3500/profile/${id}`)
+            const user = await axios.get(`/profile/${id}`)
             if (user.error) {
                 openNotificationWithIcon('error', user.error);
             }
@@ -115,7 +115,7 @@ export default function AdoptRequest() {
     //--------------------------HANDLE ACCEPT ADOPT REQUEST--------------------------
     const handleAcceptAdoptRequest = async (adoptRequest) => {
         try {
-            const changeOwner = await axios.patch("http://localhost:3500/pet/", {
+            const changeOwner = await axios.patch("/pet/", {
                 id: adoptRequest.petId._id,
                 userId: adoptRequest.userId._id,
                 petName: adoptRequest.petId.petName,
@@ -136,7 +136,7 @@ export default function AdoptRequest() {
 
             });
 
-            const deleteAdoptRequest = await axios.delete("http://localhost:3500/adopt/deleteAdoptNotification/" + adoptRequest._id);
+            const deleteAdoptRequest = await axios.delete("/adopt/deleteAdoptNotification/" + adoptRequest._id);
             handleLoadAdoptRequest();
         }
         catch (err) {
@@ -147,7 +147,7 @@ export default function AdoptRequest() {
     //--------------------------HANDLE REJECT ADOPT REQUEST--------------------------
     const handleRejectAdoptRequest = async (adoptRequest) => {
         try {
-            const deleteAdoptRequest = await axios.delete("http://localhost:3500/adopt/deleteAdoptNotification/" + adoptRequest._id)
+            const deleteAdoptRequest = await axios.delete("/adopt/deleteAdoptNotification/" + adoptRequest._id)
                 .then((data) => {
                     handleLoadAdoptRequest();
                     context.handleLoadAdoptRequest();

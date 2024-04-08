@@ -56,7 +56,7 @@ const style = {
 };
 
 // -------------------------------API SERVER----------------------
-const BASE_URL = "http://localhost:3500";
+const BASE_URL = "";
 
 export default function AdoptPetTable() {
     const [data, setData] = useState([]);
@@ -204,7 +204,7 @@ export default function AdoptPetTable() {
     async function loadAllCategoryPet() {
         try {
             const loadDataCategoryPet = await axios.get(
-                `http://localhost:3500/category?categoryName=Thú cưng`
+                `/category?categoryName=Thú cưng`
             );
             if (loadDataCategoryPet.error) {
                 toast.error(loadDataCategoryPet.error);
@@ -232,7 +232,7 @@ export default function AdoptPetTable() {
         } else {
             try {
                 const loadData = await axios.get(
-                    `http://localhost:3500/adopt?page=${page}&categoryId=${cateId}`
+                    `/adopt?page=${page}&categoryId=${cateId}`
                 );
                 if (loadData.error) {
                     toast.error(loadData.error);

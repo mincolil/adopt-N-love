@@ -25,7 +25,7 @@ import { Alert } from 'antd';
 
 
 
-const BASE_URL = "http://localhost:3500";
+const BASE_URL = "";
 
 const onClose = (e) => {
   console.log(e, 'I was closed.');

@@ -61,7 +61,7 @@ const Login = () => {
     e.preventDefault();
     const { email, password } = data;
     try {
-      const { data } = await axios.post("http://localhost:3500/login", {
+      const { data } = await axios.post("/login", {
         email,
         password,
       })
@@ -116,7 +116,7 @@ const Login = () => {
     const googleId = profileObj.googleId;
 
     try {
-      const { data } = await axios.post("http://localhost:3500/google", {
+      const { data } = await axios.post("/google", {
         email,
         googleId
       })

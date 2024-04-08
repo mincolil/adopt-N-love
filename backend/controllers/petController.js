@@ -46,7 +46,7 @@ const getAll = async (req, res) => {
 const uploadPetImage = async (req, res) => {
   try {
     const originalFileName = req.file ? req.file.originalname : ''
-    const imageUrl = `http://localhost:3500/image/pet/${originalFileName}`
+    const imageUrl = `https://adopt-n-love-1.onrender.com/image/pet/${originalFileName}`
     res.status(200).json({
       image: imageUrl
     })

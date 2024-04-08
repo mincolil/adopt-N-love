@@ -58,7 +58,7 @@ app.use(passport.session());
 passport.use(new OAuth2Strategy({
     clientID: clientid,
     clientSecret: clientserver,
-    callbackURL: "http://localhost:3500/auth/google/callback",
+    callbackURL: "https://adopt-n-love-1.onrender.com/auth/google/callback",
     scope: ["profile", "email"],
     passReqToCallback: true
 },

@@ -15,8 +15,8 @@ const userdb = require('./models/User');
 const { ca } = require('date-fns/locale');
 const jwt = require('jsonwebtoken')
 
-const clientid = "424228344980-l67mummet93pgl903qru8ejvjeoo098s.apps.googleusercontent.com";
-// const clientid = process.env.GG_CLIENT_ID
+// const clientid = "424228344980-l67mummet93pgl903qru8ejvjeoo098s.apps.googleusercontent.com";
+const clientid = process.env.GG_CLIENT_ID
 // const clientserver = process.env.CLIENT_SERVER
 const clientserver = process.env.GG_CLIENT_SERVER
 

@@ -207,6 +207,47 @@ const getPetByUserId = async (req, res) => {
     res.json("Internal server error")
   }
 }
+// const getPetListForServiceBooking = async (req, res) => {
+//   try {
+//     const { serviceId, userId } = req.body;
+//     const page = parseInt(req.query.page) || 1
+//     const limit = parseInt(req.query.limit) || 10
+//     // Find pet by user id
+//     const pets = await Pet.paginate({ userId: userId }, {
+//       page, limit, populate: {
+//         path: 'userId'
+//       }
+//     })
+
+//     const cartItems = await CartService.find({ userId }).populate('petId').populate('serviceId');
+
+//     for (let i = 0; i < cartItems.length; i++) {
+//       for (let j = 0; j < pets.docs.length; j++) {
+//         if (pets.docs[j]._id.toString() === cartItems[i].petId._id.toString() && serviceId === cartItems[i].serviceId._id.toString()) {
+//           pets.docs.splice(j, 1);
+//         }
+//       }
+//     }
+//     res.status(200).json(pets.docs);
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json("Internal Server Error")
+//   }
+// }
+
+// const deleteOne = async (req, res) => {
+//   const { id } = req.params;
+//   try {
+//     const result = await Pet.findByIdAndDelete(id)
+//     if (result) {
+//       res.status(201).json(`Deleted pet ${id}`);
+//     }
+//   } catch (error) {
+//     res.status(500).json("Internal Server Error")
+//     console.log(error)
+//   }
+// }
+
 const getPetListForServiceBooking = async (req, res) => {
   try {
     const { serviceId, userId } = req.body;

@@ -5,9 +5,9 @@ const jwt = require('jsonwebtoken')
 const mailer = require('../utils/mailer')
 
 // const clientId = "424228344980-l67mummet93pgl903qru8ejvjeoo098s.apps.googleusercontent.com";
-const clientId = "424228344980-rs1e1chulrhg9uhc51u3p3q7espor5pd.apps.googleusercontent.com";
+const clientId = process.env.GG_CLIENT_ID;
 // const clientserver = "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"
-const clientserver = "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"
+const clientserver = process.env.GG_CLIENT_SERVER;
 
 const { OAuth2Client } = require('google-auth-library')
 const { cookie } = require('express-validator')

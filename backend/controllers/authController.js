@@ -4,10 +4,8 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const mailer = require('../utils/mailer')
 
-// const clientId = "424228344980-l67mummet93pgl903qru8ejvjeoo098s.apps.googleusercontent.com";
-const clientId = process.env.GG_ID;
-// const clientserver = "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"
-const clientserver = process.env.GG_SERVER;
+const clientId = process.env.GG_CLIENT_ID;
+const clientserver = process.env.GG_CLIENT_SERVER;
 
 const { OAuth2Client } = require('google-auth-library')
 const { cookie } = require('express-validator')

@@ -16,9 +16,9 @@ const { ca } = require('date-fns/locale');
 const jwt = require('jsonwebtoken')
 
 // const clientid = "424228344980-l67mummet93pgl903qru8ejvjeoo098s.apps.googleusercontent.com";
-const clientid = process.env.GG_CLIENT_ID
+const clientid = process.env.GG_ID
 // const clientserver = process.env.CLIENT_SERVER
-const clientserver = process.env.GG_CLIENT_SERVER
+const clientserver = process.env.GG_SERVER
 
 const bookingController = require('../backend/controllers/bookingController');
 const router = require('./routes/bookingRoutes');

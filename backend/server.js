@@ -36,7 +36,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 app.use(
     cors({
         credentials: true,
-        origin: ["http://localhost:3000", "https://b191-14-232-99-63.ngrok-free.app"]
+        origin: ["http://localhost:3000", "https://adoptnlove.netlify.app"]
     })
 )
 

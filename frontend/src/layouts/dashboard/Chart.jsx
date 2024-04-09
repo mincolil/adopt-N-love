@@ -57,7 +57,7 @@ export default function ChartDashBroad() {
     try {
       let dataRevenue = [];
       await axios
-        .get(`http://localhost:3500/dashboard/revenue-statistics`)
+        .get(`/dashboard/revenue-statistics`)
         .then((data) => {
           data.data.revenueByMonth.map((value) => {
             dataRevenue.push(createData(value.month, value.total));
@@ -72,7 +72,7 @@ export default function ChartDashBroad() {
   function serviceRevenueStatistics() {
     try {
       let dataRevenue = [];
-      axios.get(`http://localhost:3500/serviceDashboard/revenue-statistics`)
+      axios.get(`/serviceDashboard/revenue-statistics`)
         .then((data) => {
           data.data.revenueByMonth.map((value) => {
             dataRevenue.push(createData(value.month, value.total));

@@ -4,7 +4,7 @@ import { Alert } from 'antd';
 import axios from "axios";
 import useAuth from "../../hooks/useAuth";
 
-const BASE_URL = "http://localhost:3500";
+const BASE_URL = "";
 
 const onClose = (e) => {
     console.log(e, 'I was closed.');

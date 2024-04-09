@@ -112,7 +112,7 @@ const
         const formData = new FormData();
         formData.append("image", petImage);
         const response = await axios.post(
-          `http://localhost:3500/pet/upload`,
+          `/pet/upload`,
           formData
         );
         const maxSize = 1024 * 1024;
@@ -184,7 +184,7 @@ const
         toast.error("Bạn phải chọn loại thú cưng mình muốn");
       } else {
         try {
-          const res = await axios.patch(`http://localhost:3500/pet`, {
+          const res = await axios.patch(`/pet`, {
             id: petID,
             userId: userId._id,
             petName: petName,

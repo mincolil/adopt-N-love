@@ -134,7 +134,7 @@ const ModalEditSerivce = (props) => {
         const formData = new FormData();
         formData.append("image", serviceImage);
         const response = await axios.post(
-          `http://localhost:3500/service/upload`,
+          `/service/upload`,
           formData
         );
         const maxSize = 1024 * 1024;
@@ -239,7 +239,7 @@ const ModalEditSerivce = (props) => {
       );
     } else {
       try {
-        const res = await axios.patch(`http://localhost:3500/service`, {
+        const res = await axios.patch(`/service`, {
           id: serviceID,
           serviceName: serviceName,
           categoryId: categoryId,

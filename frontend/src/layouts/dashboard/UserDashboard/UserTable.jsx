@@ -113,7 +113,7 @@ const BasicTable = () => {
     const handleLoadUserbId = async (id, password) => {
         try {
             // console.log(id);
-            const data = await axios.get(`http://localhost:3500/user/${id}`);
+            const data = await axios.get(`/user/${id}`);
             if (data.error) {
                 toast.error(data.error);
             } else {
@@ -142,7 +142,7 @@ const BasicTable = () => {
     const handleUpdate = async () => {
         // console.log(gender)
         try {
-            const data = await axios.patch(`http://localhost:3500/user`, {
+            const data = await axios.patch(`/user`, {
                 fullname: fullname,
                 password: password,
                 email: email,
@@ -170,7 +170,7 @@ const BasicTable = () => {
     //     if (window.confirm(`Bạn có muốn xoá không ?`) == true) {
     //         try {
     //             console.log(id);
-    //             const data = await axios.delete(`http://localhost:3500/user/${id}`);
+    //             const data = await axios.delete(`/user/${id}`);
     //             if (data.error) {
     //                 toast.error(data.error);
     //             } else {
@@ -189,7 +189,7 @@ const BasicTable = () => {
     // useEffect(() => {
     const handleCreateUser = async (event) => {
         try {
-            await axios.post("http://localhost:3500/user", {
+            await axios.post("/user", {
                 fullname,
                 email,
                 password,
@@ -224,7 +224,7 @@ const BasicTable = () => {
         try {
             const row = [];
             const loadData = await axios.get(
-                `http://localhost:3500/user`
+                `/user`
             )
                 .then((data) => {
                     setData(data.data);
@@ -248,7 +248,7 @@ const BasicTable = () => {
                 : "Bạn có muốn KÍCH HOẠT tài khoản này không ?") === true) {
             try {
                 // console.log(fullname, email, role, inActiveStatus)
-                await axios.patch(`http://localhost:3500/user`, {
+                await axios.patch(`/user`, {
                     fullname: fullname,
                     email: email,
                     role: role,

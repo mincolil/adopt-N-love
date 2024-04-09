@@ -43,7 +43,7 @@ import { notification, Space } from 'antd';
 import { NavLink, useNavigate } from "react-router-dom";
 import FloatingDogImage from "../../../components/Floater/FloatingDogImage";
 
-const BASE_URL = "http://localhost:3500";
+const BASE_URL = "";
 
 const numberToVND = (number) => {
   return number.toLocaleString("vi-VN", {
@@ -73,7 +73,7 @@ function ServiceItem({ service }) {
     } else {
       try {
         const loadDataPet = await axios.post(
-          `http://localhost:3500/pet/booking`,
+          `/pet/booking`,
           {
             userId: context.auth.id,
             serviceId: serviceId,
@@ -298,7 +298,7 @@ export default function ServiceList() {
     } else {
       try {
         const loadData = await axios.get(
-          `http://localhost:3500/service?page=1&limit=12&minPrice=${minPrice}&maxPrice=${maxPrice}`
+          `/service?page=1&limit=12&minPrice=${minPrice}&maxPrice=${maxPrice}`
         );
         if (loadData.error) {
           console.log(loadData.error);
@@ -357,7 +357,7 @@ export default function ServiceList() {
     } else {
       try {
         const loadData = await axios.get(
-          `http://localhost:3500/service?sortPrice=${sortParam}`
+          `/service?sortPrice=${sortParam}`
         );
         if (loadData.error) {
           console.log(loadData.error);
@@ -416,7 +416,7 @@ export default function ServiceList() {
     } else {
       try {
         const loadData = await axios.get(
-          `http://localhost:3500/service?page=1&categoryId=${cateId}&status=true&limit=9`
+          `/service?page=1&categoryId=${cateId}&status=true&limit=9`
         );
         if (loadData.error) {
           console.log(loadData.error);
@@ -506,7 +506,7 @@ export default function ServiceList() {
   async function loadAllCategoryService() {
     try {
       const loadDataCategoryService = await axios.get(
-        `http://localhost:3500/category?categoryName=Dịch vụ`
+        `/category?categoryName=Dịch vụ`
       );
       if (loadDataCategoryService.error) {
         console.log(loadDataCategoryService.error);

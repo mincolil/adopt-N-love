@@ -41,7 +41,7 @@ import useAuth from "../../../hooks/useAuth";
 import dayjs from "dayjs";
 import FloatingDogImage from "../../../components/Floater/FloatingDogImage";
 
-const BASE_URL = "http://localhost:3500";
+const BASE_URL = "";
 
 const DsCheckbox = styled(Checkbox)`
   color: #eeeeee !important;
@@ -261,7 +261,7 @@ export default function ProductList() {
     } else {
       try {
         const loadData = await axios.get(
-          `http://localhost:3500/product?page=1&limit=12&minPrice=${minPrice}&maxPrice=${maxPrice}`
+          `/product?page=1&limit=12&minPrice=${minPrice}&maxPrice=${maxPrice}`
         );
         if (loadData.error) {
           toast.error(loadData.error);
@@ -272,7 +272,7 @@ export default function ProductList() {
           setData(loadData.data.docs);
           setTotalProducts(loadData.data.limit);
           setCurrentPage(loadData.data.page);
-          console.log(`http://localhost:3500/product?page=1&limit=12&minPrice=${minPrice}&maxPrice=${maxPrice}`);
+          console.log(`/product?page=1&limit=12&minPrice=${minPrice}&maxPrice=${maxPrice}`);
         }
       } catch (err) {
         console.log(err);
@@ -319,7 +319,7 @@ export default function ProductList() {
     } else {
       try {
         const loadData = await axios.get(
-          `http://localhost:3500/product?sortPrice=${sortParam}`
+          `/product?sortPrice=${sortParam}`
         );
         if (loadData.error) {
           toast.error(loadData.error);
@@ -389,7 +389,7 @@ export default function ProductList() {
     } else {
       try {
         const loadData = await axios.get(
-          `http://localhost:3500/product?page=1&categoryId=${cateId}&limit=12`
+          `/product?page=1&categoryId=${cateId}&limit=12`
         );
         if (loadData.error) {
           toast.error(loadData.error);
@@ -466,7 +466,7 @@ export default function ProductList() {
   async function loadAllCategoryProduct() {
     try {
       const loadDataCategoryProduct = await axios.get(
-        `http://localhost:3500/category?categoryName=Sản phẩm`
+        `/category?categoryName=Sản phẩm`
       );
       if (loadDataCategoryProduct.error) {
         toast.error(loadDataCategoryProduct.error);

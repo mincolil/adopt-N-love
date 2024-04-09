@@ -105,7 +105,7 @@ export default function BasicTable() {
   // --------------------- HANDLE OPEN MODAL UPDATE -----------------------------
   const handleViewOrderDetail = async (id, option) => {
     try {
-      const dataOrderDetail = await axios.get(`http://localhost:3500/orderDetail/${id}`);
+      const dataOrderDetail = await axios.get(`/orderDetail/${id}`);
       if (dataOrderDetail.error) {
         toast.error(dataOrderDetail.error);
       } else {
@@ -150,7 +150,7 @@ export default function BasicTable() {
 
   async function loadOrder(status) {
     try {
-      await axios.get(`http://localhost:3500/order`)
+      await axios.get(`/order`)
         .then((data) => {
           setData(data.data);
         });
@@ -165,14 +165,14 @@ export default function BasicTable() {
       window.confirm("Bạn có muốn cập nhật trạng thái đơn hàng không ?") === true
     ) {
       try {
-        const order = await axios.get(`http://localhost:3500/order/get-order/${id}`);
+        const order = await axios.get(`/order/get-order/${id}`);
         const paymentIntent = order.data.payment_int
         console.log(paymentIntent);
 
-        await axios.post(`http://localhost:3500/cartService/refund-stripe`, {
+        await axios.post(`/cartService/refund-stripe`, {
           payment_intent: paymentIntent
         });
-        const loadData = await axios.put(`http://localhost:3500/order/update-status/${id}`, {
+        const loadData = await axios.put(`/order/update-status/${id}`, {
           orderStatus: "Huỷ",
         });
         if (loadData.error) {
@@ -198,7 +198,7 @@ export default function BasicTable() {
     ) {
       try {
         const loadData = await axios.put(
-          `http://localhost:3500/order/update-status/${id}`,
+          `/order/update-status/${id}`,
           {
             orderStatus: "Đã thanh toán",
           }
@@ -238,7 +238,7 @@ export default function BasicTable() {
       try {
         setStatus(option);
         await axios.get(
-          `http://localhost:3500/order?status=${option}&page=${page}&limit=${limit}&startDate=${convertDate(startDate) !== "NaN-aN-aN"
+          `/order?status=${option}&page=${page}&limit=${limit}&startDate=${convertDate(startDate) !== "NaN-aN-aN"
             ? convertDate(startDate)
             : ""
           }&endDate=${convertDate(endDate) !== "NaN-aN-aN" ? convertDate(endDate) : ""
@@ -275,7 +275,7 @@ export default function BasicTable() {
     ) {
       try {
         const loadData = await axios.put(
-          `http://localhost:3500/order/update-status/${id}`,
+          `/order/update-status/${id}`,
           {
             orderStatus: status,
           }

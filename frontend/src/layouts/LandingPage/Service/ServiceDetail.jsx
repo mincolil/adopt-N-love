@@ -28,7 +28,7 @@ import dayjs from "dayjs";
 import Comments from "../../../components/Comments/Comments";
 import FloatingDogImage from "../../../components/Floater/FloatingDogImage";
 
-const BASE_URL = "http://localhost:3500";
+const BASE_URL = "";
 
 const numberToVND = (number) => {
   return number.toLocaleString("vi-VN", {
@@ -112,7 +112,7 @@ const ServiceDetail = () => {
     } else {
       try {
         const loadDataPet = await axios.post(
-          `http://localhost:3500/pet/booking`,
+          `/pet/booking`,
           {
             userId: context.auth.id,
             serviceId: serviceId,

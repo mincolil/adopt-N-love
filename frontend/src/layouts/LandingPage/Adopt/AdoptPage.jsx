@@ -49,7 +49,7 @@ import DropDownService from "../../../components/DropDown/DropDownService";
 import FloatingDogImage from "../../../components/Floater/FloatingDogImage";
 
 
-const BASE_URL = "http://localhost:3500";
+const BASE_URL = "";
 
 const Counter = ({ target }) => {
     const [count, setCount] = useState(0);
@@ -230,7 +230,7 @@ const AdoptPage = () => {
         } else {
             try {
                 const loadData = await axios.get(
-                    `http://localhost:3500/adopt?page=${page}&categoryId=${cateId}`
+                    `/adopt?page=${page}&categoryId=${cateId}`
                 );
                 if (loadData.error) {
                     toast.error(loadData.error);
@@ -257,7 +257,7 @@ const AdoptPage = () => {
     async function loadAllCategoryPet() {
         try {
             const loadDataCategoryPet = await axios.get(
-                `http://localhost:3500/category?categoryName=Thú cưng`
+                `/category?categoryName=Thú cưng`
             );
             if (loadDataCategoryPet.error) {
                 toast.error(loadDataCategoryPet.error);

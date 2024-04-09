@@ -173,7 +173,7 @@ const ModalEditProduct = (props) => {
         const formData = new FormData();
         formData.append("image", productImage);
         const response = await axios.post(
-          `http://localhost:3500/product/upload`,
+          `/product/upload`,
           formData
         );
         const maxSize = 1024 * 1024;
@@ -276,7 +276,7 @@ const ModalEditProduct = (props) => {
       toast.error("Thông tin chi tiết không được để trống");
     } else {
       try {
-        const res = await axios.patch(`http://localhost:3500/product`, {
+        const res = await axios.patch(`/product`, {
           id: productID,
           productName: productName,
           categoryId: categoryId,

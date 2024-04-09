@@ -15,8 +15,9 @@ const userdb = require('./models/User');
 const { ca } = require('date-fns/locale');
 const jwt = require('jsonwebtoken')
 
-const clientid = "424228344980-l67mummet93pgl903qru8ejvjeoo098s.apps.googleusercontent.com";
-const clientserver = "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"
+const clientid = process.env.GG_CLIENT_ID
+const clientserver = process.env.GG_CLIENT_SERVER
+
 const bookingController = require('../backend/controllers/bookingController');
 const router = require('./routes/bookingRoutes');
 
@@ -35,7 +36,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 app.use(
     cors({
         credentials: true,
-        origin: ["http://localhost:3000", "http://localhost:3001"]
+        origin: ["http://localhost:3000", "https://adoptnlove.netlify.app"]
     })
 )
 
@@ -57,7 +58,7 @@ app.use(passport.session());
 passport.use(new OAuth2Strategy({
     clientID: clientid,
     clientSecret: clientserver,
-    callbackURL: "http://localhost:3500/auth/google/callback",
+    callbackURL: "https://adopt-n-love-1.onrender.com/auth/google/callback",
     scope: ["profile", "email"],
     passReqToCallback: true
 },

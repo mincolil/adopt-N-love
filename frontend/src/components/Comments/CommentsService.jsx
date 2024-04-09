@@ -48,7 +48,7 @@ export default function CommentService({ value }) {
     // console.log("Check id", id);
     try {
       const loadDataFeedback = await axios.get(
-        `http://localhost:3500/feedback/service?serviceId=${id}&limit=3&page=${page}`
+        `/feedback/service?serviceId=${id}&limit=3&page=${page}`
       );
       if (loadDataFeedback.error) {
         toast.error(loadDataFeedback.error);
@@ -74,11 +74,11 @@ export default function CommentService({ value }) {
   const handleAddComment = async () => {
     if (star === 0) {
       toast.error("Số sao không được để trống");
-    }  else {
+    } else {
       try {
         const addComment = await axios
           .post(
-            `http://localhost:3500/feedback/service`,
+            `/feedback/service`,
             {
               serviceId: id,
               comment: comment,

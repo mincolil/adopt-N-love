@@ -26,7 +26,7 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import Comments from "../../../components/Comments/Comments";
 import dayjs from "dayjs";
 
-const BASE_URL = "http://localhost:3500";
+const BASE_URL = "";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;

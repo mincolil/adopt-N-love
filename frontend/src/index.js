@@ -4,10 +4,12 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { AuthProvider } from "./context/AuthProvider";
+import axios from "axios";
 // toastify
 import "react-toastify/dist/ReactToastify.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+axios.defaults.baseURL = "https://adopt-n-love-1.onrender.com";
 root.render(
   <React.StrictMode>
     <AuthProvider>

@@ -73,7 +73,7 @@ const ModalAddBlog = (props) => {
         const formData = new FormData();
         formData.append("image", image);
         const response = await axios.post(
-          `http://localhost:3500/blog/upload`,
+          `/blog/upload`,
           formData
         );
 
@@ -114,7 +114,7 @@ const ModalAddBlog = (props) => {
     } else {
       try {
         const response = await axios.post(
-          "http://localhost:3500/blog/create-blog",
+          "/blog/create-blog",
           {
             title,
             content,

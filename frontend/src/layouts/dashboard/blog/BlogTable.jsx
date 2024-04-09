@@ -55,7 +55,7 @@ const style = {
 };
 
 // -------------------------------API SERVER----------------------
-const BASE_URL = "http://localhost:3500";
+const BASE_URL = "";
 
 export default function BlogTable() {
   const [data, setData] = useState([]);

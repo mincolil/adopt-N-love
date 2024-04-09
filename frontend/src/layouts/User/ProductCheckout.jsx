@@ -99,7 +99,7 @@ export default function ProductCheckout() {
           try {
             const loadData = await axios
               .post(
-                `http://localhost:3500/cartProduct/checkout`,
+                `/cartProduct/checkout`,
                 {
                   recipientName: recipientName,
                   recipientPhoneNumber: recipientPhoneNumber,
@@ -137,7 +137,7 @@ export default function ProductCheckout() {
         } else {
           const stripePromise = await loadStripe("pk_test_51OwZdRP1wqZM1wtKGbFute5ovqh8plumSuDFZZIJLXL7pry6RTfnoavZUyYmS4VrUHT5ZwpP6Wc7Br1742cK2TRo00vG6rJnx6");
           const stripe = await axios.post(
-            `http://localhost:3500/cartProduct/checkout-stripe`,
+            `/cartProduct/checkout-stripe`,
             {
               recipientName: recipientName,
               recipientPhoneNumber: recipientPhoneNumber,
@@ -168,7 +168,7 @@ export default function ProductCheckout() {
       setLoged(true);
       try {
         const loadData = await axios.get(
-          `http://localhost:3500/cartProduct/view-cart`,
+          `/cartProduct/view-cart`,
           {
             headers: { Authorization: context.auth.token },
             withCredentials: true,

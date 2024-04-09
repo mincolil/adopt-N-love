@@ -52,7 +52,7 @@ export default function CartService() {
       setLoged(true)
       try {
         const loadData = await axios.get(
-          `http://localhost:3500/cartService/view-cart`,
+          `/cartService/view-cart`,
           {
             headers: { 'Authorization': context.auth.token },
             withCredentials: true
@@ -106,7 +106,7 @@ export default function CartService() {
         try {
           console.log(total)
           await axios.post(
-            `http://localhost:3500/cartService/checkout`,
+            `/cartService/checkout`,
             {
               totalPrice: total
             },
@@ -152,7 +152,7 @@ export default function CartService() {
     ) {
       try {
         await axios.delete(
-          `http://localhost:3500/cartService/remove-from-cart/${id}`,
+          `/cartService/remove-from-cart/${id}`,
           {
             headers: { 'Authorization': context.auth.token },
             withCredentials: true

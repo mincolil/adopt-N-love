@@ -61,7 +61,7 @@ const Login = () => {
     e.preventDefault();
     const { email, password } = data;
     try {
-      const { data } = await axios.post("http://localhost:3500/login", {
+      const { data } = await axios.post("/login", {
         email,
         password,
       })
@@ -106,7 +106,8 @@ const Login = () => {
   };
 
   //----------------------LOGIN WITH GG---------------------
-  const clientid = "424228344980-l67mummet93pgl903qru8ejvjeoo098s.apps.googleusercontent.com";
+  // const clientid = "424228344980-l67mummet93pgl903qru8ejvjeoo098s.apps.googleusercontent.com";
+  const clientid = "424228344980-rs1e1chulrhg9uhc51u3p3q7espor5pd.apps.googleusercontent.com";
 
   const responseGoogle = async (response) => {
     const { tokenId, profileObj } = response;
@@ -115,7 +116,7 @@ const Login = () => {
     const googleId = profileObj.googleId;
 
     try {
-      const { data } = await axios.post("http://localhost:3500/google", {
+      const { data } = await axios.post("/google", {
         email,
         googleId
       })

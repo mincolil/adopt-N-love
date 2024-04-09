@@ -63,7 +63,7 @@ export default function CartProduct() {
     if (product.quantity < product.productId.quantity) {
       try {
         const increaseCart = await axios.put(
-          `http://localhost:3500/cartProduct/update-cart`,
+          `/cartProduct/update-cart`,
           {
             productId: product.productId._id,
             quantity: product.quantity + 1,
@@ -92,7 +92,7 @@ export default function CartProduct() {
     if (product.quantity > 1) {
       try {
         const descreaseCart = await axios.put(
-          `http://localhost:3500/cartProduct/update-cart`,
+          `/cartProduct/update-cart`,
           {
             productId: product.productId._id,
             quantity: product.quantity - 1,
@@ -133,7 +133,7 @@ export default function CartProduct() {
       setLoged(true);
       try {
         const loadData = await axios.get(
-          `http://localhost:3500/cartProduct/view-cart`,
+          `/cartProduct/view-cart`,
           {
             headers: { Authorization: context.auth.token },
             withCredentials: true,
@@ -179,7 +179,7 @@ export default function CartProduct() {
     if (window.confirm("Bạn có chắc muốn xoá sản phẩm này không ?") === true) {
       try {
         await axios
-          .delete(`http://localhost:3500/cartProduct/remove-from-cart/${id}`, {
+          .delete(`/cartProduct/remove-from-cart/${id}`, {
             headers: { Authorization: context.auth.token },
             withCredentials: true,
           })

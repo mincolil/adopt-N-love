@@ -109,7 +109,7 @@ const manageAllProduct = async (req, res) => {
 const uploadProductImage = async (req, res) => {
     try {
         const originalFileName = req.file ? req.file.originalname : ''
-        const imageUrl = `http://localhost:3500/image/product/${originalFileName}`
+        const imageUrl = `https://adopt-n-love-1.onrender.com/image/product/${originalFileName}`
         res.status(200).json({
             image: imageUrl
         })

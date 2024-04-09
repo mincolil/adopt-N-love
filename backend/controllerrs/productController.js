@@ -109,7 +109,7 @@ const manageAllProduct = async (req, res) => {
 const uploadProductImage = async (req, res) => {
     try {
         const originalFileName = req.file ? req.file.originalname : ''
-        const imageUrl = `https://adopt-n-love-1.onrender.com/image/product/${originalFileName}`
+        const imageUrl = `http://localhost:3500/image/product/${originalFileName}`
         res.status(200).json({
             image: imageUrl
         })
@@ -195,10 +195,6 @@ const getProductById = async (req, res) => {
         const { id } = req.params;
         const product = await Product.findById(id);
 
-        // if (product!=) {
-        //     res.status(204).json({ error: "Product not found" })
-        // } else {
-          
         if (!product) {
             res.status(204).json({ error: "Product not found" })
         } else {
@@ -219,3 +215,4 @@ module.exports = {
     getProductById,
     manageAllProduct,
 };
+

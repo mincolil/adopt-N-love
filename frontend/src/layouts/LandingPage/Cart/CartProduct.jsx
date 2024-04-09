@@ -31,6 +31,9 @@ import dayjs from "dayjs";
 import Grid from "@mui/material/Unstable_Grid2";
 import { notification, Space } from 'antd';
 
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { Modal } from 'antd';
+
 export default function CartProduct() {
   const navigate = useNavigate();
 
@@ -57,6 +60,25 @@ export default function CartProduct() {
       description: des,
     });
   };
+
+const { confirm } = Modal;
+const showConfirmRemove = () => {
+  return new Promise((resolve, reject) => {
+    confirm({
+      title: 'Xác nhận',
+      icon: <ExclamationCircleFilled />,
+      content: 'Bạn có chắc muốn xoá sản phẩm này không ?',
+      okText: 'Đồng ý', 
+      cancelText: 'Hủy bỏ', 
+      onOk() {
+        resolve(true); // Trả về giá trị true khi người dùng nhấn OK
+      },
+      onCancel() {
+        resolve(false); // Trả về giá trị false khi người dùng nhấn Cancel
+      },
+    });
+  });
+};
 
   // -----------------------HANDLE INCREASE QUANTITY-----------------------
   const handleIncreaseQuantity = async (product) => {
@@ -176,7 +198,8 @@ export default function CartProduct() {
   }, []);
 
   const handleDeleteOrder = async (id) => {
-    if (window.confirm("Bạn có chắc muốn xoá sản phẩm này không ?") === true) {
+    // window.confirm("Bạn có chắc muốn xoá sản phẩm này không ?") === true
+    if (await showConfirmRemove() ) {
       try {
         await axios
           .delete(`/cartProduct/remove-from-cart/${id}`, {

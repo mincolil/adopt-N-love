@@ -96,7 +96,7 @@ const ModalAddProduct = (props) => {
         const formData = new FormData();
         formData.append("image", image);
         const response = await axios.post(
-          `http://localhost:3500/product/upload`,
+          `/product/upload`,
           formData
         );
         const maxSize = 1024 * 1024;
@@ -156,7 +156,7 @@ const ModalAddProduct = (props) => {
       toast.error("Thông tin chi tiết không được để trống");
     } else {
       try {
-        const response = await axios.post("http://localhost:3500/product", {
+        const response = await axios.post("/product", {
           productName,
           categoryId,
           quantity,
@@ -230,8 +230,8 @@ const ModalAddProduct = (props) => {
               margin="normal"
               value={productName}
               onChange={(e) => handleValidationProductName(e)}
-              // error={!validProductName}
-              // helperText={validProductName ? "" : "Hãy nhập tên sản phẩm"}
+            // error={!validProductName}
+            // helperText={validProductName ? "" : "Hãy nhập tên sản phẩm"}
             />
 
             <FormControl fullWidth margin="normal">
@@ -249,7 +249,7 @@ const ModalAddProduct = (props) => {
                       <MenuItem
                         key={value._id}
                         value={value._id}
-                        // onClick={(e) => hanldeClickCategory(e.target.value)}
+                      // onClick={(e) => hanldeClickCategory(e.target.value)}
                       >
                         {value.feature}
                       </MenuItem>

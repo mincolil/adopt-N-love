@@ -65,7 +65,7 @@ const CustomContainer = styled(Container)({
     "linear-gradient(to bottom, #F4BEB2, #F4BEB2, #ECDAD6, #E5E6E7, #73A1CC)",
 });
 
-const BASE_URL = "http://localhost:3500";
+const BASE_URL = "";
 
 const defaultTheme = createTheme();
 

@@ -77,7 +77,7 @@ export default function UserPRofile() {
   const handleGetUserById = async () => {
     try {
       const dataUser = await axios.get(
-        `http://localhost:3500/user/${context.auth.id}`
+        `/user/${context.auth.id}`
       );
       if (dataUser.error) {
         toast.error(dataUser.error);
@@ -114,7 +114,7 @@ export default function UserPRofile() {
     } else {
       try {
         const data = await axios.patch(
-          `http://localhost:3500/user/updateProfile`,
+          `/user/updateProfile`,
           {
             // _id: userId,
             fullname: fullname,
@@ -298,8 +298,8 @@ export default function UserPRofile() {
         </CustomContainer>
         <Footer />
         <div>
-        <FloatingDogImage />
-      </div>
+          <FloatingDogImage />
+        </div>
       </ThemeProvider >
     </>
   );

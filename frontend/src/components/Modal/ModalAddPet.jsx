@@ -115,7 +115,7 @@ const ModalAddPet = (props) => {
         const formData = new FormData();
         formData.append("image", image);
         const response = await axios.post(
-          `http://localhost:3500/pet/upload`,
+          `/pet/upload`,
           formData
         );
         if (image.size > maxSize) {
@@ -180,7 +180,7 @@ const ModalAddPet = (props) => {
       toast.error("Giống loại thú cưng không được để trống");
     } else {
       try {
-        const response = await axios.post("http://localhost:3500/pet", {
+        const response = await axios.post("/pet", {
           userId: data,
           petName,
           categoryId,

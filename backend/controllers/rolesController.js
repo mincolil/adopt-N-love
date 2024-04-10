@@ -99,32 +99,3 @@ module.exports = {
     deleteRole,
 }
 
-// const updateRole = async (req, res) => {
-//     try {
-//         const { id, roleName } = req.body
-
-//         if (!roleName) return res.status(500).json({
-//             error: "Role name are required"
-//         })
-
-//         const role = await Role.findById(id)
-//         if (!role) return res.status(404).json({
-//             error: "Role ID not found"
-//         })
-
-//         const duplicateRoleName = Role.findOne(roleName)
-//         if (!duplicateRoleName) return res.status(404).json({
-//             error: "Role name must be unique"
-//         })
-//         role.roleName = roleName
-//         await role.save()
-//         return res.status(200).json({
-//             message: "Role updated"
-//         })
-//     } catch (err) {
-//         console.log(err)
-//         res.status(500).json({
-//             error: err
-//         })
-//     }
-// }

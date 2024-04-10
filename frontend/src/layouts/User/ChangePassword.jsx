@@ -75,7 +75,7 @@ const ChangePassword = () => {
     } else {
       try {
         const response = await axios.put(
-          "http://localhost:3500/changePassword",
+          "/changePassword",
           {
             id: context.auth.id,
             oldPassword: oldPassword,

@@ -36,7 +36,7 @@ const Image = styled("img")({
   maxHeight: 400,
 });
 
-const BASE_URL = "http://localhost:3500";
+const BASE_URL = "";
 
 const ProductDetail = ({ open, onClose, product }) => {
   const [quantitySell, setQuantitySell] = useState(1);

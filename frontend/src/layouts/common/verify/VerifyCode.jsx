@@ -23,7 +23,7 @@ export default function VerifyCode() {
 
     const handleConfirmVerifyCode = async () => {
         try {
-            await axios.post("http://localhost:3500/verify",
+            await axios.post("/verify",
                 {
                     email: verifyEmail,
                     code: verifyCode

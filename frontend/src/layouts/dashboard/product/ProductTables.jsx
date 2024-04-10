@@ -46,7 +46,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 // };
 
 // -------------------------------API SERVER----------------------
-const BASE_URL = "http://localhost:3500";
+const BASE_URL = "";
 
 export default function ProductTable() {
   const [data, setData] = useState([]);
@@ -149,7 +149,7 @@ export default function ProductTable() {
   async function loadAllCategoryProduct() {
     try {
       const loadDataCategoryProduct = await axios.get(
-        `http://localhost:3500/category?categoryName=Sản phẩm`
+        `/category?categoryName=Sản phẩm`
       );
       if (loadDataCategoryProduct.error) {
         toast.error(loadDataCategoryProduct.error);
@@ -175,7 +175,7 @@ export default function ProductTable() {
     } else {
       try {
         const loadData = await axios.get(
-          `http://localhost:3500/product/manage?page=${page}&categoryId=${cateId}`
+          `/product/manage?page=${page}&categoryId=${cateId}`
         );
         if (loadData.error) {
           toast.error(loadData.error);

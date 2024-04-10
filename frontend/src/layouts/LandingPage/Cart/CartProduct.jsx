@@ -85,7 +85,7 @@ const showConfirmRemove = () => {
     if (product.quantity < product.productId.quantity) {
       try {
         const increaseCart = await axios.put(
-          `http://localhost:3500/cartProduct/update-cart`,
+          `/cartProduct/update-cart`,
           {
             productId: product.productId._id,
             quantity: product.quantity + 1,
@@ -114,7 +114,7 @@ const showConfirmRemove = () => {
     if (product.quantity > 1) {
       try {
         const descreaseCart = await axios.put(
-          `http://localhost:3500/cartProduct/update-cart`,
+          `/cartProduct/update-cart`,
           {
             productId: product.productId._id,
             quantity: product.quantity - 1,
@@ -155,7 +155,7 @@ const showConfirmRemove = () => {
       setLoged(true);
       try {
         const loadData = await axios.get(
-          `http://localhost:3500/cartProduct/view-cart`,
+          `/cartProduct/view-cart`,
           {
             headers: { Authorization: context.auth.token },
             withCredentials: true,
@@ -202,7 +202,7 @@ const showConfirmRemove = () => {
     if (await showConfirmRemove() ) {
       try {
         await axios
-          .delete(`http://localhost:3500/cartProduct/remove-from-cart/${id}`, {
+          .delete(`/cartProduct/remove-from-cart/${id}`, {
             headers: { Authorization: context.auth.token },
             withCredentials: true,
           })

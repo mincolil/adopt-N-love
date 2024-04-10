@@ -73,7 +73,7 @@ export default function ServicePurchase() {
         setSelectedStatus(option);
         await axios
           .get(
-            `http://localhost:3500/booking/get-all-booking-by-uid/${context.auth.id}`,
+            `/booking/get-all-booking-by-uid/${context.auth.id}`,
             {
               headers: { Authorization: context.auth.token },
               withCredentials: true,
@@ -117,7 +117,7 @@ export default function ServicePurchase() {
 
   const handleViewBookingDetail = async (id, option) => {
     try {
-      const data = await axios.get(`http://localhost:3500/bookingDetail/${id}`);
+      const data = await axios.get(`/bookingDetail/${id}`);
       if (data.error) {
         toast.error(data.error);
       } else {
@@ -134,20 +134,10 @@ export default function ServicePurchase() {
   // ----------------------------------------------------------------
 
   const handleRemoveOrder = async (id, status) => {
-    // console.log(id);
-    // try {
-    //   const booking = await axios.get(`http://localhost:3500/booking/get-booking/${id}`);
-    //   if (booking.data.status === "Đã thanh toán") {
-    //     toast.error("Dịch vụ đã thanh toán không thể huỷ");
-    //     return;
-    //   }
-    // } catch (err) {
-    //   console.log(err);
-    // }
     if (window.confirm("Bạn có muốn huỷ dịch vụ không ?") === true) {
       try {
         await axios
-          .put(`http://localhost:3500/booking/update-status/${id}`, {
+          .put(`/booking/update-status/${id}`, {
             bookingStatus: status,
           })
           .then((data) => {

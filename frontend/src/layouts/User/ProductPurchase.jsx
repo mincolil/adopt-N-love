@@ -60,7 +60,7 @@ export default function ProductPurchase() {
         setSelectedStatus(option);
         const loadData = await axios
           .get(
-            `http://localhost:3500/order/get-all-order-by-uid/${context.auth.id}`,
+            `/order/get-all-order-by-uid/${context.auth.id}`,
             {
               headers: { Authorization: context.auth.token },
               withCredentials: true,
@@ -103,7 +103,7 @@ export default function ProductPurchase() {
 
   const handleViewOrderDetail = async (id, option) => {
     try {
-      const data = await axios.get(`http://localhost:3500/orderDetail/${id}`);
+      const data = await axios.get(`/orderDetail/${id}`);
       if (data.error) {
         toast.error(data.error);
       } else {
@@ -126,7 +126,7 @@ export default function ProductPurchase() {
     ) {
       try {
         await axios
-          .put(`http://localhost:3500/order/update-status/${id}`, {
+          .put(`/order/update-status/${id}`, {
             orderStatus: status,
           })
           .then((data) => {

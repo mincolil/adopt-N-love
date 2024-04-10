@@ -36,7 +36,8 @@ export default function AccountMenu() {
   // --------------------- LOGOUT -----------------------------
   const navigate = useNavigate();
 
-  const clientId = "424228344980-l67mummet93pgl903qru8ejvjeoo098s.apps.googleusercontent.com";
+  // const clientId = "424228344980-l67mummet93pgl903qru8ejvjeoo098s.apps.googleusercontent.com";
+  const clientId = "424228344980-rs1e1chulrhg9uhc51u3p3q7espor5pd.apps.googleusercontent.com";
 
   const handleLogout = async (e) => {
     try {

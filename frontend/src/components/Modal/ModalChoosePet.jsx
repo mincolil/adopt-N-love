@@ -42,6 +42,9 @@ import SlotPicker from 'slotpicker';
 import dayjs from "dayjs";
 import { ToastContainer } from "react-toastify";
 
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { Modal } from 'antd';
+
 const ChoosePet = ({ open, onClose, service, pet, loadData, choosenPet }) => {
   const [data, setData] = useState([]);
   const [dataCart, setDataCart] = useState([]);
@@ -62,6 +65,25 @@ const ChoosePet = ({ open, onClose, service, pet, loadData, choosenPet }) => {
   useEffect(() => {
     setSelectedService(service);
   }, [service]);
+
+const { confirm } = Modal;
+const showConfirmPet = () => {
+  return new Promise((resolve, reject) => {
+    confirm({
+      title: 'Xác nhận',
+      icon: <ExclamationCircleFilled />,
+      content: 'Bạn có muốn cho thú cưng sử dụng dịch vụ này không ?',
+      okText: 'Đồng ý', 
+      cancelText: 'Hủy bỏ', 
+      onOk() {
+        resolve(true); // Trả về giá trị true khi người dùng nhấn OK
+      },
+      onCancel() {
+        resolve(false); // Trả về giá trị false khi người dùng nhấn Cancel
+      },
+    });
+  });
+};
 
   // ----------------------------------- API GET ALL PET BY USER ID--------------------------------
   useEffect(() => {
@@ -240,8 +262,9 @@ const ChoosePet = ({ open, onClose, service, pet, loadData, choosenPet }) => {
       return;
     } else {
       if (
-        window.confirm("Bạn có muốn cho thú cưng sử dụng dịch vụ này không ?") ===
-        true
+        // window.confirm("Bạn có muốn cho thú cưng sử dụng dịch vụ này không ?") ===
+        // true
+        await showConfirmPet()
       ) {
         const date = new Date(dateString(selectedDate, selectedTime));
         date.setUTCHours(date.getUTCHours() + 7);

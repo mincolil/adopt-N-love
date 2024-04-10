@@ -283,3 +283,29 @@ module.exports = {
     getRevenueStatisticsByPetType,
     getRevenuePetMonth
 }
+
+const getTotalBookingByDate1 = async (req, res) => {
+    try {
+        let { startDate, endDate } = req.query;
+
+        // kiểm tra nếu ngày bắt đầu và ngày kết thúc không có thì lấy tất cả
+        if (!startDate || !endDate) {
+            const totalBookings = await Booking.find({ status: 'Hoàn thành' });
+            return res.status(200).json({ totalBookings });
+        }
+
+        startDate = new Date(startDate);
+        endDate = new Date(endDate);
+
+        // lấy các booking có trạng thái "Hoàn thành" trong khoảng từ startDate đến endDate
+        const totalBookings = await Booking.find({
+            status: 'Hoàn thành',
+            createdAt: { $gte: startDate, $lte: endDate },
+        });
+
+        res.status(200).json({ totalBookings });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}

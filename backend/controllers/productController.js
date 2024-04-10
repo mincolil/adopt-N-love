@@ -198,6 +198,7 @@ const getProductById = async (req, res) => {
         // if (product!=) {
         // if (!product)
         //     res.status(204).json({ error: "Product not found" })
+        //     res.status(204)
         // } else {
           
         if (!product) {

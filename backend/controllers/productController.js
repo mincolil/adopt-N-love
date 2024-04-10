@@ -196,6 +196,7 @@ const getProductById = async (req, res) => {
         const product = await Product.findById(id);
 
         // if (product!=) {
+        // if (!product)
         //     res.status(204).json({ error: "Product not found" })
         // } else {
           

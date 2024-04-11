@@ -27,6 +27,7 @@ import ChoosePet from "../../../components/Modal/ModalChoosePet";
 import dayjs from "dayjs";
 import Comments from "../../../components/Comments/Comments";
 import FloatingDogImage from "../../../components/Floater/FloatingDogImage";
+import { notification } from 'antd';
 
 const BASE_URL = "";
 
@@ -65,6 +66,7 @@ const ServiceDetail = () => {
   const [selectedService, setSelectedService] = useState({});
   const [tab, setTab] = useState(0);
   const context = useAuth();
+  const [api, contextHolder] = notification.useNotification();
 
   const handleChangeTab = (event, newTab) => {
     setTab(newTab);
@@ -108,7 +110,7 @@ const ServiceDetail = () => {
 
   const handleAddToCartClick = async (serviceId) => {
     if (context.auth.token === undefined) {
-      toast.warning("Bạn chưa đăng nhập, vui lòng đăng nhập !");
+      openNotificationWithIcon('error', 'Vui lòng đăng nhập để đăng ký dịch vụ');
     } else {
       try {
         const loadDataPet = await axios.post(
@@ -140,10 +142,20 @@ const ServiceDetail = () => {
     }
   };
 
+  //------------------------ANT NOtification---------------------
+
+  const openNotificationWithIcon = (type, mess) => {
+    api[type]({
+      message: 'Notification Title',
+      description:
+        mess,
+    });
+  };
+
   return (
     <>
       <Header />
-
+      {contextHolder}
       <Container
         sx={{ position: "relative", top: "120px", marginBottom: "150px" }}
       >

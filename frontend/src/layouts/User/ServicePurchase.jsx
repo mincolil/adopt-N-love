@@ -38,6 +38,28 @@ import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
 // import dayjs from "dayjs";
 
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { Modal as AntModal } from 'antd';
+
+const { confirm } = AntModal;
+const showConfirmSePurch = () => {
+  return new Promise((resolve, reject) => {
+    confirm({
+      title: 'Xác nhận',
+      icon: <ExclamationCircleFilled />,
+      content: 'Bạn có muốn cập nhật trạng thái đơn hàng không ?',
+      okText: 'Đồng ý', 
+      cancelText: 'Hủy bỏ', 
+      onOk() {
+        resolve(true); // Trả về giá trị true khi người dùng nhấn OK
+      },
+      onCancel() {
+        resolve(false); // Trả về giá trị false khi người dùng nhấn Cancel
+      },
+    });
+  });
+};
+
 export default function ServicePurchase() {
   // const DEFAULT_PAGE = 1;
   // const DEFAULT_LIMIT = 5;
@@ -134,7 +156,8 @@ export default function ServicePurchase() {
   // ----------------------------------------------------------------
 
   const handleRemoveOrder = async (id, status) => {
-    if (window.confirm("Bạn có muốn huỷ dịch vụ không ?") === true) {
+    // if (window.confirm("Bạn có muốn huỷ dịch vụ không ?") === true) {
+    if (await showConfirmSePurch()) {  
       try {
         await axios
           .put(`/booking/update-status/${id}`, {

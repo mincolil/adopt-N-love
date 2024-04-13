@@ -31,6 +31,28 @@ import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import ButtonCustomize from "../../components/Button/Button";
 
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { Modal as AntModal } from 'antd';
+
+const { confirm } = AntModal;
+const showConfirmPurch = () => {
+  return new Promise((resolve, reject) => {
+    confirm({
+      title: 'Xác nhận',
+      icon: <ExclamationCircleFilled />,
+      content: 'Bạn có muốn cập nhật trạng thái đơn hàng không ?',
+      okText: 'Đồng ý', 
+      cancelText: 'Hủy bỏ', 
+      onOk() {
+        resolve(true); // Trả về giá trị true khi người dùng nhấn OK
+      },
+      onCancel() {
+        resolve(false); // Trả về giá trị false khi người dùng nhấn Cancel
+      },
+    });
+  });
+};
+
 export default function ProductPurchase() {
   // const DEFAULT_PAGE = 1;
   // const DEFAULT_LIMIT = 5;
@@ -121,8 +143,9 @@ export default function ProductPurchase() {
 
   const handleRemoveOrder = async (id, status) => {
     if (
-      window.confirm("Bạn có muốn cập nhật trạng thái đơn hàng không ?") ===
-      true
+      // window.confirm("Bạn có muốn cập nhật trạng thái đơn hàng không ?") ===
+      // true
+      await showConfirmPurch()
     ) {
       try {
         await axios

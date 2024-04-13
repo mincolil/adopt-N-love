@@ -41,6 +41,28 @@ import useAuth from "../../../hooks/useAuth";
 import dayjs from "dayjs";
 import FloatingDogImage from "../../../components/Floater/FloatingDogImage";
 
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { Modal } from 'antd';
+
+const { confirm } = Modal;
+const showConfirmPro = () => {
+  return new Promise((resolve, reject) => {
+    confirm({
+      title: 'Xác nhận',
+      icon: <ExclamationCircleFilled />,
+      content: 'Bạn có muốn thêm sản phẩm này không ?',
+      okText: 'Đồng ý', 
+      cancelText: 'Hủy bỏ', 
+      onOk() {
+        resolve(true); // Trả về giá trị true khi người dùng nhấn OK
+      },
+      onCancel() {
+        resolve(false); // Trả về giá trị false khi người dùng nhấn Cancel
+      },
+    });
+  });
+};
+
 const BASE_URL = "";
 
 const DsCheckbox = styled(Checkbox)`
@@ -75,7 +97,8 @@ function ProductItem({ product }) {
     if (context.auth.token === undefined) {
       alert("Bạn chưa đăng nhập, vui lòng đăng nhập !");
     } else if (
-      window.confirm("Bạn có muốn thêm sản phẩm này không ?") == true
+      // window.confirm("Bạn có muốn thêm sản phẩm này không ?") == true
+      await showConfirmPro()
     ) {
       try {
         const addProductToCart = await axios

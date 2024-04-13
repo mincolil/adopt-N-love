@@ -54,6 +54,23 @@ const showConfirmRemoveSe = () => {
     });
   });
 };
+const showConfirmSe = () => {
+  return new Promise((resolve, reject) => {
+    confirm({
+      title: 'Xác nhận',
+      icon: <ExclamationCircleFilled />,
+      content: 'Bạn có muốn sử dụng dịch vụ này ?',
+      okText: 'Đồng ý', 
+      cancelText: 'Hủy bỏ', 
+      onOk() {
+        resolve(true); 
+      },
+      onCancel() {
+        resolve(false); 
+      },
+    });
+  });
+};
 
 export default function CartService() {
   // const DEFAULT_PAGE = 1;
@@ -120,7 +137,8 @@ export default function CartService() {
   // ----------------------------------------------------------------
 
   const handleCheckOut = async () => {
-    if (window.confirm('Bạn có muốn sử dụng dịch vụ này ?') === true) {
+    // if (window.confirm('Bạn có muốn sử dụng dịch vụ này ?') === true) {
+    if (await showConfirmSe()) {  
       if (data.length === 0) {
         alert('Bạn không có dịch vụ trong giỏ hàng')
         return false

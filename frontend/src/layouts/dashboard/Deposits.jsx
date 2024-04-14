@@ -106,7 +106,7 @@ function DepositsDashboard(props) {
           <Title>Doanh thu sản phẩm theo tháng</Title>
           <div>
             <select style={selectStyle} onChange={handleSelectChange} value={selectedValue !== null ? selectedValue : ''}>
-              <option value={0} disabled>Tháng 1</option>
+              <option value={0} disabled>-- Chọn tháng --</option>
               {props.raw.revenueByMonth.map((value) => (
                 <option key={value.month} value={value.total}>
                   Tháng {value.month}

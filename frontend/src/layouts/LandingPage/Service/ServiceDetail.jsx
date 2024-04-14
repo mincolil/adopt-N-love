@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, NavLink } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import {
   Container,
@@ -10,8 +10,6 @@ import {
   Breadcrumbs,
   Tabs,
   Tab,
-  TextField,
-  Rating,
   Backdrop,
   CircularProgress,
 } from "@mui/material";
@@ -25,9 +23,9 @@ import { toast } from "react-toastify";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import ChoosePet from "../../../components/Modal/ModalChoosePet";
 import dayjs from "dayjs";
-import Comments from "../../../components/Comments/Comments";
 import FloatingDogImage from "../../../components/Floater/FloatingDogImage";
 import { notification } from 'antd';
+import CommentService from "../../../components/Comments/CommentsService";
 
 const BASE_URL = "";
 
@@ -315,7 +313,7 @@ const ServiceDetail = () => {
             <Typography paragraph>{service && service.description}</Typography>
           </TabPanel>
           <TabPanel value={tab} index={1}>
-            <Comments value={service._id} />
+            <CommentService value={service._id} />
           </TabPanel>
         </Box>
         {/* Choose Pet */}

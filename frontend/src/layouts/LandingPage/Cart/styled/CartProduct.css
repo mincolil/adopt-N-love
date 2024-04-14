@@ -4,6 +4,10 @@
   padding-bottom: 150px;
 }
 
+.main-content-cart p{
+  margin-bottom: 20px;
+}
+
 .custom_blog_title {
   font-size: 20px !important;
   letter-spacing: 0;

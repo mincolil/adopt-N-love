@@ -14,6 +14,8 @@ import {
   Typography,
   createTheme,
   ThemeProvider,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
 import { useState } from "react";
 import { useNavigate, useLocation, NavLink } from "react-router-dom";
@@ -23,8 +25,9 @@ import useAuth from "../../../hooks/useAuth";
 import { jwtDecode } from "jwt-decode";
 
 import GoogleLogin, { GoogleLogout } from "react-google-login";
-import { gapi } from "gapi-script";
 import styled from "styled-components";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const defaultTheme = createTheme();
 
@@ -154,6 +157,10 @@ const Login = () => {
     console.log("Login failed: res:", res);
   };
 
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleMouseDownPassword = () => setShowPassword(!showPassword);
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <ToastContainer />
@@ -173,23 +180,7 @@ const Login = () => {
         }}
       >
         <CssBaseline />
-        <Grid
-          item
-          xs={false}
-          sm={4}
-          md={7}
-          // sx={{
-          //   backgroundImage:
-          //     `url(${Background})`,
-          //   backgroundRepeat: "no-repeat",
-          //   backgroundColor: (t) =>
-          //     t.palette.mode === "light"
-          //       ? t.palette.grey[50]
-          //       : t.palette.grey[900],
-          //   backgroundSize: "cover",
-          //   backgroundPosition: "center",
-          // }}
-        />
+        <Grid item xs={false} sm={4} md={7} />
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <Box
             sx={{
@@ -243,11 +234,24 @@ const Login = () => {
                 fullWidth
                 name="password"
                 label="Mật khẩu"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 id="password"
                 autoComplete="current-password"
                 value={data.password}
                 onChange={(e) => setData({ ...data, password: e.target.value })}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                      >
+                        {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
               {/* <FormControlLabel
                   control={<Checkbox value="remember" color="primary" />}

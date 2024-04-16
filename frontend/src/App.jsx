@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./layouts/common/login/Login";
 import Register from "./layouts/common/register/Register";
 import Dashboard from "./layouts/dashboard/Dashboard";
@@ -11,7 +11,6 @@ import ProductTable from "./layouts/dashboard/product/ProductTables";
 import OrderTable from "./layouts/dashboard/order/OrderTable";
 import LandingPage from "./layouts/LandingPage/LandingPage";
 
-import Header from "./components/Header/Header";
 import ProductList from "./layouts/LandingPage/Product/ProductList";
 import BookingTable from "./layouts/dashboard/booking/BookingTable";
 import CartService from "./layouts/LandingPage/Cart/CartService";
@@ -44,9 +43,6 @@ import AdoptPageDetail from "./layouts/LandingPage/Adopt/AdoptPageDetail";
 import AdoptRequest from "./layouts/LandingPage/Cart/AdoptRequest";
 import BookingSlotTable from "./layouts/dashboard/booking/BookingSlotTable";
 
-
-// import AdminLayout from "./layouts/dashboard/layouts/Admin"
-// test commit
 
 const ROLES = {
   User: 2001,
@@ -123,7 +119,7 @@ function App() {
             <Route path="product-purchase" element={<ProductPurchase />} />
             <Route path="service-purchase" element={<ServicePurchase />} />
             <Route path="product-checkout" element={<ProductCheckout />} />
-            <Route path="reset-password" element={<ResetPassword />} />
+            <Route path="reset-password" element={<ResetPassword />} /> 
             <Route path="introduce-homepage" element={<Introduce />} />
             <Route path="service-checkout" element={<ServiceCheckout />} />
             <Route path="adopt-homepage/:petId" element={<AdoptPageDetail />} />

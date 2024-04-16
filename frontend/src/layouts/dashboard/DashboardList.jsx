@@ -1,20 +1,8 @@
 import * as React from "react";
-// import { useTheme } from "@mui/material/styles";
-// import {
-//   LineChart,
-//   Line,
-//   XAxis,
-//   YAxis,
-//   Label,
-//   ResponsiveContainer,
-// } from "recharts";
 import {
-  Box,
   Container,
   Grid,
   Paper,
-  // Toolbar,
-  // Typography,
 } from "@mui/material";
 import ChartDashBroad from "./Chart";
 import DepositsDashboard from "./Deposits";
@@ -26,14 +14,9 @@ import { PieChart } from '@mui/x-charts/PieChart';
 import axios from "axios";
 
 import { useEffect, useState } from "react";
-import { set } from "date-fns";
 
 export default function DashboardList() {
   // const context = useAuth()
-
-  // const theme = useTheme();
-
-  // const drawerWidth = 240;
 
   const [data, setData] = useState([]);
   const [dataBooking, setDataBooking] = useState([]);

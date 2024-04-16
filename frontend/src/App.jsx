@@ -119,7 +119,7 @@ function App() {
             <Route path="product-purchase" element={<ProductPurchase />} />
             <Route path="service-purchase" element={<ServicePurchase />} />
             <Route path="product-checkout" element={<ProductCheckout />} />
-            <Route path="reset-password" element={<ResetPassword />} />
+            <Route path="reset-password" element={<ResetPassword />} /> 
             <Route path="introduce-homepage" element={<Introduce />} />
             <Route path="service-checkout" element={<ServiceCheckout />} />
             <Route path="adopt-homepage/:petId" element={<AdoptPageDetail />} />

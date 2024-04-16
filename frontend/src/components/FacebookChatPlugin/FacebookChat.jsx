@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-const FacebookChat = () => {
+const FacebookChat = ({ pageId }) => {
   useEffect(() => {
     window.fbAsyncInit = function () {
       window.FB.init({
@@ -8,6 +8,7 @@ const FacebookChat = () => {
         version: "v14.0",
       });
     };
+
     (function (d, s, id) {
       var js,
         fjs = d.getElementsByTagName(s)[0];
@@ -17,17 +18,16 @@ const FacebookChat = () => {
       js.src = "https://connect.facebook.net/vi_VN/sdk/xfbml.customerchat.js";
       fjs.parentNode.insertBefore(js, fjs);
     })(document, "script", "facebook-jssdk");
-  }, []);
+
+    var chatbox = document.getElementById("fb-customer-chat");
+    chatbox.setAttribute("page_id", pageId);
+    chatbox.setAttribute("attribution", "biz_inbox");
+  }, [pageId]);
 
   return (
     <div>
       <div id="fb-root"></div>
-      <div
-        id="fb-customer-chat"
-        className="fb-customerchat"
-        page_id="261557497046784"
-        attribution="biz_inbox"
-      ></div>
+      <div id="fb-customer-chat" className="fb-customerchat"></div>
     </div>
   );
 };

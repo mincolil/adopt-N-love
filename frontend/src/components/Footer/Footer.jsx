@@ -23,8 +23,8 @@ import { MessengerChat } from "react-messenger-chat-plugin";
 const Footer = () => {
   return (
     <Box sx={{ backgroundColor: "#f8f8f8" }}>
-      <MessengerChat pageId="109268111769502" />
-      {/* <FacebookChat /> */}
+      <MessengerChat pageId="261557497046784" />
+      {/* <FacebookChat pageId="261557497046784" /> */}
       <Box className="footer_top">
         <Container>
           <Grid container spacing={3}>

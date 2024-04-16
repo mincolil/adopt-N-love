@@ -213,26 +213,7 @@ const getProfile = async (req, res) => {
     }
 }
 
-const forgotPassword = async (req, res) => {
-    const { email } = req.body
-    try {
-        const user = await User.findOne({ email: email })
-        if (!user) {
-            res.json("Email không tồn tại")
-        } else {
-            const verifyCode = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
 
-            user.verifyCode = verifyCode
-            user.save()
-
-            mailer.sendMail(user.email, "Verify Email", "Verify code: " + verifyCode.toString())
-            res.status(200).json({ message: "Check your email to get verify code" })
-        }
-    } catch (error) {
-        console.log(error)
-        res.json(error)
-    }
-}
 
 //check email đã tồn tại hay chưa
 const check = async (req, res) => {

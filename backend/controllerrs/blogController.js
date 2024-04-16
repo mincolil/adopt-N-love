@@ -10,7 +10,7 @@ const createBlog = async (req, res) => {
             title,
             content,
             userId,
-            image: imageUrl, // Save the image path or URL here
+            image: imageUrl,
         });
 
         const savedBlog = await newBlog.save();
@@ -31,7 +31,7 @@ const getAllBlog = async (req, res) => {
         const options = {
             page: parseInt(page) || 1,
             limit: parseInt(limit) || 10,
-            sort: { createdAt: -1 }, // mắc định sắp xếp theo thời gian gần đây nhất
+            sort: { createdAt: -1 }, 
             populate: 'userId',
         }
         if (sort === 'acs') {

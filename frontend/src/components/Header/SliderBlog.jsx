@@ -20,7 +20,7 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
-const BASE_URL = "http://localhost:3500";
+const BASE_URL = "";
 export default function BlogSlider({ loadBlogById }) {
   const [data, setData] = useState([]);
   const navigate = useNavigate();

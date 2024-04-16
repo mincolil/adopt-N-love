@@ -48,7 +48,7 @@ export default function Comments({ value }) {
     // console.log("Check id", id);
     try {
       const loadDataFeedback = await axios.get(
-        `http://localhost:3500/feedback/product?productId=${id}&limit=3&page=${page}`
+        `/feedback/product?productId=${id}&limit=3&page=${page}`
       );
       if (loadDataFeedback.error) {
         toast.error(loadDataFeedback.error);
@@ -78,7 +78,7 @@ export default function Comments({ value }) {
       try {
         const addComment = await axios
           .post(
-            `http://localhost:3500/feedback/product`,
+            `/feedback/product`,
             {
               productId: id,
               comment: comment,

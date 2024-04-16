@@ -17,10 +17,12 @@ import GoogleIcon from "@mui/icons-material/Google";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import "./Footer.css";
 import Logo from "../../images/logo.png";
+import FacebookChat from "../FacebookChatPlugin/FacebookChat";
 
 const Footer = () => {
   return (
     <Box sx={{ backgroundColor: "#f8f8f8" }}>
+      <FacebookChat />
       <Box className="footer_top">
         <Container>
           <Grid container spacing={3}>

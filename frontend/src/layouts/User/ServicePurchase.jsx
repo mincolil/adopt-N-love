@@ -38,6 +38,28 @@ import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
 // import dayjs from "dayjs";
 
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { Modal as AntModal } from 'antd';
+
+const { confirm } = AntModal;
+const showConfirmSePurch = () => {
+  return new Promise((resolve, reject) => {
+    confirm({
+      title: 'Xác nhận',
+      icon: <ExclamationCircleFilled />,
+      content: 'Bạn có muốn cập nhật trạng thái đơn hàng không ?',
+      okText: 'Đồng ý', 
+      cancelText: 'Hủy bỏ', 
+      onOk() {
+        resolve(true); // Trả về giá trị true khi người dùng nhấn OK
+      },
+      onCancel() {
+        resolve(false); // Trả về giá trị false khi người dùng nhấn Cancel
+      },
+    });
+  });
+};
+
 export default function ServicePurchase() {
   // const DEFAULT_PAGE = 1;
   // const DEFAULT_LIMIT = 5;
@@ -72,13 +94,10 @@ export default function ServicePurchase() {
         setStatus(option);
         setSelectedStatus(option);
         await axios
-          .get(
-            `http://localhost:3500/booking/get-all-booking-by-uid/${context.auth.id}`,
-            {
-              headers: { Authorization: context.auth.token },
-              withCredentials: true,
-            }
-          )
+          .get(`/booking/get-all-booking-by-uid/${context.auth.id}`, {
+            headers: { Authorization: context.auth.token },
+            withCredentials: true,
+          })
           .then((data) => {
             const filterData = [];
             // console.log(option)
@@ -102,8 +121,7 @@ export default function ServicePurchase() {
   const { auth } = context;
 
   useEffect(() => {
-    if (auth)
-      handleLoadCartServiceById(DEFAULT_STATUS);
+    if (auth) handleLoadCartServiceById(DEFAULT_STATUS);
   }, [auth]);
 
   // ----------------------------------------------------------------
@@ -117,7 +135,7 @@ export default function ServicePurchase() {
 
   const handleViewBookingDetail = async (id, option) => {
     try {
-      const data = await axios.get(`http://localhost:3500/bookingDetail/${id}`);
+      const data = await axios.get(`/bookingDetail/${id}`);
       if (data.error) {
         toast.error(data.error);
       } else {
@@ -134,33 +152,23 @@ export default function ServicePurchase() {
   // ----------------------------------------------------------------
 
   const handleRemoveOrder = async (id, status) => {
-    // console.log(id);
-    // try {
-    //   const booking = await axios.get(`http://localhost:3500/booking/get-booking/${id}`);
-    //   if (booking.data.status === "Đã thanh toán") {
-    //     toast.error("Dịch vụ đã thanh toán không thể huỷ");
-    //     return;
-    //   }
-    // } catch (err) {
-    //   console.log(err);
-    // }
-    if (window.confirm("Bạn có muốn huỷ dịch vụ không ?") === true) {
+    // if (window.confirm("Bạn có muốn huỷ dịch vụ không ?") === true) {
+    if (await showConfirmSePurch()) {  
       try {
         await axios
-          .put(`http://localhost:3500/booking/update-status/${id}`, {
+          .put(`/booking/update-status/${id}`, {
             bookingStatus: status,
           })
           .then((data) => {
             handleLoadCartServiceById(status);
             handleClose();
           })
-          .catch((error) => { });
+          .catch((error) => {});
       } catch (err) {
         console.log(err);
       }
     }
   };
-
 
   // ----------------------------------------------------------------
 
@@ -198,7 +206,14 @@ export default function ServicePurchase() {
     backgroundColor: "rgb(255 87 34 / 22%)",
   };
 
-  const statusList = ["Chờ xác nhận", "Đã thanh toán", "Yêu cầu huỷ", "Đang xử lý", "Hoàn thành", "Huỷ"];
+  const statusList = [
+    "Chờ xác nhận",
+    "Đã thanh toán",
+    "Yêu cầu huỷ",
+    "Đang xử lý",
+    "Hoàn thành",
+    "Huỷ",
+  ];
 
   const numberToVND = (number) => {
     return number.toLocaleString("vi-VN", {
@@ -349,11 +364,27 @@ export default function ServicePurchase() {
                             {value.petId !== null ? value.pet.petName : ""}
                           </TableCell>
                           <TableCell align="left">
-                            {value.serviceId !== null
-                              ? value.service.serviceName
-                              : ""}
+                            {value.serviceId !== null ? (
+                              <Button
+                                onClick={() =>
+                                  handleFeedBack(value.service._id)
+                                }
+                                variant="text"
+                                sx={{
+                                  p: 0,
+                                  color: "#121212",
+                                  textTransform: "none",
+                                }}
+                              >
+                                {value.service.serviceName}
+                              </Button>
+                            ) : (
+                              ""
+                            )}
                           </TableCell>
-                          <TableCell align="left"><DateFormat date={value.bookingDate} /></TableCell>
+                          <TableCell align="left">
+                            <DateFormat date={value.bookingDate} />
+                          </TableCell>
                           <TableCell align="left">{value.price}</TableCell>
                           <TableCell align="left">
                             {status === "Hoàn thành" ? (

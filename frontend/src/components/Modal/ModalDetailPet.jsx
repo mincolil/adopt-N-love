@@ -123,7 +123,7 @@ const ModalDetailPet = (props) => {
             const formData = new FormData();
             formData.append("image", petImage);
             const response = await axios.post(
-                `http://localhost:3500/pet/upload`,
+                `/pet/upload`,
                 formData
             );
             const maxSize = 1024 * 1024;
@@ -182,7 +182,7 @@ const ModalDetailPet = (props) => {
     const handleLoadBookingByPetId = async (petId) => {
         try {
             const loadData = await axios.get(
-                `http://localhost:3500/bookingDetail/history/${petId}`
+                `/bookingDetail/history/${petId}`
             );
             if (loadData.error) {
                 toast.error(loadData.error);

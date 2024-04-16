@@ -96,7 +96,7 @@ export default function ModalCreateAndUpdateUser(props) {
     // e.preventDefault();
     // const { fullname, email, password } = data;
     try {
-      const data = await axios.post("http://localhost:3500/register", {
+      const data = await axios.post("/register", {
         fullname,
         email,
         password,
@@ -233,7 +233,7 @@ export default function ModalCreateAndUpdateUser(props) {
                   row
                   aria-label="Giới tính"
                   name="gender"
-                  // label="Giới tính"
+                // label="Giới tính"
                 >
                   <FormControlLabel
                     value={true}

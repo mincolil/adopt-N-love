@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
 
     const handleLoadCartProduct = async () => {
         try {
-            await axios.get(`http://localhost:3500/cartProduct/view-cart`, {
+            await axios.get(`/cartProduct/view-cart`, {
                 headers: { Authorization: auth.token },
                 withCredentials: true,
             })
@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
 
     const handleLoadCartService = async () => {
         try {
-            await axios.get(`http://localhost:3500/cartService/view-cart`, {
+            await axios.get(`/cartService/view-cart`, {
                 headers: { Authorization: auth.token },
                 withCredentials: true,
             })
@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
 
     const handleLoadAdoptRequest = async () => {
         try {
-            await axios.get(`http://localhost:3500/adopt/getAdoptNotification/all`, {
+            await axios.get(`/adopt/getAdoptNotification/all`, {
                 headers: { Authorization: auth.token },
                 withCredentials: true,
             })

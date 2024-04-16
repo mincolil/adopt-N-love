@@ -1,20 +1,8 @@
 import * as React from "react";
-// import { useTheme } from "@mui/material/styles";
-// import {
-//   LineChart,
-//   Line,
-//   XAxis,
-//   YAxis,
-//   Label,
-//   ResponsiveContainer,
-// } from "recharts";
 import {
-  Box,
   Container,
   Grid,
   Paper,
-  // Toolbar,
-  // Typography,
 } from "@mui/material";
 import ChartDashBroad from "./Chart";
 import DepositsDashboard from "./Deposits";
@@ -26,14 +14,9 @@ import { PieChart } from '@mui/x-charts/PieChart';
 import axios from "axios";
 
 import { useEffect, useState } from "react";
-import { set } from "date-fns";
 
 export default function DashboardList() {
   // const context = useAuth()
-
-  // const theme = useTheme();
-
-  // const drawerWidth = 240;
 
   const [data, setData] = useState([]);
   const [dataBooking, setDataBooking] = useState([]);
@@ -49,7 +32,7 @@ export default function DashboardList() {
 
   async function loadAllOrder() {
     try {
-      await axios.get(`http://localhost:3500/dashboard/order`)
+      await axios.get(`/dashboard/order`)
         .then((data) => {
           let price = 0;
 
@@ -65,7 +48,7 @@ export default function DashboardList() {
 
   async function loadAllBooking() {
     try {
-      await axios.get(`http://localhost:3500/serviceDashboard/booking`)
+      await axios.get(`/serviceDashboard/booking`)
         .then((data) => {
           setDataBooking(data.data.totalBookings)
         })
@@ -77,7 +60,7 @@ export default function DashboardList() {
     try {
       let totalRevenue = 0;
       await axios
-        .get(`http://localhost:3500/dashboard/revenue-statistics`)
+        .get(`/dashboard/revenue-statistics`)
         .then((data) => {
           data.data.revenueByMonth.map((value) => {
             totalRevenue += value.total
@@ -92,7 +75,7 @@ export default function DashboardList() {
   async function revenueServiceStatistics() {
     try {
       await axios
-        .get(`http://localhost:3500/serviceDashboard/revenue-statistics`)
+        .get(`/serviceDashboard/revenue-statistics`)
         .then((data) => {
           setServiceRaw(data.data)
         });
@@ -102,7 +85,7 @@ export default function DashboardList() {
 
   async function loadAllCustomer() {
     try {
-      await axios.get(`http://localhost:3500/dashboard/customer`)
+      await axios.get(`/dashboard/customer`)
         .then((data) => {
           let customer = 0;
           let staff = 0;
@@ -123,7 +106,7 @@ export default function DashboardList() {
 
   async function loadAllPet() {
     try {
-      await axios.get(`http://localhost:3500/pet`)
+      await axios.get(`/pet`)
         .then((data) => {
           setPet(data.data.total)
         })
@@ -133,7 +116,7 @@ export default function DashboardList() {
 
   async function loadRevenueService() {
     try {
-      await axios.get(`http://localhost:3500/serviceDashboard/revenue`)
+      await axios.get(`/serviceDashboard/revenue`)
         .then((data) => {
           setRevenueService(data.data[0].total)
         })
@@ -143,7 +126,7 @@ export default function DashboardList() {
 
   async function loadRevenueServiceByPetType() {
     try {
-      await axios.get(`http://localhost:3500/serviceDashboard/revenue-statistics-by-pet-type`)
+      await axios.get(`/serviceDashboard/revenue-statistics-by-pet-type`)
         .then((data) => {
           console.log(data)
           setRevenueServiceByPetType(data.data)

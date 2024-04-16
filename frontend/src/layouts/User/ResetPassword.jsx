@@ -42,7 +42,7 @@ const ResetPassword = () => {
       setCheckVerifyCode(false);
       try {
         const response = await axios
-          .post("http://localhost:3500/forgot-password", {
+          .post("/forgot-password", {
             email: email,
           })
           .then((data) => {
@@ -59,7 +59,7 @@ const ResetPassword = () => {
       alert("Vui lòng nhập đúng định dạng Email !");
     } else {
       try {
-        await axios.post("http://localhost:3500/verify", {
+        await axios.post("/verify", {
           email: email,
           code: verifyCode,
         })
@@ -95,7 +95,7 @@ const ResetPassword = () => {
       alert("Vui lòng nhập đúng định dạng email");
     } else {
       try {
-        await axios.post("http://localhost:3500/new-password", {
+        await axios.post("/new-password", {
           email: email,
           password: password,
         })

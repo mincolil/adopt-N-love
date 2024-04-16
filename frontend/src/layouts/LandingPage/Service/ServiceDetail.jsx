@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, NavLink } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import {
   Container,
@@ -10,8 +10,6 @@ import {
   Breadcrumbs,
   Tabs,
   Tab,
-  TextField,
-  Rating,
   Backdrop,
   CircularProgress,
 } from "@mui/material";
@@ -25,10 +23,11 @@ import { toast } from "react-toastify";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import ChoosePet from "../../../components/Modal/ModalChoosePet";
 import dayjs from "dayjs";
-import Comments from "../../../components/Comments/Comments";
 import FloatingDogImage from "../../../components/Floater/FloatingDogImage";
+import { notification } from 'antd';
+import CommentService from "../../../components/Comments/CommentsService";
 
-const BASE_URL = "http://localhost:3500";
+const BASE_URL = "";
 
 const numberToVND = (number) => {
   return number.toLocaleString("vi-VN", {
@@ -65,6 +64,7 @@ const ServiceDetail = () => {
   const [selectedService, setSelectedService] = useState({});
   const [tab, setTab] = useState(0);
   const context = useAuth();
+  const [api, contextHolder] = notification.useNotification();
 
   const handleChangeTab = (event, newTab) => {
     setTab(newTab);
@@ -108,11 +108,11 @@ const ServiceDetail = () => {
 
   const handleAddToCartClick = async (serviceId) => {
     if (context.auth.token === undefined) {
-      toast.warning("Bạn chưa đăng nhập, vui lòng đăng nhập !");
+      openNotificationWithIcon('error', 'Vui lòng đăng nhập để đăng ký dịch vụ');
     } else {
       try {
         const loadDataPet = await axios.post(
-          `http://localhost:3500/pet/booking`,
+          `/pet/booking`,
           {
             userId: context.auth.id,
             serviceId: serviceId,
@@ -140,10 +140,20 @@ const ServiceDetail = () => {
     }
   };
 
+  //------------------------ANT NOtification---------------------
+
+  const openNotificationWithIcon = (type, mess) => {
+    api[type]({
+      message: 'Notification Title',
+      description:
+        mess,
+    });
+  };
+
   return (
     <>
       <Header />
-
+      {contextHolder}
       <Container
         sx={{ position: "relative", top: "120px", marginBottom: "150px" }}
       >
@@ -303,7 +313,7 @@ const ServiceDetail = () => {
             <Typography paragraph>{service && service.description}</Typography>
           </TabPanel>
           <TabPanel value={tab} index={1}>
-            <Comments value={service._id} />
+            <CommentService value={service._id} />
           </TabPanel>
         </Box>
         {/* Choose Pet */}

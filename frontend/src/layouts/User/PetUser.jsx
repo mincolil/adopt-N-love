@@ -49,7 +49,7 @@ export default function PetUser() {
     console.log("Kiểm tra page", page);
     try {
       const loadDataPet = await axios.get(
-        `http://localhost:3500/pet/userid?id=${context.auth.id}&limit=2&page=${page}`
+        `/pet/userid?id=${context.auth.id}&limit=2&page=${page}`
       );
       if (loadDataPet.error) {
         openNotificationWithIcon('error', 'Lỗi tải dữ liệu thú cưng');
@@ -126,7 +126,7 @@ export default function PetUser() {
   async function loadAllCategoryPet() {
     try {
       const loadDataCategoryPet = await axios.get(
-        `http://localhost:3500/category?categoryName=Thú cưng`
+        `/category?categoryName=Thú cưng`
       );
       if (loadDataCategoryPet.error) {
         openNotificationWithIcon('error', 'Lỗi tải dữ liệu danh mục');
@@ -146,7 +146,7 @@ export default function PetUser() {
   //---------------------- HNADLE ADOPT PET -----------------------------
   const handleAdoptPet = (pet) => {
     try {
-      const updatePet = axios.patch(`http://localhost:3500/pet/adopt`, {
+      const updatePet = axios.patch(`/pet/adopt`, {
         id: pet._id,
         forAdoption: !pet.forAdoption,
       });

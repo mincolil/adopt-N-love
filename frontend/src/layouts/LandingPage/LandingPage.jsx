@@ -16,19 +16,16 @@ import AdaptIcon1 from "../../images/adapt_icon_1.png";
 import AdaptIcon2 from "../../images/adapt_icon_2.png";
 import Avatar1 from "../../images/avatar1.png";
 import { ToastContainer } from "react-toastify";
-import { notification, Space } from 'antd';
+import { notification, Space } from "antd";
 import axios from "axios";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Button as AntButton } from "antd";
 import FloatingDogImage from "../../components/Floater/FloatingDogImage";
-import { Alert } from 'antd';
+import { Alert } from "antd";
 
-
-
-const BASE_URL = "http://localhost:3500";
+const BASE_URL = "";
 
 const onClose = (e) => {
-  console.log(e, 'I was closed.');
+  console.log(e, "I was closed.");
 };
 
 const Counter = ({ target }) => {
@@ -83,8 +80,10 @@ function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`${BASE_URL}/pet/userId?id=${context.auth.id}`);
-        const count = res.data.docs.filter(pet => pet.discount > 0).length;
+        const res = await axios.get(
+          `${BASE_URL}/pet/userId?id=${context.auth.id}`
+        );
+        const count = res.data.docs.filter((pet) => pet.discount > 0).length;
         setHasDiscount(count > 0);
       } catch (error) {
         console.log(error);
@@ -94,33 +93,23 @@ function Home() {
     fetchData();
   }, [context.auth.id]);
 
-  const btn = (
-    <Space>
-      {/* button to /pet-user */}
-      <div>
-        <AntButton type="primary" size="small" component={NavLink} to="/pet-user">
-          Xem chi tiết
-        </AntButton>
-      </div>
-    </Space>
-  );
-
   const [api, contextHolder] = notification.useNotification();
 
   //--------------------------------------------LOAD PAGE
   const { auth } = context;
 
-
   return (
     <>
       <Header />
       {hasDiscount && (
-        <div style={{
-          position: 'fixed',
-          bottom: '180px',
-          right: '10px',
-          zIndex: '9999',
-        }}>
+        <div
+          style={{
+            position: "fixed",
+            bottom: "180px",
+            right: "10px",
+            zIndex: "9999",
+          }}
+        >
           <Alert
             message="Thú cưng của bạn có ưu đãi!"
             description="Hãy kiểm tra ngay"
@@ -129,7 +118,7 @@ function Home() {
             closable
             onClose={onClose}
             style={{
-              width: '250px',
+              width: "250px",
             }}
           />
         </div>
@@ -162,8 +151,8 @@ function Home() {
                 fontSize: "4rem",
               }}
             >
-              Chăm sóc<br />{" "}
-              Nhận nuôi
+              Chăm sóc
+              <br /> Nhận nuôi
             </Typography>
             <Typography
               sx={{
@@ -172,21 +161,10 @@ function Home() {
                 fontFamily: "'Poppins', sans-serif",
               }}
             >
-              Chúng tôi chăm sóc thú cưng của bạn với dịch vụ tốt nhất <br /> Nhận nuôi nhưng chú chó và mèo cần tìm một mái nhà mới
+              Chúng tôi chăm sóc thú cưng của bạn với dịch vụ tốt nhất <br />{" "}
+              Nhận nuôi nhưng chú chó và mèo cần tìm một mái nhà mới
             </Typography>
-            <Button
-              variant="contained"
-              sx={{
-                backgroundColor: "#fff",
-                color: "#ff3500",
-                borderRadius: "30px",
-                padding: "17px 50px",
-                textTransform: "none",
-                fontSize: "1rem",
-              }}
-            >
-              Liên hệ
-            </Button>
+            <Button variant="contained">Liên hệ</Button>
           </Grid>
         </Container>
         <Box
@@ -199,9 +177,13 @@ function Home() {
         <Grid container justifyContent="center">
           <Grid item lg={7} md={10}>
             <Box className="section_title">
-              <Typography variant="h3">Trải nhiệm những dịch vụ của chúng tôi</Typography>
+              <Typography variant="h3">
+                Trải nhiệm những dịch vụ của chúng tôi
+              </Typography>
               <Typography variant="h4">
-                Việc chăm sóc bệnh nhân là rất quan trọng, bệnh nhân sẽ được bệnh nhân theo dõi, nhưng đó là thời điểm vô cùng đau đớn và khổ sở.
+                Việc chăm sóc bệnh nhân là rất quan trọng, bệnh nhân sẽ được
+                bệnh nhân theo dõi, nhưng đó là thời điểm vô cùng đau đớn và khổ
+                sở.
               </Typography>
             </Box>
           </Grid>
@@ -210,10 +192,7 @@ function Home() {
           <Grid className="single_service" item md={3}>
             <Box className="service_thumb">
               <Box className="service_icon">
-                <img
-                  src={ServiceIcon1}
-                  alt=""
-                />
+                <img src={ServiceIcon1} alt="" />
               </Box>
             </Box>
             <Box className="service_content">
@@ -227,10 +206,7 @@ function Home() {
           <Grid className="single_service" item md={3}>
             <Box className="service_thumb">
               <Box className="service_icon">
-                <img
-                  src={ServiceIcon2}
-                  alt=""
-                />
+                <img src={ServiceIcon2} alt="" />
               </Box>
             </Box>
             <Box className="service_content">
@@ -244,10 +220,7 @@ function Home() {
           <Grid className="single_service" item md={3}>
             <Box className="service_thumb">
               <Box className="service_icon">
-                <img
-                  src={ServiceIcon3}
-                  alt=""
-                />
+                <img src={ServiceIcon3} alt="" />
               </Box>
             </Box>
             <Box className="service_content">
@@ -271,7 +244,9 @@ function Home() {
                     giúp chúng tôi nhận nuôi
                   </Typography>
                   <Typography variant="h4">
-                    Những con vật đáng thương này chưa có gia đình để chăm sóc, chúng xứng đáng có được tình yêu thương. Đó là một điêu tuyệt vời
+                    Những con vật đáng thương này chưa có gia đình để chăm sóc,
+                    chúng xứng đáng có được tình yêu thương. Đó là một điêu
+                    tuyệt vời
                   </Typography>
                   <Button
                     href="contact.html"
@@ -288,10 +263,7 @@ function Home() {
                 <Grid container alignItems="center" spacing={4}>
                   <Grid item lg={6} md={6}>
                     <Box className="single_adapt text-center">
-                      <img
-                        src={AdaptIcon1}
-                        alt=""
-                      />
+                      <img src={AdaptIcon1} alt="" />
                       <Box className="adapt_content">
                         <Counter target={452} />
                         <Typography variant="h4">Pets Available</Typography>
@@ -300,20 +272,14 @@ function Home() {
                   </Grid>
                   <Grid item lg={6} md={6}>
                     <Box className="single_adapt text-center">
-                      <img
-                        src={AdaptIcon1}
-                        alt=""
-                      />
+                      <img src={AdaptIcon1} alt="" />
                       <Box className="adapt_content">
                         <Counter target={52} />
                         <Typography variant="h4">Pets Available</Typography>
                       </Box>
                     </Box>
                     <Box className="single_adapt text-center">
-                      <img
-                        src={AdaptIcon2}
-                        alt=""
-                      />
+                      <img src={AdaptIcon2} alt="" />
                       <Box className="adapt_content">
                         <Counter target={52} />
                         <Typography variant="h4">Pets Available</Typography>
@@ -331,10 +297,7 @@ function Home() {
           <Grid container alignItems="center">
             <Grid item lg={5} md={5}>
               <Box className="pet_thumb">
-                <img
-                  src={Cat}
-                  alt=""
-                />
+                <img src={Cat} alt="" />
               </Box>
             </Grid>
             <Grid item lg={6} lgOffset={1} mdOffset={1} md={6}>
@@ -344,7 +307,8 @@ function Home() {
                 </Typography>
                 <Typography variant="h4">
                   Những con vật đáng thương này chưa có gia đình để chăm sóc{" "}
-                  <br /> chúng xứng đáng có được tình yêu thương. <br /> Đó là một điêu tuyệt vời <br />
+                  <br /> chúng xứng đáng có được tình yêu thương. <br /> Đó là
+                  một điêu tuyệt vời <br />
                   viverra maecenas accumsan.
                 </Typography>
                 <Button

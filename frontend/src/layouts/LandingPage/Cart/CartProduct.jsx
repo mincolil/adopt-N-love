@@ -31,6 +31,9 @@ import dayjs from "dayjs";
 import Grid from "@mui/material/Unstable_Grid2";
 import { notification, Space } from 'antd';
 
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { Modal } from 'antd';
+
 export default function CartProduct() {
   const navigate = useNavigate();
 
@@ -58,12 +61,31 @@ export default function CartProduct() {
     });
   };
 
+const { confirm } = Modal;
+const showConfirmRemove = () => {
+  return new Promise((resolve, reject) => {
+    confirm({
+      title: 'Xác nhận',
+      icon: <ExclamationCircleFilled />,
+      content: 'Bạn có chắc muốn xoá sản phẩm này không ?',
+      okText: 'Đồng ý', 
+      cancelText: 'Hủy bỏ', 
+      onOk() {
+        resolve(true); // Trả về giá trị true khi người dùng nhấn OK
+      },
+      onCancel() {
+        resolve(false); // Trả về giá trị false khi người dùng nhấn Cancel
+      },
+    });
+  });
+};
+
   // -----------------------HANDLE INCREASE QUANTITY-----------------------
   const handleIncreaseQuantity = async (product) => {
     if (product.quantity < product.productId.quantity) {
       try {
         const increaseCart = await axios.put(
-          `http://localhost:3500/cartProduct/update-cart`,
+          `/cartProduct/update-cart`,
           {
             productId: product.productId._id,
             quantity: product.quantity + 1,
@@ -92,7 +114,7 @@ export default function CartProduct() {
     if (product.quantity > 1) {
       try {
         const descreaseCart = await axios.put(
-          `http://localhost:3500/cartProduct/update-cart`,
+          `/cartProduct/update-cart`,
           {
             productId: product.productId._id,
             quantity: product.quantity - 1,
@@ -133,7 +155,7 @@ export default function CartProduct() {
       setLoged(true);
       try {
         const loadData = await axios.get(
-          `http://localhost:3500/cartProduct/view-cart`,
+          `/cartProduct/view-cart`,
           {
             headers: { Authorization: context.auth.token },
             withCredentials: true,
@@ -176,10 +198,11 @@ export default function CartProduct() {
   }, []);
 
   const handleDeleteOrder = async (id) => {
-    if (window.confirm("Bạn có chắc muốn xoá sản phẩm này không ?") === true) {
+    // window.confirm("Bạn có chắc muốn xoá sản phẩm này không ?") === true
+    if (await showConfirmRemove() ) {
       try {
         await axios
-          .delete(`http://localhost:3500/cartProduct/remove-from-cart/${id}`, {
+          .delete(`/cartProduct/remove-from-cart/${id}`, {
             headers: { Authorization: context.auth.token },
             withCredentials: true,
           })

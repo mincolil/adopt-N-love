@@ -68,7 +68,7 @@ const Header = () => {
   return (
     <DsAppBar position="fixed" style={{ backgroundColor: "#ffffff" }}>
       <Container>
-        <Grid container alignItems="center">
+        <Grid container alignItems="center" justifyContent="space-between">
           {/* Logo */}
           <Grid item xl={3}>
             <Typography variant="h6">

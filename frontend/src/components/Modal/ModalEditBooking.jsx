@@ -91,7 +91,7 @@ const EditBooking = ({ open, onClose, service, petId, loadData, bookingData }) =
     async function loadAllCategoryPet() {
         try {
             const loadDataCategoryPet = await axios.get(
-                `http://localhost:3500/category?categoryName=Thú cưng`
+                `/category?categoryName=Thú cưng`
             );
             if (loadDataCategoryPet.error) {
                 toast.error(loadDataCategoryPet.error);
@@ -113,7 +113,7 @@ const EditBooking = ({ open, onClose, service, petId, loadData, bookingData }) =
     const loadCategorySlot = async () => {
         try {
             if (!context.auth.serviceId) return;
-            const loadDataCategorySlot = await axios.get(`http://localhost:3500/service/${context.auth.serviceId}`);
+            const loadDataCategorySlot = await axios.get(`/service/${context.auth.serviceId}`);
             const categorySlot = loadDataCategorySlot.data.categoryId.slot;
             console.log("slot con:" + categorySlot);
             setCategorySlot(categorySlot);
@@ -129,7 +129,7 @@ const EditBooking = ({ open, onClose, service, petId, loadData, bookingData }) =
     // ------------------------------- HANDLE CHECK EMPTY SLOT ------------------------------
     const checkEmptySlot = async (date) => {
         try {
-            const totalSlots = await axios.get('http://localhost:3500/bookingDetail/bookingDate/' + date);
+            const totalSlots = await axios.get('/bookingDetail/bookingDate/' + date);
             console.log("total slot : " + totalSlots.data.docs.length);
             console.log("category slot : " + categorySlot);
             if (totalSlots >= categorySlot) {
@@ -147,8 +147,8 @@ const EditBooking = ({ open, onClose, service, petId, loadData, bookingData }) =
     const isDuplicatePet = async (date) => {
         try {
             const id = petId;
-            const checkPetBooking = await axios.get(`http://localhost:3500/bookingDetail/${id}/${date}`);
-            const checkPetCart = await axios.get(`http://localhost:3500/cartService/${id}/${date}`, {
+            const checkPetBooking = await axios.get(`/bookingDetail/${id}/${date}`);
+            const checkPetCart = await axios.get(`/cartService/${id}/${date}`, {
                 headers: { 'Authorization': context.auth.token },
                 withCredentials: true
             });
@@ -187,7 +187,7 @@ const EditBooking = ({ open, onClose, service, petId, loadData, bookingData }) =
             const checkSlot = await checkEmptySlot(formatJSONDate(date));
             const checkPet = await isDuplicatePet(formatJSONDate(date));
             if (checkSlot && !checkPet) {
-                const updateBooking = await axios.patch(`http://localhost:3500/bookingDetail/${bookingId}`, {
+                const updateBooking = await axios.patch(`/bookingDetail/${bookingId}`, {
                     bookingDate: formatJSONDate(date),
                     petId: id,
                 });

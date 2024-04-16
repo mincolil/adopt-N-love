@@ -28,6 +28,7 @@ import GoogleLogin, { GoogleLogout } from "react-google-login";
 import styled from "styled-components";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { MessengerChat } from "react-messenger-chat-plugin";
 
 const defaultTheme = createTheme();
 
@@ -295,6 +296,7 @@ const Login = () => {
           </Box>
         </Grid>
       </Grid>
+      <MessengerChat pageId="109268111769502" />
     </ThemeProvider>
   );
 };

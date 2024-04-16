@@ -8,7 +8,7 @@
   margin-bottom: 50px;
 }
 
-.section_title h3{
+.section_title h3 {
   font-size: 50px;
   font-weight: 700;
   line-height: 60px;
@@ -16,7 +16,7 @@
   font-family: "Poppins", sans-serif !important;
 }
 
-.section_title h4{
+.section_title h4 {
   font-size: 16px;
   line-height: 30px;
   color: #909092 !important;
@@ -212,4 +212,17 @@
   margin-bottom: 16px;
   line-height: 1 !important;
   margin-top: 3px;
+}
+
+.banner button {
+  background-color: #fff;
+  color: #ff3500;
+  border-radius: 30px;
+  padding: 17px 50px;
+  text-transform: none;
+  font-size: 1rem;
+}
+
+.banner button:hover {
+  background-color: #fff;
 }

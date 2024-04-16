@@ -56,12 +56,12 @@ const getAllAdopt = async (req, res) => {
 
         const options = {
             page: parseInt(page) || 1,
-            limit: parseInt(limit) || 10,
+            limit: parseInt(limit) || 12,
         }
 
         const result = await Pet.paginate(query, {
             page: parseInt(page) || 1,
-            limit: parseInt(limit) || 10,
+            limit: parseInt(limit) || 12,
             populate: {
                 path: 'userId',
                 model: 'User',

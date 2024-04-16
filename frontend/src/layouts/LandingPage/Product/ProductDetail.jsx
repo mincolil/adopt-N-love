@@ -25,12 +25,11 @@ import { ToastContainer } from "react-toastify";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import Comments from "../../../components/Comments/Comments";
 import dayjs from "dayjs";
-
+import { Modal } from "antd";
 import { ExclamationCircleFilled } from '@ant-design/icons';
-import { Modal } from 'antd';
+
 
 const BASE_URL = "";
-
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -70,25 +69,24 @@ const ProductDetail = () => {
     setTab(newTab);
   };
 
-const { confirm } = Modal;
-const showConfirm = () => {
-  return new Promise((resolve, reject) => {
-    confirm({
-      title: 'Xác nhận',
-      icon: <ExclamationCircleFilled />,
-      content: 'Bạn có muốn thêm sản phẩm này không ?',
-      okText: 'Đồng ý', 
-      cancelText: 'Hủy bỏ', 
-      onOk() {
-        resolve(true); // Trả về giá trị true khi người dùng nhấn OK
-      },
-      onCancel() {
-        resolve(false); // Trả về giá trị false khi người dùng nhấn Cancel
-      },
+  const { confirm } = Modal;
+  const showConfirm = () => {
+    return new Promise((resolve, reject) => {
+      confirm({
+        title: "Xác nhận",
+        icon: <ExclamationCircleFilled />,
+        content: "Bạn có muốn thêm sản phẩm này không ?",
+        okText: "Đồng ý",
+        cancelText: "Hủy bỏ",
+        onOk() {
+          resolve(true); // Trả về giá trị true khi người dùng nhấn OK
+        },
+        onCancel() {
+          resolve(false); // Trả về giá trị false khi người dùng nhấn Cancel
+        },
+      });
     });
-  });
-};
-
+  };
 
   // ----------------------------------- API GET PRODUCT BY ID --------------------------------
   useEffect(() => {
@@ -132,7 +130,6 @@ const showConfirm = () => {
     setQuantitySell((quantitySell) => Math.max(quantitySell - 1, 1));
   };
 
-
   const handleAddToCart = async (id) => {
     if (context.auth.token === undefined) {
       alert("Bạn chưa đăng nhập, vui lòng đăng nhập !");
@@ -164,13 +161,14 @@ const showConfirm = () => {
     }
   };
 
-
   return (
     <>
       <ToastContainer />
       <Header />
 
-      <Container sx={{ position: "relative", top: "120px", marginBottom: "150px" }}>
+      <Container
+        sx={{ position: "relative", top: "120px", marginBottom: "150px" }}
+      >
         <Breadcrumbs
           aria-label="breadcrumb"
           separator={<KeyboardDoubleArrowRightIcon fontSize="small" />}
@@ -225,10 +223,10 @@ const showConfirm = () => {
               </Typography>
               <Typography variant="body1" className="price">
                 {product.discount !== 0 &&
-                  dayjs().isBetween(
-                    dayjs(product.saleStartTime),
-                    dayjs(product.saleEndTime)
-                  ) ? (
+                dayjs().isBetween(
+                  dayjs(product.saleStartTime),
+                  dayjs(product.saleEndTime)
+                ) ? (
                   <Box
                     display="flex"
                     flexGrow={1}
@@ -253,11 +251,10 @@ const showConfirm = () => {
                       gutterBottom
                       variant="h6"
                       component="h2"
-                      style={{ color: '#ff5722' }}
+                      style={{ color: "#ff5722" }}
                     >
                       {numberToVND(
-                        product.price -
-                        (product.price * product.discount) / 100
+                        product.price - (product.price * product.discount) / 100
                       )}
                     </Typography>
                     <Typography
@@ -284,7 +281,7 @@ const showConfirm = () => {
                     gutterBottom
                     variant="h6"
                     component="h2"
-                    style={{ color: '#ff5722' }}
+                    style={{ color: "#ff5722" }}
                   >
                     {numberToVND(product.price)}
                   </Typography>
@@ -297,7 +294,10 @@ const showConfirm = () => {
               </Box>
               <Box className="quantity-add-to-cart">
                 <Box className="control">
-                  <IconButton className="qtyminus quantity-minus" onClick={handleDecreaseClick}>
+                  <IconButton
+                    className="qtyminus quantity-minus"
+                    onClick={handleDecreaseClick}
+                  >
                     -
                   </IconButton>
                   <input
@@ -309,7 +309,10 @@ const showConfirm = () => {
                     className="input-quantity"
                     size="4"
                   />
-                  <IconButton className="qtyplus quantity-plus" onClick={() => handleIncreaseClick(product.quantity)}>
+                  <IconButton
+                    className="qtyplus quantity-plus"
+                    onClick={() => handleIncreaseClick(product.quantity)}
+                  >
                     +
                   </IconButton>
                 </Box>
@@ -403,12 +406,10 @@ const showConfirm = () => {
             <Comments value={product._id} />
           </TabPanel>
         </Box>
-
       </Container>
       <Footer />
     </>
   );
 };
-
 
 export default ProductDetail;

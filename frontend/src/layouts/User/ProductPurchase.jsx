@@ -9,7 +9,6 @@ import {
   Paper,
   Box,
   Button,
-  Typography,
   Modal,
   DialogTitle,
   DialogContent,
@@ -17,7 +16,6 @@ import {
   Grid,
   DialogActions,
 } from "@mui/material";
-import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
 
 import CloseIcon from "@mui/icons-material/Close";
@@ -28,7 +26,6 @@ import { toast } from "react-toastify";
 import useAuth from "../../hooks/useAuth";
 import DateFormat from "../../components/DateFormat";
 import { useNavigate } from "react-router-dom";
-import dayjs from "dayjs";
 import ButtonCustomize from "../../components/Button/Button";
 
 import { ExclamationCircleFilled } from '@ant-design/icons';
@@ -81,13 +78,10 @@ export default function ProductPurchase() {
         setStatus(option);
         setSelectedStatus(option);
         const loadData = await axios
-          .get(
-            `/order/get-all-order-by-uid/${context.auth.id}`,
-            {
-              headers: { Authorization: context.auth.token },
-              withCredentials: true,
-            }
-          )
+          .get(`/order/get-all-order-by-uid/${context.auth.id}`, {
+            headers: { Authorization: context.auth.token },
+            withCredentials: true,
+          })
           .then((data) => {
             const filterData = [];
             // console.log(data.data)
@@ -109,8 +103,7 @@ export default function ProductPurchase() {
   const { auth } = context;
 
   useEffect(() => {
-    if (auth)
-      handleLoadCartProductById(DEFAULT_STATUS);
+    if (auth) handleLoadCartProductById(DEFAULT_STATUS);
   }, [auth]);
 
   // ----------------------------------------------------------------
@@ -156,7 +149,7 @@ export default function ProductPurchase() {
             handleLoadCartProductById(CANCEL_STATUS);
             handleClose();
           })
-          .catch((error) => { });
+          .catch((error) => {});
       } catch (err) {
         console.log(err);
       }
@@ -200,7 +193,14 @@ export default function ProductPurchase() {
     });
   };
 
-  const statusList = ["Chờ xác nhận", "Đã thanh toán", "Yêu cầu huỷ", "Đang giao hàng", "Đã nhận hàng", "Huỷ"];
+  const statusList = [
+    "Chờ xác nhận",
+    "Đã thanh toán",
+    "Yêu cầu huỷ",
+    "Đang giao hàng",
+    "Đã nhận hàng",
+    "Huỷ",
+  ];
 
   return (
     <>
@@ -229,11 +229,11 @@ export default function ProductPurchase() {
           <TableHead>
             <TableRow>
               <TableCell>STT</TableCell>
-              <TableCell align="right">Người nhận hàng</TableCell>
-              <TableCell align="right">Địa chỉ</TableCell>
-              <TableCell align="right">Ngày đặt hàng</TableCell>
-              <TableCell align="right">Tổng giá trị</TableCell>
-              <TableCell align="right">Trạng thái</TableCell>
+              <TableCell align="center">Người nhận hàng</TableCell>
+              <TableCell align="center">Địa chỉ</TableCell>
+              <TableCell align="center">Ngày đặt hàng</TableCell>
+              <TableCell align="center">Tổng giá trị</TableCell>
+              <TableCell align="center">Trạng thái</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -254,15 +254,15 @@ export default function ProductPurchase() {
                   <TableCell component="th" scope="row">
                     {index + 1}
                   </TableCell>
-                  <TableCell align="right">{value.recipientName}</TableCell>
-                  <TableCell align="right">{value.deliveryAddress}</TableCell>
-                  <TableCell align="right">
+                  <TableCell align="center">{value.recipientName}</TableCell>
+                  <TableCell align="center">{value.deliveryAddress}</TableCell>
+                  <TableCell align="center">
                     <DateFormat date={value.updatedAt} />
                   </TableCell>
-                  <TableCell align="right">
+                  <TableCell align="center">
                     {numberToVND(value.totalPrice)}
                   </TableCell>
-                  <TableCell align="right">{value.status}</TableCell>
+                  <TableCell align="center">{value.status}</TableCell>
                 </TableRow>
               ))
             )}
@@ -321,9 +321,17 @@ export default function ProductPurchase() {
                         </TableCell>
                         <TableCell align="left">{value.orderId}</TableCell>
                         <TableCell align="left">
-                          {value.productId !== null
-                            ? value.product.productName
-                            : ""}
+                          {value.productId !== null ? (
+                            <Button
+                              onClick={() => handleFeedBack(value.product._id)}
+                              variant="text"
+                              sx={{p:0, color:"#121212", textTransform:"none"}}
+                            >
+                              {value.product.productName}
+                            </Button>
+                          ) : (
+                            ""
+                          )}
                         </TableCell>
                         <TableCell align="left">{value.quantity}</TableCell>
                         <TableCell align="left">

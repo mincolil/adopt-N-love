@@ -65,13 +65,6 @@ const showConfirmPro = () => {
 
 const BASE_URL = "";
 
-const DsCheckbox = styled(Checkbox)`
-  color: #eeeeee !important;
-  &.Mui-checked {
-    color: #000 !important;
-  }
-`;
-
 const numberToVND = (number) => {
   return number.toLocaleString("vi-VN", {
     style: "currency",
@@ -135,7 +128,7 @@ function ProductItem({ product }) {
             alt={productName}
           />
           {discount !== 0 &&
-            dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
+          dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
             <Card
               style={{
                 position: "absolute",
@@ -181,7 +174,7 @@ function ProductItem({ product }) {
               className="product-price"
             >
               {discount !== 0 &&
-                dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
+              dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
                 <Box
                   display="flex"
                   flexGrow={1}
@@ -240,13 +233,6 @@ function ProductItem({ product }) {
 }
 
 export default function ProductList() {
-  const [checkedItems, setCheckedItems] = useState({});
-
-  const handleCheckboxChange = (event) => {
-    const { _id, checked } = event.target;
-    setCheckedItems({ ...checkedItems, [_id]: checked });
-  };
-
   const [data, setData] = useState([]);
   const [totalProducts, setTotalProducts] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -295,7 +281,9 @@ export default function ProductList() {
           setData(loadData.data.docs);
           setTotalProducts(loadData.data.limit);
           setCurrentPage(loadData.data.page);
-          console.log(`/product?page=1&limit=12&minPrice=${minPrice}&maxPrice=${maxPrice}`);
+          console.log(
+            `/product?page=1&limit=12&minPrice=${minPrice}&maxPrice=${maxPrice}`
+          );
         }
       } catch (err) {
         console.log(err);
@@ -313,7 +301,6 @@ export default function ProductList() {
     if (event && event.target) {
       const selectedSort = event.target.value;
       setSortBy(selectedSort);
-      // Gọi hàm để sort sản phẩm với giá trị mới
       filterProductsBySort(selectedSort);
     }
   };
@@ -341,9 +328,7 @@ export default function ProductList() {
       loadAllProduct(currentPage);
     } else {
       try {
-        const loadData = await axios.get(
-          `/product?sortPrice=${sortParam}`
-        );
+        const loadData = await axios.get(`/product?sortPrice=${sortParam}`);
         if (loadData.error) {
           toast.error(loadData.error);
         } else {
@@ -393,19 +378,16 @@ export default function ProductList() {
   const handlePageClick = (event, value) => {
     setCurrentPage(value);
     if (categoryId) {
-      // console.log(categoryId);
       hanldeClickCategory(value, categoryId);
     } else if (keyword.trim()) {
       searchProductByName(value);
     } else {
-      // console.log(categoryId);
       loadAllProduct(value);
     }
   };
 
   // --------------------- GET ALL PRODUCT BY CATEGORY ID PRODUCT -----------------------------
   async function hanldeClickCategory(cateId) {
-    // console.log("Check data cate ID", cateId);
     setCategoryId(cateId);
     if (cateId === undefined || cateId === "") {
       loadAllProduct(currentPage);
@@ -417,9 +399,7 @@ export default function ProductList() {
         if (loadData.error) {
           toast.error(loadData.error);
         } else {
-          // console.log("Check loaddata", loadData.data);
           setTotalPages(loadData.data.pages);
-          // console.log("Check totalPage", totalPages);
           setData(loadData.data.docs);
           setTotalProducts(loadData.data.limit);
           setCurrentPage(loadData.data.page);
@@ -466,17 +446,16 @@ export default function ProductList() {
       if (loadData.data.error) {
         toast.warning(
           "Kết quả " +
-          "[" +
-          keyword +
-          "]" +
-          " bạn vừa tìm không có! Vui lòng nhập lại. "
+            "[" +
+            keyword +
+            "]" +
+            " bạn vừa tìm không có! Vui lòng nhập lại. "
         );
         loadAllProduct(currentPage);
       } else {
         setData(loadData.data.docs);
         setTotalProducts(loadData.data.limit);
         setTotalPages(loadData.data.pages);
-        // console.log(loadData.data);
         setCurrentPage(loadData.data.page);
       }
     } catch (err) {
@@ -495,7 +474,6 @@ export default function ProductList() {
         toast.error(loadDataCategoryProduct.error);
       } else {
         setCategory(loadDataCategoryProduct.data.docs);
-        // console.log(loadDataCategoryProduct.data);
       }
     } catch (err) {
       console.log(err);
@@ -543,6 +521,17 @@ export default function ProductList() {
                   Danh mục
                 </Typography>
                 <List className="list-categories">
+                  <ListItem className="list-categories-item">
+                    <Button
+                      size="small"
+                      onClick={() => hanldeClickCategory()}
+                      className="list-categories-item"
+                      variant="text"
+                      sx={{ minWidth: "0" }}
+                    >
+                      Tất cả
+                    </Button>
+                  </ListItem>
                   {category.map((category, _id) => (
                     <ListItem key={_id} className="list-categories-item">
                       <Button
@@ -550,6 +539,7 @@ export default function ProductList() {
                         onClick={() => hanldeClickCategory(category._id)}
                         className="list-categories-item"
                         variant="text"
+                        sx={{ minWidth: "0" }}
                       >
                         {category.feature}
                       </Button>
@@ -585,7 +575,7 @@ export default function ProductList() {
                       },
                       "& .MuiSlider-valueLabel": {
                         backgroundColor: "#ff5722",
-                        color: "black", // You can adjust the color of the value label text
+                        color: "black",
                       },
                     }}
                   />
@@ -650,12 +640,6 @@ export default function ProductList() {
                       </MenuItem>
                       <MenuItem className="menu-item" value={"price-desc"}>
                         Giá: Cao đến Thấp
-                      </MenuItem>
-                      <MenuItem className="menu-item" value={"rating"}>
-                        Đánh giá
-                      </MenuItem>
-                      <MenuItem className="menu-item" value={"newest"}>
-                        Mới nhất
                       </MenuItem>
                     </Select>
                   </FormControl>

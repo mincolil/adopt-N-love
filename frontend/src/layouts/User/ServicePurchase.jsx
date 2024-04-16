@@ -94,13 +94,10 @@ export default function ServicePurchase() {
         setStatus(option);
         setSelectedStatus(option);
         await axios
-          .get(
-            `/booking/get-all-booking-by-uid/${context.auth.id}`,
-            {
-              headers: { Authorization: context.auth.token },
-              withCredentials: true,
-            }
-          )
+          .get(`/booking/get-all-booking-by-uid/${context.auth.id}`, {
+            headers: { Authorization: context.auth.token },
+            withCredentials: true,
+          })
           .then((data) => {
             const filterData = [];
             // console.log(option)
@@ -124,8 +121,7 @@ export default function ServicePurchase() {
   const { auth } = context;
 
   useEffect(() => {
-    if (auth)
-      handleLoadCartServiceById(DEFAULT_STATUS);
+    if (auth) handleLoadCartServiceById(DEFAULT_STATUS);
   }, [auth]);
 
   // ----------------------------------------------------------------
@@ -167,13 +163,12 @@ export default function ServicePurchase() {
             handleLoadCartServiceById(status);
             handleClose();
           })
-          .catch((error) => { });
+          .catch((error) => {});
       } catch (err) {
         console.log(err);
       }
     }
   };
-
 
   // ----------------------------------------------------------------
 
@@ -211,7 +206,14 @@ export default function ServicePurchase() {
     backgroundColor: "rgb(255 87 34 / 22%)",
   };
 
-  const statusList = ["Chờ xác nhận", "Đã thanh toán", "Yêu cầu huỷ", "Đang xử lý", "Hoàn thành", "Huỷ"];
+  const statusList = [
+    "Chờ xác nhận",
+    "Đã thanh toán",
+    "Yêu cầu huỷ",
+    "Đang xử lý",
+    "Hoàn thành",
+    "Huỷ",
+  ];
 
   const numberToVND = (number) => {
     return number.toLocaleString("vi-VN", {
@@ -362,11 +364,27 @@ export default function ServicePurchase() {
                             {value.petId !== null ? value.pet.petName : ""}
                           </TableCell>
                           <TableCell align="left">
-                            {value.serviceId !== null
-                              ? value.service.serviceName
-                              : ""}
+                            {value.serviceId !== null ? (
+                              <Button
+                                onClick={() =>
+                                  handleFeedBack(value.service._id)
+                                }
+                                variant="text"
+                                sx={{
+                                  p: 0,
+                                  color: "#121212",
+                                  textTransform: "none",
+                                }}
+                              >
+                                {value.service.serviceName}
+                              </Button>
+                            ) : (
+                              ""
+                            )}
                           </TableCell>
-                          <TableCell align="left"><DateFormat date={value.bookingDate} /></TableCell>
+                          <TableCell align="left">
+                            <DateFormat date={value.bookingDate} />
+                          </TableCell>
                           <TableCell align="left">{value.price}</TableCell>
                           <TableCell align="left">
                             {status === "Hoàn thành" ? (

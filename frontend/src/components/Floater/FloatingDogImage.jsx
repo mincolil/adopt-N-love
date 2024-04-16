@@ -31,7 +31,7 @@ const FloatingDogImage = () => {
     return (
         <div style={{
             position: 'fixed',
-            bottom: '20px',
+            bottom: '10px',
             right: '20px',
             zIndex: '9999',
             display: 'flex',
@@ -54,7 +54,7 @@ const FloatingDogImage = () => {
             )} */}
 
             <a href="/pet-user" >
-                <img src={dogImage} alt="Floating Dog" style={{ width: '130px', height: '160px' }} />
+                <img src={dogImage} alt="Floating Dog" style={{ width: '100px' }} />
             </a>
         </div>
     );

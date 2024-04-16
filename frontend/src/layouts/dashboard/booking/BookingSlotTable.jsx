@@ -132,7 +132,7 @@ export default function BookingSlotTable() {
 
     async function loadBooking() {
         try {
-            await axios.get(`http://localhost:3500/bookingDetail`)
+            await axios.get(`/bookingDetail`)
                 .then((data) => {
                     setData(data.data);
                 });
@@ -160,7 +160,7 @@ export default function BookingSlotTable() {
         } else {
             try {
                 await axios.get(
-                    `http://localhost:3500/bookingDetail?startDate=${convertDate(startDate) !== "NaN-aN-aN"
+                    `/bookingDetail?startDate=${convertDate(startDate) !== "NaN-aN-aN"
                         ? convertDate(startDate)
                         : ""
                     }&endDate=${convertDate(endDate) !== "NaN-aN-aN" ? convertDate(endDate) : ""
@@ -196,7 +196,7 @@ export default function BookingSlotTable() {
         ) {
             try {
                 const loadData = await axios.put(
-                    `http://localhost:3500/booking/update-status/${id}`,
+                    `/booking/update-status/${id}`,
                     {
                         bookingStatus: status,
                     }

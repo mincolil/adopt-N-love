@@ -33,6 +33,45 @@ import DateTimeFormat from "../../../components/DateTimeFormat";
 
 import dayjs from "dayjs";
 
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { Modal } from 'antd';
+
+const { confirm } = Modal;
+const showConfirmRemoveSe = () => {
+  return new Promise((resolve, reject) => {
+    confirm({
+      title: 'Xác nhận',
+      icon: <ExclamationCircleFilled />,
+      content: 'Bạn có chắc muốn xoá dịch vụ này không ?',
+      okText: 'Đồng ý', 
+      cancelText: 'Hủy bỏ', 
+      onOk() {
+        resolve(true); // Trả về giá trị true khi người dùng nhấn OK
+      },
+      onCancel() {
+        resolve(false); // Trả về giá trị false khi người dùng nhấn Cancel
+      },
+    });
+  });
+};
+const showConfirmSe = () => {
+  return new Promise((resolve, reject) => {
+    confirm({
+      title: 'Xác nhận',
+      icon: <ExclamationCircleFilled />,
+      content: 'Bạn có muốn sử dụng dịch vụ này ?',
+      okText: 'Đồng ý', 
+      cancelText: 'Hủy bỏ', 
+      onOk() {
+        resolve(true); 
+      },
+      onCancel() {
+        resolve(false); 
+      },
+    });
+  });
+};
+
 export default function CartService() {
   // const DEFAULT_PAGE = 1;
   // const DEFAULT_LIMIT = 5;
@@ -52,7 +91,7 @@ export default function CartService() {
       setLoged(true)
       try {
         const loadData = await axios.get(
-          `http://localhost:3500/cartService/view-cart`,
+          `/cartService/view-cart`,
           {
             headers: { 'Authorization': context.auth.token },
             withCredentials: true
@@ -98,7 +137,8 @@ export default function CartService() {
   // ----------------------------------------------------------------
 
   const handleCheckOut = async () => {
-    if (window.confirm('Bạn có muốn sử dụng dịch vụ này ?') === true) {
+    // if (window.confirm('Bạn có muốn sử dụng dịch vụ này ?') === true) {
+    if (await showConfirmSe()) {  
       if (data.length === 0) {
         alert('Bạn không có dịch vụ trong giỏ hàng')
         return false
@@ -106,7 +146,7 @@ export default function CartService() {
         try {
           console.log(total)
           await axios.post(
-            `http://localhost:3500/cartService/checkout`,
+            `/cartService/checkout`,
             {
               totalPrice: total
             },
@@ -147,12 +187,13 @@ export default function CartService() {
 
   const handleDeleteOrder = async (id) => {
     if (
-      window.confirm("Bạn có chắc muốn xoá dịch vụ này không ?") ===
-      true
+      // window.confirm("Bạn có chắc muốn xoá dịch vụ này không ?") ===
+      // true
+      await showConfirmRemoveSe()
     ) {
       try {
         await axios.delete(
-          `http://localhost:3500/cartService/remove-from-cart/${id}`,
+          `/cartService/remove-from-cart/${id}`,
           {
             headers: { 'Authorization': context.auth.token },
             withCredentials: true

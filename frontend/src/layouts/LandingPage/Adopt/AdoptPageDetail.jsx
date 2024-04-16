@@ -31,11 +31,12 @@ import { Modal, Space } from 'antd';
 
 const { confirm } = Modal;
 
-const BASE_URL = "http://localhost:3500";
+const BASE_URL = "";
 
 const AdoptPageDetail = () => {
   const { petId } = useParams();
   const [pet, setPet] = useState(null);
+  const [userId, setUserId] = useState(null);
   const context = useAuth();
 
   //----------------------------- NOTIFICATION ------------------------------
@@ -64,6 +65,14 @@ const AdoptPageDetail = () => {
 
   // ---------------------------------- API CREATE ADOPT NOTIFICATION ------------------------------
   const createAdoptNotification = async () => {
+    if (context.auth.token === undefined) {
+      openNotificationWithIcon('error', "Vui lòng đăng nhập để nhận nuôi bé!");
+      return;
+    }
+    if (context.auth.id === userId) {
+      openNotificationWithIcon('error', "Bạn không thể nhận nuôi bé của chính mình!");
+      return;
+    }
     try {
       const result = await axios.post(`${BASE_URL}/adopt/createAdoptNotification`, {
         userId: context.auth.id,
@@ -95,6 +104,7 @@ const AdoptPageDetail = () => {
         console.log(loadData.error);
       } else {
         setPet(loadData.data);
+        setUserId(loadData.data.userId._id);
       }
     } catch (err) {
       console.log(err);

@@ -41,14 +41,29 @@ import useAuth from "../../../hooks/useAuth";
 import dayjs from "dayjs";
 import FloatingDogImage from "../../../components/Floater/FloatingDogImage";
 
-const BASE_URL = "http://localhost:3500";
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { Modal } from 'antd';
 
-const DsCheckbox = styled(Checkbox)`
-  color: #eeeeee !important;
-  &.Mui-checked {
-    color: #000 !important;
-  }
-`;
+const { confirm } = Modal;
+const showConfirmPro = () => {
+  return new Promise((resolve, reject) => {
+    confirm({
+      title: 'Xác nhận',
+      icon: <ExclamationCircleFilled />,
+      content: 'Bạn có muốn thêm sản phẩm này không ?',
+      okText: 'Đồng ý', 
+      cancelText: 'Hủy bỏ', 
+      onOk() {
+        resolve(true); // Trả về giá trị true khi người dùng nhấn OK
+      },
+      onCancel() {
+        resolve(false); // Trả về giá trị false khi người dùng nhấn Cancel
+      },
+    });
+  });
+};
+
+const BASE_URL = "";
 
 const numberToVND = (number) => {
   return number.toLocaleString("vi-VN", {
@@ -75,7 +90,8 @@ function ProductItem({ product }) {
     if (context.auth.token === undefined) {
       alert("Bạn chưa đăng nhập, vui lòng đăng nhập !");
     } else if (
-      window.confirm("Bạn có muốn thêm sản phẩm này không ?") == true
+      // window.confirm("Bạn có muốn thêm sản phẩm này không ?") == true
+      await showConfirmPro()
     ) {
       try {
         const addProductToCart = await axios
@@ -112,7 +128,7 @@ function ProductItem({ product }) {
             alt={productName}
           />
           {discount !== 0 &&
-            dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
+          dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
             <Card
               style={{
                 position: "absolute",
@@ -158,7 +174,7 @@ function ProductItem({ product }) {
               className="product-price"
             >
               {discount !== 0 &&
-                dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
+              dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
                 <Box
                   display="flex"
                   flexGrow={1}
@@ -217,13 +233,6 @@ function ProductItem({ product }) {
 }
 
 export default function ProductList() {
-  const [checkedItems, setCheckedItems] = useState({});
-
-  const handleCheckboxChange = (event) => {
-    const { _id, checked } = event.target;
-    setCheckedItems({ ...checkedItems, [_id]: checked });
-  };
-
   const [data, setData] = useState([]);
   const [totalProducts, setTotalProducts] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -261,7 +270,7 @@ export default function ProductList() {
     } else {
       try {
         const loadData = await axios.get(
-          `http://localhost:3500/product?page=1&limit=12&minPrice=${minPrice}&maxPrice=${maxPrice}`
+          `/product?page=1&limit=12&minPrice=${minPrice}&maxPrice=${maxPrice}`
         );
         if (loadData.error) {
           toast.error(loadData.error);
@@ -272,7 +281,9 @@ export default function ProductList() {
           setData(loadData.data.docs);
           setTotalProducts(loadData.data.limit);
           setCurrentPage(loadData.data.page);
-          console.log(`http://localhost:3500/product?page=1&limit=12&minPrice=${minPrice}&maxPrice=${maxPrice}`);
+          console.log(
+            `/product?page=1&limit=12&minPrice=${minPrice}&maxPrice=${maxPrice}`
+          );
         }
       } catch (err) {
         console.log(err);
@@ -290,7 +301,6 @@ export default function ProductList() {
     if (event && event.target) {
       const selectedSort = event.target.value;
       setSortBy(selectedSort);
-      // Gọi hàm để sort sản phẩm với giá trị mới
       filterProductsBySort(selectedSort);
     }
   };
@@ -318,9 +328,7 @@ export default function ProductList() {
       loadAllProduct(currentPage);
     } else {
       try {
-        const loadData = await axios.get(
-          `http://localhost:3500/product?sortPrice=${sortParam}`
-        );
+        const loadData = await axios.get(`/product?sortPrice=${sortParam}`);
         if (loadData.error) {
           toast.error(loadData.error);
         } else {
@@ -370,33 +378,28 @@ export default function ProductList() {
   const handlePageClick = (event, value) => {
     setCurrentPage(value);
     if (categoryId) {
-      // console.log(categoryId);
       hanldeClickCategory(value, categoryId);
     } else if (keyword.trim()) {
       searchProductByName(value);
     } else {
-      // console.log(categoryId);
       loadAllProduct(value);
     }
   };
 
   // --------------------- GET ALL PRODUCT BY CATEGORY ID PRODUCT -----------------------------
   async function hanldeClickCategory(cateId) {
-    // console.log("Check data cate ID", cateId);
     setCategoryId(cateId);
     if (cateId === undefined || cateId === "") {
       loadAllProduct(currentPage);
     } else {
       try {
         const loadData = await axios.get(
-          `http://localhost:3500/product?page=1&categoryId=${cateId}&limit=12`
+          `/product?page=1&categoryId=${cateId}&limit=12`
         );
         if (loadData.error) {
           toast.error(loadData.error);
         } else {
-          // console.log("Check loaddata", loadData.data);
           setTotalPages(loadData.data.pages);
-          // console.log("Check totalPage", totalPages);
           setData(loadData.data.docs);
           setTotalProducts(loadData.data.limit);
           setCurrentPage(loadData.data.page);
@@ -443,17 +446,16 @@ export default function ProductList() {
       if (loadData.data.error) {
         toast.warning(
           "Kết quả " +
-          "[" +
-          keyword +
-          "]" +
-          " bạn vừa tìm không có! Vui lòng nhập lại. "
+            "[" +
+            keyword +
+            "]" +
+            " bạn vừa tìm không có! Vui lòng nhập lại. "
         );
         loadAllProduct(currentPage);
       } else {
         setData(loadData.data.docs);
         setTotalProducts(loadData.data.limit);
         setTotalPages(loadData.data.pages);
-        // console.log(loadData.data);
         setCurrentPage(loadData.data.page);
       }
     } catch (err) {
@@ -466,13 +468,12 @@ export default function ProductList() {
   async function loadAllCategoryProduct() {
     try {
       const loadDataCategoryProduct = await axios.get(
-        `http://localhost:3500/category?categoryName=Sản phẩm`
+        `/category?categoryName=Sản phẩm`
       );
       if (loadDataCategoryProduct.error) {
         toast.error(loadDataCategoryProduct.error);
       } else {
         setCategory(loadDataCategoryProduct.data.docs);
-        // console.log(loadDataCategoryProduct.data);
       }
     } catch (err) {
       console.log(err);
@@ -520,6 +521,17 @@ export default function ProductList() {
                   Danh mục
                 </Typography>
                 <List className="list-categories">
+                  <ListItem className="list-categories-item">
+                    <Button
+                      size="small"
+                      onClick={() => hanldeClickCategory()}
+                      className="list-categories-item"
+                      variant="text"
+                      sx={{ minWidth: "0" }}
+                    >
+                      Tất cả
+                    </Button>
+                  </ListItem>
                   {category.map((category, _id) => (
                     <ListItem key={_id} className="list-categories-item">
                       <Button
@@ -527,6 +539,7 @@ export default function ProductList() {
                         onClick={() => hanldeClickCategory(category._id)}
                         className="list-categories-item"
                         variant="text"
+                        sx={{ minWidth: "0" }}
                       >
                         {category.feature}
                       </Button>
@@ -562,7 +575,7 @@ export default function ProductList() {
                       },
                       "& .MuiSlider-valueLabel": {
                         backgroundColor: "#ff5722",
-                        color: "black", // You can adjust the color of the value label text
+                        color: "black",
                       },
                     }}
                   />
@@ -627,12 +640,6 @@ export default function ProductList() {
                       </MenuItem>
                       <MenuItem className="menu-item" value={"price-desc"}>
                         Giá: Cao đến Thấp
-                      </MenuItem>
-                      <MenuItem className="menu-item" value={"rating"}>
-                        Đánh giá
-                      </MenuItem>
-                      <MenuItem className="menu-item" value={"newest"}>
-                        Mới nhất
                       </MenuItem>
                     </Select>
                   </FormControl>

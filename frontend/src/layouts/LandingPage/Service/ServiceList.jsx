@@ -31,7 +31,6 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import HomeIcon from "@mui/icons-material/Home";
 import Grid from "@mui/material/Unstable_Grid2";
 import "./styled/ServiceList.css";
-import styled from "styled-components";
 import axios from "axios";
 
 import useAuth from "../../../hooks/useAuth";
@@ -39,11 +38,10 @@ import { Link as RouterLink } from "react-router-dom";
 import dayjs from "dayjs";
 import ChoosePet from "../../../components/Modal/ModalChoosePet";
 import { Button as AntButton } from "antd";
-import { notification, Space } from 'antd';
-import { NavLink, useNavigate } from "react-router-dom";
+import { notification } from "antd";
 import FloatingDogImage from "../../../components/Floater/FloatingDogImage";
 
-const BASE_URL = "http://localhost:3500";
+const BASE_URL = "";
 
 const numberToVND = (number) => {
   return number.toLocaleString("vi-VN", {
@@ -61,26 +59,25 @@ function ServiceItem({ service }) {
   const [api, contextHolder] = notification.useNotification();
   const openNotificationWithIcon = (type, des) => {
     api[type]({
-      message: 'Thông báo',
-      description:
-        des,
+      message: "Thông báo",
+      description: des,
     });
   };
 
   const handleAddToCartClick = async (serviceId) => {
     if (context.auth.token === undefined) {
-      openNotificationWithIcon('warning', 'Vui lòng đăng nhập để sử dụng dịch vụ');
+      openNotificationWithIcon(
+        "warning",
+        "Vui lòng đăng nhập để sử dụng dịch vụ"
+      );
     } else {
       try {
-        const loadDataPet = await axios.post(
-          `http://localhost:3500/pet/booking`,
-          {
-            userId: context.auth.id,
-            serviceId: serviceId,
-          }
-        );
+        const loadDataPet = await axios.post(`/pet/booking`, {
+          userId: context.auth.id,
+          serviceId: serviceId,
+        });
         if (loadDataPet.error) {
-          openNotificationWithIcon('error', loadDataPet.error);
+          openNotificationWithIcon("error", loadDataPet.error);
         } else {
           // setData(loadDataPet.data.docs);
 
@@ -127,7 +124,7 @@ function ServiceItem({ service }) {
             alt={serviceName}
           />
           {discount !== 0 &&
-            dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
+          dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
             <Card
               style={{
                 position: "absolute",
@@ -175,7 +172,7 @@ function ServiceItem({ service }) {
               className="product-price"
             >
               {discount !== 0 &&
-                dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
+              dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
                 <Box
                   display="flex"
                   flexGrow={1}
@@ -198,11 +195,9 @@ function ServiceItem({ service }) {
                   </Typography>
                   <Typography
                     gutterBottom
-
                     // variant="h6"
                     // component="h2"
-                    style={{ color: '#ff5722' }}
-
+                    style={{ color: "#ff5722" }}
                   >
                     {numberToVND(price - (price * discount) / 100)}
                   </Typography>
@@ -210,11 +205,9 @@ function ServiceItem({ service }) {
               ) : (
                 <Typography
                   gutterBottom
-
                   // variant="h6"
                   // component="h2"
-                  style={{ color: '#ff5722' }}
-
+                  style={{ color: "#ff5722" }}
                 >
                   {numberToVND(price)}
                 </Typography>
@@ -246,8 +239,6 @@ function ServiceItem({ service }) {
 }
 
 export default function ServiceList() {
-  const [checkedItems, setCheckedItems] = useState({});
-
   const [price, setPrice] = useState([0, 1000000]);
   const [sortBy, setSortBy] = React.useState("price-asc");
 
@@ -262,9 +253,8 @@ export default function ServiceList() {
   const [api, contextHolder] = notification.useNotification();
   const openNotificationWithIcon = (type, des) => {
     api[type]({
-      message: 'Thông báo',
-      description:
-        des,
+      message: "Thông báo",
+      description: des,
     });
   };
 
@@ -298,7 +288,7 @@ export default function ServiceList() {
     } else {
       try {
         const loadData = await axios.get(
-          `http://localhost:3500/service?page=1&limit=12&minPrice=${minPrice}&maxPrice=${maxPrice}`
+          `/service?page=1&limit=12&minPrice=${minPrice}&maxPrice=${maxPrice}`
         );
         if (loadData.error) {
           console.log(loadData.error);
@@ -317,10 +307,8 @@ export default function ServiceList() {
   }
 
   useEffect(() => {
-    if (auth)
-      handlePriceChange();
+    if (auth) handlePriceChange();
   }, [auth]);
-
 
   // ----------------------------------- API SORT PRODUCT --------------------------------
 
@@ -356,9 +344,7 @@ export default function ServiceList() {
       loadAllService(currentPage);
     } else {
       try {
-        const loadData = await axios.get(
-          `http://localhost:3500/service?sortPrice=${sortParam}`
-        );
+        const loadData = await axios.get(`/service?sortPrice=${sortParam}`);
         if (loadData.error) {
           console.log(loadData.error);
         } else {
@@ -382,8 +368,7 @@ export default function ServiceList() {
   // ----------------------------------- API GET ALL SERVICE --------------------------------
 
   useEffect(() => {
-    if (auth)
-      loadAllService(currentPage);
+    if (auth) loadAllService(currentPage);
   }, [auth]);
 
   const loadAllService = async (page) => {
@@ -416,7 +401,7 @@ export default function ServiceList() {
     } else {
       try {
         const loadData = await axios.get(
-          `http://localhost:3500/service?page=1&categoryId=${cateId}&status=true&limit=9`
+          `/service?page=1&categoryId=${cateId}&status=true&limit=9`
         );
         if (loadData.error) {
           console.log(loadData.error);
@@ -483,11 +468,13 @@ export default function ServiceList() {
         `${BASE_URL}/service?service=${keyword.trim()}&page=${page}&limit=9`
       );
       if (loadData.data.error) {
-        openNotificationWithIcon("Kết quả " +
-          "[" +
-          keyword +
-          "]" +
-          " bạn vừa tìm không có! Vui lòng nhập lại.");
+        openNotificationWithIcon(
+          "Kết quả " +
+            "[" +
+            keyword +
+            "]" +
+            " bạn vừa tìm không có! Vui lòng nhập lại."
+        );
         loadAllService(currentPage);
       } else {
         setData(loadData.data.docs);
@@ -506,7 +493,7 @@ export default function ServiceList() {
   async function loadAllCategoryService() {
     try {
       const loadDataCategoryService = await axios.get(
-        `http://localhost:3500/category?categoryName=Dịch vụ`
+        `/category?categoryName=Dịch vụ`
       );
       if (loadDataCategoryService.error) {
         console.log(loadDataCategoryService.error);
@@ -519,8 +506,7 @@ export default function ServiceList() {
   }
 
   useEffect(() => {
-    if (auth)
-      loadAllCategoryService();
+    if (auth) loadAllCategoryService();
   }, [auth]);
 
   return (
@@ -561,6 +547,17 @@ export default function ServiceList() {
                   Danh mục
                 </Typography>
                 <List className="list-categories">
+                  <ListItem className="list-categories-item">
+                    <Button
+                      size="small"
+                      onClick={() => hanldeClickCategory()}
+                      className="list-categories-item"
+                      variant="text"
+                      sx={{minWidth:"0"}}
+                    >
+                      Tất cả
+                    </Button>
+                  </ListItem>
                   {category.map((category, _id) => (
                     <ListItem key={_id} className="list-categories-item">
                       <Button
@@ -603,7 +600,7 @@ export default function ServiceList() {
                       },
                       "& .MuiSlider-valueLabel": {
                         backgroundColor: "#ff5722",
-                        color: "black", // You can adjust the color of the value label text
+                        color: "black",
                       },
                     }}
                   />
@@ -668,12 +665,6 @@ export default function ServiceList() {
                       </MenuItem>
                       <MenuItem className="menu-item" value={"price-desc"}>
                         Giá: Cao đến Thấp
-                      </MenuItem>
-                      <MenuItem className="menu-item" value={"rating"}>
-                        Đánh giá
-                      </MenuItem>
-                      <MenuItem className="menu-item" value={"newest"}>
-                        Mới nhất
                       </MenuItem>
                     </Select>
                   </FormControl>

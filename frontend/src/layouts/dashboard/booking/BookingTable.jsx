@@ -113,7 +113,7 @@ export default function BookingTable() {
   const handleViewOrderDetail = async (id, option, status) => {
     try {
       // console.log(id);
-      const bookingDetail = await axios.get(`http://localhost:3500/bookingDetail/${id}`);
+      const bookingDetail = await axios.get(`/bookingDetail/${id}`);
       if (data.error) {
         toast.error(data.error);
       } else {
@@ -142,7 +142,7 @@ export default function BookingTable() {
     ) {
       try {
         const loadData = await axios.put(
-          `http://localhost:3500/booking/update-status/${id}`,
+          `/booking/update-status/${id}`,
           {
             bookingStatus: "Đã thanh toán",
           }
@@ -168,14 +168,14 @@ export default function BookingTable() {
       window.confirm("Bạn có muốn cập nhật trạng thái đơn hàng không ?") === true
     ) {
       try {
-        const booking = await axios.get(`http://localhost:3500/booking/get-booking/${id}`);
+        const booking = await axios.get(`/booking/get-booking/${id}`);
         const paymentIntent = booking.data.payment_int
         console.log(paymentIntent);
 
-        await axios.post(`http://localhost:3500/cartService/refund-stripe`, {
+        await axios.post(`/cartService/refund-stripe`, {
           payment_intent: paymentIntent
         });
-        const loadData = await axios.put(`http://localhost:3500/booking/update-status/${id}`, {
+        const loadData = await axios.put(`/booking/update-status/${id}`, {
           bookingStatus: "Huỷ",
         });
         if (loadData.error) {
@@ -234,7 +234,7 @@ export default function BookingTable() {
 
   async function loadBooking(status) {
     try {
-      await axios.get(`http://localhost:3500/booking`)
+      await axios.get(`/booking`)
         .then((data) => {
           setData(data.data);
         });
@@ -263,7 +263,7 @@ export default function BookingTable() {
       // console.log("Check ngày", startDate, endDate);
       try {
         await axios.get(
-          `http://localhost:3500/booking?startDate=${convertDate(startDate) !== "NaN-aN-aN"
+          `/booking?startDate=${convertDate(startDate) !== "NaN-aN-aN"
             ? convertDate(startDate)
             : ""
           }&endDate=${convertDate(endDate) !== "NaN-aN-aN" ? convertDate(endDate) : ""
@@ -297,11 +297,11 @@ export default function BookingTable() {
 
   const hanldeClickChangeStatus = async (status, id) => {
     // try {
-    //   const booking = await axios.get(`http://localhost:3500/booking/get-booking/${id}`);
+    //   const booking = await axios.get(`/booking/get-booking/${id}`);
     //   if (booking.data.status === "Yêu cầu huỷ") {
     //     console.log(booking.data.status);
     //     try {
-    //       await axios.post(`http://localhost:3500/cartService/refund-stripe`, {
+    //       await axios.post(`/cartService/refund-stripe`, {
     //         payment_intent: booking.data.payment_int
     //       });
     //     } catch (err) {
@@ -316,7 +316,7 @@ export default function BookingTable() {
     ) {
       try {
         const loadData = await axios.put(
-          `http://localhost:3500/booking/update-status/${id}`,
+          `/booking/update-status/${id}`,
           {
             bookingStatus: status,
           }

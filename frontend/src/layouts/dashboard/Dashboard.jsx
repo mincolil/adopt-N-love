@@ -16,14 +16,13 @@ import DrawerDashborad from "./DrawerDashborad";
 import AccountMenu from "../../components/AccountMeun/AccountMeun";
 
 import { styled } from "@mui/material/styles";
-import { Container, Grid, Paper } from "@mui/material";
-import ChartDashBroad from "./Chart";
 import { ToastContainer } from "react-toastify";
 
 const CustomAppBar = styled(AppBar)({
   background: "linear-gradient(to right, #ADD8E6, #FFFF99, #FFC0CB)",
   backgroundImage: `url(${Background})`,
-  backgroundRepeat: "no-repeat", backgroundSize: "cover"
+  backgroundRepeat: "no-repeat",
+  backgroundSize: "cover",
 });
 
 const drawerWidth = 240;

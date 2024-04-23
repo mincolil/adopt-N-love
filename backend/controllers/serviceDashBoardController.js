@@ -288,7 +288,7 @@ const getTotalBookingByDate1 = async (req, res) => {
     try {
         let { startDate, endDate } = req.query;
 
-        
+
         if (!startDate || !endDate) {
             const totalBookings = await Booking.find({ status: 'Hoàn thành' });
             return res.status(200).json({ totalBookings });
@@ -297,7 +297,7 @@ const getTotalBookingByDate1 = async (req, res) => {
         startDate = new Date(startDate);
         endDate = new Date(endDate);
 
-        
+
         const totalBookings = await Booking.find({
             status: 'Hoàn thành',
             createdAt: { $gte: startDate, $lte: endDate },

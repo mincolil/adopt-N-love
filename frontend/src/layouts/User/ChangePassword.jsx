@@ -159,13 +159,6 @@ const ChangePassword = () => {
                 </Grid>
               </Grid>
               <Box sx={{ marginTop: "20px", display: "flex", justifyContent: "space-between" }}>
-                <NavLink to="/reset-password">
-                  <Typography variant="body2" color="textSecondary"
-                    sx={{ marginTop: "8px" }}
-                  >
-                    Quên mật khẩu cũ?
-                  </Typography>
-                </NavLink>
                 <ButtonCustomize
                   onClick={handleChangePassword}
                   nameButton="Đổi mật khẩu"

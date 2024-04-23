@@ -18,11 +18,12 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import "./Footer.css";
 import Logo from "../../images/logo.png";
 import FacebookChat from "../FacebookChatPlugin/FacebookChat";
+import { MessengerChat } from "react-messenger-chat-plugin";
 
 const Footer = () => {
   return (
     <Box sx={{ backgroundColor: "#f8f8f8" }}>
-      <FacebookChat />
+      <MessengerChat pageId="261557497046784" />
       <Box className="footer_top">
         <Container>
           <Grid container spacing={3}>
@@ -156,10 +157,7 @@ const Footer = () => {
               <Box className="footer_widget">
                 <Box className="footer_logo" sx={{ marginBottom: "35px" }}>
                   <Link href="#">
-                    <img
-                      src={Logo}
-                      alt="Logo"
-                    />
+                    <img src={Logo} alt="Logo" />
                   </Link>
                 </Box>
                 <Typography className="address_text">

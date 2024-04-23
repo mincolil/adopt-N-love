@@ -23,6 +23,7 @@ import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import { ToastContainer } from "react-toastify";
 
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
@@ -40,7 +41,7 @@ import DropDownService from "../../../components/DropDown/DropDownService";
 import TypographyCus from "../../../components/Typography/DescriptionCus";
 import ServiceDetail from "../../../components/Modal/ModalDetaiService";
 
-const BASE_URL = "http://localhost:3500";
+const BASE_URL = "";
 
 export default function ServiceTable() {
   const [data, setData] = useState([]);
@@ -117,7 +118,7 @@ export default function ServiceTable() {
   async function loadAllCategoryService() {
     try {
       const loadData = await axios.get(
-        `http://localhost:3500/category?categoryName=Dịch vụ`
+        `/category?categoryName=Dịch vụ`
       );
       if (loadData.error) {
         toast.error(loadData.error);
@@ -143,7 +144,7 @@ export default function ServiceTable() {
     } else {
       try {
         const loadData = await axios.get(
-          `http://localhost:3500/service/manage?page=${page}&categoryId=${cateId}`
+          `/service/manage?page=${page}&categoryId=${cateId}`
         );
         if (loadData.error) {
           toast.error(loadData.error);
@@ -219,10 +220,10 @@ export default function ServiceTable() {
       if (loadData.data.error) {
         toast.warning(
           "Kết quả " +
-            "[" +
-            keyword +
-            "]" +
-            " bạn vừa tìm không có! Vui lòng nhập lại."
+          "[" +
+          keyword +
+          "]" +
+          " bạn vừa tìm không có! Vui lòng nhập lại."
         );
         loadAllService(currentPage);
       } else {
@@ -246,6 +247,7 @@ export default function ServiceTable() {
 
   return (
     <>
+      <ToastContainer />
       <Grid
         spacing={2}
         container
@@ -345,7 +347,7 @@ export default function ServiceTable() {
                           variant="outlined"
                           label={value.status ? "Hoạt động" : "Không hoạt động"}
                           color={statusColor}
-                          // onClick={() => handleUpdateServiceStatus(value._id)}
+                        // onClick={() => handleUpdateServiceStatus(value._id)}
                         />
                       </TableCell>
                     </TableRow>

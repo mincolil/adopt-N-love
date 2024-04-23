@@ -86,7 +86,7 @@ const ModalAddSerivce = (props) => {
         const formData = new FormData();
         formData.append("image", image);
         const response = await axios.post(
-          `http://localhost:3500/service/upload`,
+          `/service/upload`,
           formData
         );
         const maxSize = 1024 * 1024;
@@ -142,7 +142,7 @@ const ModalAddSerivce = (props) => {
       toast.error("Giá tiền phải có ít nhất 4 chữ số. Vui lòng nhập lại!");
     } else {
       try {
-        const response = await axios.post("http://localhost:3500/service", {
+        const response = await axios.post("/service", {
           serviceName,
           categoryId,
           description,
@@ -230,7 +230,7 @@ const ModalAddSerivce = (props) => {
                       <MenuItem
                         key={value._id}
                         value={value._id}
-                        // onClick={(e) => hanldeClickCategory(e.target.value)}
+                      // onClick={(e) => hanldeClickCategory(e.target.value)}
                       >
                         {value.feature}
                       </MenuItem>

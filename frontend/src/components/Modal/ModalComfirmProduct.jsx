@@ -18,7 +18,7 @@ const ModalComfirmProduct = (props) => {
   const handleDeleteService = async (productID) => {
     try {
       const res = await axios.delete(
-        `http://localhost:3500/product/${productID}`
+        `/product/${productID}`
       );
       console.log("Check API delete", res);
       if (res.data.error) {

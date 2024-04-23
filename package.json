@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "react-scripts": "^5.0.1"
+  },
+  "name": "adopt-n-love",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "install-server": "cd backend && npm install --force",
+    "start-server": "cd backend && npm start",
+    "install-client": "cd frontend && npm install --force",
+    "start-client": "cd frontend && npm start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

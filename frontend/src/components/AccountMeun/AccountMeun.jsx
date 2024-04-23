@@ -4,14 +4,9 @@ import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
-import PersonAdd from "@mui/icons-material/PersonAdd";
-import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
-import LoginIcon from "@mui/icons-material/Login";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import PetsIcon from "@mui/icons-material/Pets";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -19,12 +14,12 @@ import HomeIcon from "@mui/icons-material/Home";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
+import { GoogleLogout, useGoogleLogout } from 'react-google-login';
 
 import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import useAuth from "../../hooks/useAuth";
-import axios from "axios";
 
 export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -41,19 +36,27 @@ export default function AccountMenu() {
   // --------------------- LOGOUT -----------------------------
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    try {
-      // const response = await axios.post("http://localhost:3500/logout");
-      // thông báo logout thành công và chuyển hướng về trang đăng nhập
-      // console.log(response);
+  // const clientId = "424228344980-l67mummet93pgl903qru8ejvjeoo098s.apps.googleusercontent.com";
+  const clientId = "424228344980-rs1e1chulrhg9uhc51u3p3q7espor5pd.apps.googleusercontent.com";
 
-      localStorage.removeItem("token"); // xóa token lưu trữ trong localStorage
-      navigate("/sign-in"); // chuyển hướng về trang đăng nhập
-      toast.success("Đăng xuất thành công!");
+  const handleLogout = async (e) => {
+    try {
+      localStorage.removeItem("token");
+      //remove google token
+      navigate("/sign-in");
     } catch (error) {
       console.error(error);
       toast.error(error);
     }
+  };
+
+  const customStyles = {
+    backgroundColor: 'red', // Set the background color to red
+    border: 'none', // Remove the border
+    color: 'white', // Set the text color to white
+    padding: '10px 20px', // Add padding
+    borderRadius: '5px', // Add border radius
+    cursor: 'pointer', // Change cursor to pointer
   };
 
   return (
@@ -68,7 +71,7 @@ export default function AccountMenu() {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+            <Avatar sx={{ width: 32, height: 32 }}></Avatar>
           </IconButton>
         </Tooltip>
       </Box>
@@ -184,18 +187,22 @@ export default function AccountMenu() {
           Thú cưng của tôi
         </MenuItem>
 
-        {/* <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          Cài đặt
-        </MenuItem> */}
-        <MenuItem onClick={handleLogout}>
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
-          Đăng xuất
-        </MenuItem>
+
+        <GoogleLogout
+          clientId={clientId}
+          buttonText="hehehe"
+          onLogoutSuccess={handleLogout}
+          render={(renderProps) => (
+            <MenuItem onClick={renderProps.onClick}>
+              <ListItemIcon><Logout fontSize="small" /></ListItemIcon>
+
+              Đăng xuất
+            </MenuItem>
+          )}
+        >
+        </GoogleLogout>
+
+
       </Menu>
     </React.Fragment>
   );

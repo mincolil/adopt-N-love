@@ -4,8 +4,79 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const mailer = require('../utils/mailer')
 
+const clientId = process.env.GG_CLIENT_ID;
+const clientserver = process.env.GG_CLIENT_SERVER;
+
+const { OAuth2Client } = require('google-auth-library')
+const { cookie } = require('express-validator')
+
+const authClient = new OAuth2Client(clientId)
+
 // route 'login'
 //method POST
+const loginGoogle = async (req, res) => {
+    try {
+        const { email, googleId } = req.body;
+        const user = await User.findOne({ email: email })
+        // Generate JWT token
+        if (!user) {
+            let newUser = new User({
+                email: email,
+                role: "user",
+                status: "active",
+                password: googleId + 123456,
+                fullname: email.split('@')[0]
+            })
+            const docs = await newUser.save()
+            if (docs) {
+                const token = jwt.sign(
+                    {
+                        id: newUser._id,
+                        email: newUser.email,
+                        role: newUser.role,
+                    },
+                    process.env.SECRET_KEY,
+                    {
+                        expiresIn: '24h'
+                    }
+                )
+                res.status(200).cookie('token', token).json({
+                    message: `Xin chào ${newUser.fullname}`,
+                    token: token
+                })
+            }
+        }
+        else if (user.status === "verifying") {
+            return res.json({
+                error: 'Unverified'
+            })
+        } else if (user.status === "inactive") {
+            return res.json({
+                error: 'Tài khoản của bạn đã bị khóa'
+            })
+        }
+        else {
+            const token = jwt.sign(
+                {
+                    id: user._id,
+                    email: user.email,
+                    role: user.role,
+                },
+                process.env.SECRET_KEY,
+                {
+                    expiresIn: '24h'
+                }
+            )
+            res.status(200).cookie('token', token).json({
+                message: `Xin chào ${user.fullname}`,
+                token: token
+            })
+        }
+    } catch (err) {
+        console.log(err)
+    }
+};
+
 const login = async (req, res) => {
     try {
         const { email, password } = req.body
@@ -115,11 +186,18 @@ const changePassword = async (req, res) => {
 }
 
 const logout = (req, res) => {
-    const token = req.cookies.token
-    if (!token) return res.sendStatus(204) //No content
-    else {
-        res.clearCookie('token')
-        res.json({ message: 'Cookie cleared' })
+    // const token = req.cookies.token
+    // if (!token) return res.sendStatus(204) //No content
+    // else {
+    //     res.clearCookie('token')
+    //     res.json({ message: 'Cookie cleared' })
+    // }
+    try {
+        //remove google cookie
+        res.cookie('token', token, { expires: new Date(0) }).json({ message: 'Logout success' })
+
+    } catch (err) {
+        res.status(400).json({ error: 'Logout fail' + err })
     }
 }
 
@@ -212,10 +290,28 @@ const newPassword = async (req, res) => {
     }
 }
 
+const getProfileById = async (req, res) => {
+    const { id } = req.params
+    try {
+        const user = await User.findById(id)
+        if (!user) {
+            res.json({ error: "User not found" })
+        } else {
+            res.json(user)
+        }
+    }
+    catch (error) {
+        console.log(error)
+        res.json({ error: "Internal server error" })
+    }
+
+}
+
 
 
 module.exports = {
     login,
+    loginGoogle,
     register,
     changePassword,
     logout,
@@ -223,5 +319,6 @@ module.exports = {
     forgotPassword,
     newPassword,
     verify,
-    check
+    check,
+    getProfileById
 }

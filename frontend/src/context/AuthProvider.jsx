@@ -8,10 +8,11 @@ export const AuthProvider = ({ children }) => {
     const [auth, setAuth] = useState({});
     const [productNumber, setProductNumber] = useState();
     const [serviceNumber, setServiceNumber] = useState();
+    const [adoptRequestNumber, setAdoptRequest] = useState();
 
     const handleLoadCartProduct = async () => {
         try {
-            await axios.get(`http://localhost:3500/cartProduct/view-cart`, {
+            await axios.get(`/cartProduct/view-cart`, {
                 headers: { Authorization: auth.token },
                 withCredentials: true,
             })
@@ -25,7 +26,7 @@ export const AuthProvider = ({ children }) => {
 
     const handleLoadCartService = async () => {
         try {
-            await axios.get(`http://localhost:3500/cartService/view-cart`, {
+            await axios.get(`/cartService/view-cart`, {
                 headers: { Authorization: auth.token },
                 withCredentials: true,
             })
@@ -37,20 +38,33 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const handleLoadAdoptRequest = async () => {
+        try {
+            await axios.get(`/adopt/getAdoptNotification/all`, {
+                headers: { Authorization: auth.token },
+                withCredentials: true,
+            })
+                .then((data) => {
+                    setAdoptRequest(data.data.length);
+                });
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     const value = {
         auth,
         productNumber,
         serviceNumber,
+        adoptRequestNumber,
         setAuth,
         handleLoadCartProduct,
-        handleLoadCartService
+        handleLoadCartService,
+        handleLoadAdoptRequest
     }
 
     useEffect(() => {
-        handleLoadCartProduct()
-        handleLoadCartService()
         if (localStorage.getItem('token') !== null) {
-
             if (auth.role === undefined) {
 
                 const dataDecode = jwtDecode(localStorage.getItem('token'));
@@ -63,7 +77,15 @@ export const AuthProvider = ({ children }) => {
                 });
             }
         }
-    })
+    }, [localStorage.getItem('token')])
+
+    useEffect(() => {
+        if (auth.token) {
+            handleLoadCartProduct()
+            handleLoadCartService()
+            handleLoadAdoptRequest()
+        }
+    }, [auth])
 
     return (
         <AuthContext.Provider value={value}>

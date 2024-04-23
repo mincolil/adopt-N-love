@@ -37,7 +37,9 @@ import ContentCus from "../../../components/Typography/ContentCus";
 import DateFormat from "../../../components/DateFormat";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import BlogSlider from "../../../components/Header/SliderBlog";
+import Header from "../../../components/Header/Header";
 
 const Image = styled("img")({
   maxWidth: "100%",
@@ -69,7 +71,7 @@ const CustomContainer = styled(Container)({
     "linear-gradient(to bottom, #F4BEB2, #F4BEB2, #ECDAD6, #E5E6E7, #73A1CC)",
 });
 
-const BASE_URL = "http://localhost:3500";
+const BASE_URL = "";
 
 const defaultTheme = createTheme();
 
@@ -107,6 +109,8 @@ const BlogDetail = () => {
 
   return (
     <ThemeProvider theme={defaultTheme}>
+      <ToastContainer />
+      <Header />
       <CssBaseline />
 
       <CustomContainer component="main" maxWidth="full" sx={{ pt: 12 }}>

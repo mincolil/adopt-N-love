@@ -6,21 +6,101 @@ const path = require('path')
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const session = require('express-session');
+const passport = require('passport');
+const OAuth2Strategy = require('passport-google-oauth2').Strategy;
 const PORT = process.env.PORT || 3500;
 const MONGO_URI = process.env.MONGO_URI;
+const userdb = require('./models/User');
+const { ca } = require('date-fns/locale');
+const jwt = require('jsonwebtoken')
 
-app.use(express.json());
+const clientid = process.env.GG_CLIENT_ID
+const clientserver = process.env.GG_CLIENT_SERVER
+
+const bookingController = require('../backend/controllers/bookingController');
+const router = require('./routes/bookingRoutes');
+
+app.use(express.json({
+    limit: '5mb',
+    verify: (req, res, buf) => {
+        req.rawBody = buf.toString();
+    }
+}));
 app.use(cookieParser());
 // tell nodejs to access static file in public folder
 app.use('/', express.static(path.join(__dirname, '/public')));
 app.use(express.urlencoded({ extended: false }));
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 app.use(
     cors({
         credentials: true,
-        origin: "http://localhost:3000"
+        origin: ["http://localhost:3000", "https://adoptnlove.netlify.app"]
     })
 )
+
+//gg login
+const helmet = require('helmet');
+app.use(helmet({
+    crossOriginOpenerPolicy: 'same-origin; allow-popups'
+}));
+
+app.use(session({
+    secret: "17092002minhdule",
+    resave: false,
+    saveUninitialized: true,
+}))
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new OAuth2Strategy({
+    clientID: clientid,
+    clientSecret: clientserver,
+    callbackURL: "https://adopt-n-love-1.onrender.com/auth/google/callback",
+    scope: ["profile", "email"],
+    passReqToCallback: true
+},
+    async (request, accessToken, refreshToken, profile, done) => {
+        try {
+            let user = await userdb.findOne({ email: profile.email });
+            if (!user) {
+                user = new userdb({
+                    googleId: profile.id,
+                    displayName: profile.displayName,
+                    email: profile.emails[0].value,
+                    image: profile.photos[0].value
+                });
+                await user.save();
+            }
+            // Send token back to client
+            return done(null, user);
+        } catch (error) {
+            return done(error, null);
+        }
+    }
+))
+
+passport.serializeUser((user, done) => {
+    done(null, user);
+})
+
+passport.deserializeUser((id, done) => {
+    done(null, user);
+})
+
+app.get('/auth/google', passport.authenticate('google', { scope: ["profile", "email"] }));
+app.get('/auth/google/callback', passport.authenticate('google', { successRedirect: 'http://localhost:3000', failureRedirect: 'http://localhost:3000/login' }));
+
+app.get("/login/sucess", async (req, res) => {
+
+    if (req.user) {
+        res.status(200).json({ message: "user Login", user: req.user })
+    } else {
+        res.status(400).json({ message: "Not Authorized" })
+    }
+})
 
 app.get('/', (req, res) => {
     return res.send('Hello World')

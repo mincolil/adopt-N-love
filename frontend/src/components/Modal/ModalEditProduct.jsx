@@ -74,7 +74,7 @@ const ModalEditProduct = (props) => {
   const handleDiscountChange = (event) => {
     const newDiscount = parseInt(event.target.value, 10);
 
-    if (newDiscount >= 1 && newDiscount <= 100) {
+    if (newDiscount >= 1 && newDiscount <= 30) {
       setDiscount(newDiscount);
       setSaleStartTime(dayjs());
       setSaleEndTime(dayjs());
@@ -173,7 +173,7 @@ const ModalEditProduct = (props) => {
         const formData = new FormData();
         formData.append("image", productImage);
         const response = await axios.post(
-          `http://localhost:3500/product/upload`,
+          `/product/upload`,
           formData
         );
         const maxSize = 1024 * 1024;
@@ -233,8 +233,8 @@ const ModalEditProduct = (props) => {
       );
     } else if (discount < 0) {
       toast.error("% giảm giá không được âm ");
-    } else if (discount > 100) {
-      toast.error("% giảm giá không được lớn hơn 100");
+    } else if (discount > 30) {
+      toast.error("% giảm giá không được lớn hơn 30");
     } else if (
       discount > 0 &&
       discount < 101 &&
@@ -276,7 +276,7 @@ const ModalEditProduct = (props) => {
       toast.error("Thông tin chi tiết không được để trống");
     } else {
       try {
-        const res = await axios.patch(`http://localhost:3500/product`, {
+        const res = await axios.patch(`/product`, {
           id: productID,
           productName: productName,
           categoryId: categoryId,
@@ -356,8 +356,8 @@ const ModalEditProduct = (props) => {
               margin="normal"
               value={productName}
               onChange={(e) => handleValidationProductName(e)}
-              // error={!validProductName}
-              // helperText={validProductName ? "" : "Hãy nhập tên sản phẩm"}
+            // error={!validProductName}
+            // helperText={validProductName ? "" : "Hãy nhập tên sản phẩm"}
             />
 
             <FormControl fullWidth margin="normal">
@@ -375,7 +375,7 @@ const ModalEditProduct = (props) => {
                       <MenuItem
                         key={value._id}
                         value={value._id}
-                        // onClick={(e) => hanldeClickCategory(e.target.value)}
+                      // onClick={(e) => hanldeClickCategory(e.target.value)}
                       >
                         {value.feature}
                       </MenuItem>
@@ -392,8 +392,8 @@ const ModalEditProduct = (props) => {
               type="number"
               value={quantity}
               onChange={(e) => handleValidationQuantity(e)}
-              // error={!validQuantity}
-              // helperText={validQuantity ? "" : "Hãy nhập số lượng sản phẩm"}
+            // error={!validQuantity}
+            // helperText={validQuantity ? "" : "Hãy nhập số lượng sản phẩm"}
             />
 
             <TextField
@@ -408,8 +408,8 @@ const ModalEditProduct = (props) => {
                 readOnly: true,
               }}
               variant="filled"
-              // error={!validPrice}
-              // helperText={validPrice ? "" : "Hãy nhập giá tiền sản phẩm"}
+            // error={!validPrice}
+            // helperText={validPrice ? "" : "Hãy nhập giá tiền sản phẩm"}
             />
 
             <TextField
@@ -421,9 +421,10 @@ const ModalEditProduct = (props) => {
               value={discount}
               // onChange={(e) => setDiscount(e.target.value)}
               onChange={handleDiscountChange}
+              inputProps={{ max: 30 }}
             />
 
-            {discount >= 1 && discount <= 100 && (
+            {discount >= 1 && discount <= 30 && (
               <Grid container spacing={3}>
                 <Grid item xs={12} sm={6}>
                   <DateTimePicker
@@ -432,7 +433,7 @@ const ModalEditProduct = (props) => {
                     onChange={handleStartDateChange}
                     minDate={dayjs()}
                     views={["year", "day", "hours", "minutes", "seconds"]}
-                    // maxDate={currentDate}
+                  // maxDate={currentDate}
                   />
                 </Grid>
 

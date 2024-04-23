@@ -29,7 +29,7 @@ const serviceSchema = new mongoose.Schema({
     },
     categoryId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "ServiceCategory",
+        ref: "Category",
         required: true,
     },
     serviceImage: String,

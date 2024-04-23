@@ -14,6 +14,7 @@ import Stack from "@mui/material/Stack";
 import SearchIcon from "@mui/icons-material/Search";
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
+import { ToastContainer } from "react-toastify";
 
 import ButtonCustomize from "../../../components/Button/Button";
 
@@ -45,7 +46,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 // };
 
 // -------------------------------API SERVER----------------------
-const BASE_URL = "http://localhost:3500";
+const BASE_URL = "";
 
 export default function ProductTable() {
   const [data, setData] = useState([]);
@@ -148,7 +149,7 @@ export default function ProductTable() {
   async function loadAllCategoryProduct() {
     try {
       const loadDataCategoryProduct = await axios.get(
-        `http://localhost:3500/category?categoryName=Sản phẩm`
+        `/category?categoryName=Sản phẩm`
       );
       if (loadDataCategoryProduct.error) {
         toast.error(loadDataCategoryProduct.error);
@@ -174,7 +175,7 @@ export default function ProductTable() {
     } else {
       try {
         const loadData = await axios.get(
-          `http://localhost:3500/product/manage?page=${page}&categoryId=${cateId}`
+          `/product/manage?page=${page}&categoryId=${cateId}`
         );
         if (loadData.error) {
           toast.error(loadData.error);
@@ -221,10 +222,10 @@ export default function ProductTable() {
       if (loadData.data.error) {
         toast.warning(
           "Kết quả " +
-            "[" +
-            keyword +
-            "]" +
-            " bạn vừa tìm không có! Vui lòng nhập lại. "
+          "[" +
+          keyword +
+          "]" +
+          " bạn vừa tìm không có! Vui lòng nhập lại. "
         );
         loadAllProduct(currentPage);
       } else {
@@ -241,6 +242,7 @@ export default function ProductTable() {
 
   return (
     <>
+      <ToastContainer />
       <Grid
         spacing={2}
         container

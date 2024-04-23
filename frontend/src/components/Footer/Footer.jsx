@@ -16,17 +16,20 @@ import PinterestIcon from "@mui/icons-material/Pinterest";
 import GoogleIcon from "@mui/icons-material/Google";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import "./Footer.css";
+import Logo from "../../images/logo.png";
+import FacebookChat from "../FacebookChatPlugin/FacebookChat";
 
 const Footer = () => {
   return (
     <Box sx={{ backgroundColor: "#f8f8f8" }}>
+      <FacebookChat />
       <Box className="footer_top">
         <Container>
           <Grid container spacing={3}>
             <Grid item xl={3} md={3} lg={3}>
               <Box className="footer_widget">
                 <Typography variant="h3" className="footer_title">
-                  Contact Us
+                  Liên hệ
                 </Typography>
                 <List className="address_line">
                   <ListItem sx={{ paddingLeft: "0" }}>
@@ -44,7 +47,7 @@ const Footer = () => {
                     >
                       <ListItemText
                         className="txtAddress"
-                        primary="nmhieu21@gmail.Com"
+                        primary="nmhieu21@gmail.com"
                       />
                     </ListItemButton>
                   </ListItem>
@@ -60,7 +63,7 @@ const Footer = () => {
             <Grid item xl={3} md={3} lg={3}>
               <Box className="footer_widget">
                 <Typography variant="h3" className="footer_title">
-                  Our Services
+                  Dịch vụ
                 </Typography>
                 <List className="links">
                   <ListItem sx={{ paddingLeft: "0" }}>
@@ -154,8 +157,8 @@ const Footer = () => {
                 <Box className="footer_logo" sx={{ marginBottom: "35px" }}>
                   <Link href="#">
                     <img
-                      src="https://preview.colorlib.com/theme/anipat/img/logo.png.webp"
-                      alt=""
+                      src={Logo}
+                      alt="Logo"
                     />
                   </Link>
                 </Box>

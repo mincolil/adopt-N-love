@@ -72,7 +72,7 @@ const ModalEditBlog = (props) => {
         const formData = new FormData();
         formData.append("image", image);
         const response = await axios.post(
-          `http://localhost:3500/blog/upload`,
+          `/blog/upload`,
           formData
         );
         const maxSize = 1024 * 1024;
@@ -122,7 +122,7 @@ const ModalEditBlog = (props) => {
       toast.error("Nội dung không được để trống");
     } else {
       try {
-        const res = await axios.patch(`http://localhost:3500/blog/${blogId}`, {
+        const res = await axios.patch(`/blog/${blogId}`, {
           id: blogId,
           title: title,
           content: content,

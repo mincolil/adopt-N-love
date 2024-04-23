@@ -8,7 +8,7 @@ const getTotalBookingByDate = async (req, res) => {
 
         // kiểm tra nếu ngày bắt đầu và ngày kết thúc không có thì lấy tất cả
         if (!startDate || !endDate) {
-            const totalBookings = await Booking.find({status: 'Hoàn thành'});
+            const totalBookings = await Booking.find({ status: 'Hoàn thành' });
             return res.status(200).json({ totalBookings });
         }
 
@@ -181,10 +181,131 @@ const getRevenueStatistics = async (req, res) => {
     }
 }
 
+// get revenue statistics by pet type 
+const getRevenueStatisticsByPetType = async (req, res) => {
+    try {
+        const result = await BookingDetail.aggregate([
+            {
+                $lookup: {
+                    from: "pets",
+                    localField: "petId",
+                    foreignField: "_id",
+                    as: "pet"
+                }
+            },
+            {
+                $unwind: "$pet"
+            },
+            {
+                $lookup: {
+                    from: "services",
+                    localField: "serviceId",
+                    foreignField: "_id",
+                    as: "service"
+                }
+            },
+            {
+                $unwind: "$service"
+            },
+            {
+                $group: {
+                    _id: "$pet.categoryId",
+                    totalPrice: { $sum: "$service.price" }
+                }
+            }
+        ]);
+
+        // Tạo mảng kết quả chứa doanh thu cho từng loài
+
+        return res.status(200).json(result);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+const getRevenuePetMonth = async (req, res) => {
+    try {
+        const result = await BookingDetail.aggregate([
+            {
+                $lookup: {
+                    from: "pets",
+                    localField: "petId",
+                    foreignField: "_id",
+                    as: "pet"
+                }
+            },
+            {
+                $unwind: "$pet"
+            },
+            {
+                $lookup: {
+                    from: "service",
+                    localField: "serviceId",
+                    foreignField: "_id",
+                    as: "service"
+                }
+            },
+            {
+                $unwind: "$service"
+            },
+            {
+                $addFields: {
+                    bookingMonth: { $month: "$bookingDate" }
+                }
+            },
+            {
+                $group: {
+                    _id: { categoryId: "$pet.categoryId", month: "$bookingMonth" },
+                    totalPrice: { $sum: "$service.price" }
+                }
+            },
+            {
+                $sort: {
+                    "_id.categoryId": 1,
+                    "_id.month": 1
+                }
+            }
+        ])
+
+        return res.status(200).json(result);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+
 module.exports = {
     getTotalBookingByDate,
     getTotalRevenueByDate,
     getTotalCustomer,
     // getTotalProductsSoldByDate,
-    getRevenueStatistics
+    getRevenueStatistics,
+    getRevenueStatisticsByPetType,
+    getRevenuePetMonth
+}
+
+const getTotalBookingByDate1 = async (req, res) => {
+    try {
+        let { startDate, endDate } = req.query;
+
+        
+        if (!startDate || !endDate) {
+            const totalBookings = await Booking.find({ status: 'Hoàn thành' });
+            return res.status(200).json({ totalBookings });
+        }
+
+        startDate = new Date(startDate);
+        endDate = new Date(endDate);
+
+        
+        const totalBookings = await Booking.find({
+            status: 'Hoàn thành',
+            createdAt: { $gte: startDate, $lte: endDate },
+        });
+
+        res.status(200).json({ totalBookings });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 }

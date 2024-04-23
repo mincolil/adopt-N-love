@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import Background from "../../images/background.png";
+import Header from "../../components/Header/Header";
 
 import {
   TextField,
@@ -11,6 +13,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const ResetPassword = () => {
@@ -39,7 +42,7 @@ const ResetPassword = () => {
       setCheckVerifyCode(false);
       try {
         const response = await axios
-          .post("http://localhost:3500/forgot-password", {
+          .post("/forgot-password", {
             email: email,
           })
           .then((data) => {
@@ -56,7 +59,7 @@ const ResetPassword = () => {
       alert("Vui lòng nhập đúng định dạng Email !");
     } else {
       try {
-        await axios.post("http://localhost:3500/verify", {
+        await axios.post("/verify", {
           email: email,
           code: verifyCode,
         })
@@ -92,7 +95,7 @@ const ResetPassword = () => {
       alert("Vui lòng nhập đúng định dạng email");
     } else {
       try {
-        await axios.post("http://localhost:3500/new-password", {
+        await axios.post("/new-password", {
           email: email,
           password: password,
         })
@@ -128,128 +131,151 @@ const ResetPassword = () => {
 
   return (
     <>
-      <Container
-        component="main"
-        maxWidth="sm"
-        sx={{ mb: 4 }}
-        style={{ marginTop: "100px" }}
-      >
-        <Paper
-          variant="outlined"
-          sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
+      <ToastContainer />
+      <Header />
+      <Grid
+        sx={{
+          backgroundImage: `url(${Background})`,
+          backgroundSize: "cover",
+          backgroundRepeat: "round",
+          height: "100vh",
+          position: "relative",
+          top: "-5px",
+        }}>
+        <Container
+          component="main"
+          maxWidth="sm"
+          sx={{
+            mb: 4,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          style={{ marginTop: "100px" }}
         >
-          <Typography variant="h4" gutterBottom>
-            Đặt lại mật khẩu
-          </Typography>
-          <Typography variant="h7" gutterBottom>
-            Vui lòng kiểm tra mã xác nhận được gửi vào email
-          </Typography>
-          <Grid container spacing={3} style={{ marginTop: "15px" }}>
-            <Grid item xs={9}>
-              {
-                checkVerifyCode === true ?
-                  (
+          <Paper
+            variant="outlined"
+            sx={{
+              my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 },
+            }}
+          >
+            <Typography variant="h4" gutterBottom>
+              Đặt lại mật khẩu
+            </Typography>
+            <Typography variant="h7" gutterBottom>
+              Vui lòng kiểm tra mã xác nhận được gửi vào email
+            </Typography>
+            <Grid container spacing={3} style={{ marginTop: "15px" }}>
+              <Grid item xs={9}>
+                {
+                  checkVerifyCode === true ?
+                    (
+                      <TextField
+                        color="warning"
+                        variant="outlined"
+                        fullWidth
+                        label="Vui lòng nhập email"
+                        type="text"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        disabled
+                      />
+                    )
+                    :
+                    (
+                      <TextField
+                        color="warning"
+                        variant="outlined"
+                        fullWidth
+                        label="Vui lòng nhập email"
+                        type="text"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    )
+                }
+
+              </Grid>
+              <Grid item xs={3}>
+                <button
+                  style={{ width: "100%", height: "100%" }}
+                  onClick={startCountdown}
+                  disabled={isActive}
+                >
+                  Verify {isActive && <div>Countdown: {seconds}s</div>}
+                </button>
+              </Grid>
+              {checkVerifyCode === false ? (
+                <>
+                  <Grid item xs={12}>
+                    <TextField
+                      color="warning"
+                      variant="outlined"
+                      fullWidth
+                      label="Vui lòng nhập mã xác nhận"
+                      type="text"
+                      value={verifyCode}
+                      onChange={(e) => setVerifyCode(e.target.value)}
+                    />
+                  </Grid>
+                  <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                    <Button
+                      color="warning"
+                      type="button"
+                      sx={{ mt: 3, ml: 1 }}
+                      variant="contained"
+                      onClick={handleConfirmVerifyCode}
+                    >
+                      Xác nhận
+                    </Button>
+                  </Box>
+                </>
+              ) : (
+                ""
+              )}
+
+              {/* ---------------------------------------------------------------------------------------- */}
+              {checkVerifyCode === true ? (
+                <>
+                  <Grid item xs={12}>
                     <TextField
                       variant="outlined"
                       fullWidth
-                      label="Vui lòng nhập email"
-                      type="text"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      disabled
+                      label="Vui lòng nhập mật khẩu"
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                     />
-                  )
-                  :
-                  (
+                  </Grid>
+                  <Grid item xs={12}>
                     <TextField
                       variant="outlined"
                       fullWidth
-                      label="Vui lòng nhập email"
-                      type="text"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      label="Vui lòng nhập lại mật khẩu"
+                      type="password"
+                      value={rePassword}
+                      onChange={(e) => setRePassword(e.target.value)}
                     />
-                  )
-              }
-
+                  </Grid>
+                  <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                    <Button
+                      type="button"
+                      sx={{ mt: 3, ml: 1 }}
+                      variant="contained"
+                      onClick={handleConfirmNewPass}
+                    >
+                      Đổi mật khẩu
+                    </Button>
+                  </Box>
+                </>
+              ) : (
+                ""
+              )}
+              {/* ------------------------------------------------------------------------------------------ */}
             </Grid>
-            <Grid item xs={3}>
-              <button
-                style={{ width: "100%", height: "100%" }}
-                onClick={startCountdown}
-                disabled={isActive}
-              >
-                Verify {isActive && <div>Countdown: {seconds}s</div>}
-              </button>
-            </Grid>
-            {checkVerifyCode === false ? (
-              <>
-                <Grid item xs={12}>
-                  <TextField
-                    variant="outlined"
-                    fullWidth
-                    label="Vui lòng nhập mã xác nhận"
-                    type="text"
-                    value={verifyCode}
-                    onChange={(e) => setVerifyCode(e.target.value)}
-                  />
-                </Grid>
-                <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                  <Button
-                    type="button"
-                    sx={{ mt: 3, ml: 1 }}
-                    variant="contained"
-                    onClick={handleConfirmVerifyCode}
-                  >
-                    Xác nhận
-                  </Button>
-                </Box>
-              </>
-            ) : (
-              ""
-            )}
-
-            {/* ---------------------------------------------------------------------------------------- */}
-            {checkVerifyCode === true ? (
-              <>
-                <Grid item xs={12}>
-                  <TextField
-                    variant="outlined"
-                    fullWidth
-                    label="Vui lòng nhập mật khẩu"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    variant="outlined"
-                    fullWidth
-                    label="Vui lòng nhập lại mật khẩu"
-                    type="password"
-                    value={rePassword}
-                    onChange={(e) => setRePassword(e.target.value)}
-                  />
-                </Grid>
-                <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                  <Button
-                    type="button"
-                    sx={{ mt: 3, ml: 1 }}
-                    variant="contained"
-                    onClick={handleConfirmNewPass}
-                  >
-                    Đổi mật khẩu
-                  </Button>
-                </Box>
-              </>
-            ) : (
-              ""
-            )}
-            {/* ------------------------------------------------------------------------------------------ */}
-          </Grid>
-        </Paper>
-      </Container>
+          </Paper>
+        </Container>
+      </Grid>
     </>
   );
 };

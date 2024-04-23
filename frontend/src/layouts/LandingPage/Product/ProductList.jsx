@@ -8,11 +8,6 @@ import {
   List,
   ListItem,
   Checkbox,
-  FormControlLabel,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
   Card,
   CardActionArea,
   CardContent,
@@ -21,46 +16,204 @@ import {
   IconButton,
   Pagination,
   Stack,
+  Slider,
+  Paper,
+  InputBase,
+  FormControl,
+  Select,
+  MenuItem,
+  Breadcrumbs,
+  Link,
+  Button,
 } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import HomeIcon from "@mui/icons-material/Home";
+import SearchIcon from "@mui/icons-material/Search";
 import Grid from "@mui/material/Unstable_Grid2";
-import "./ProductList.css";
+import "./styled/ProductList.css";
 import styled from "styled-components";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import useAuth from "../../../hooks/useAuth";
+import dayjs from "dayjs";
+import FloatingDogImage from "../../../components/Floater/FloatingDogImage";
 
-const DsCheckbox = styled(Checkbox)`
-  color: #eeeeee !important;
-  &.Mui-checked {
-    color: #000 !important;
-  }
-`;
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { Modal } from 'antd';
+
+const { confirm } = Modal;
+const showConfirmPro = () => {
+  return new Promise((resolve, reject) => {
+    confirm({
+      title: 'Xác nhận',
+      icon: <ExclamationCircleFilled />,
+      content: 'Bạn có muốn thêm sản phẩm này không ?',
+      okText: 'Đồng ý', 
+      cancelText: 'Hủy bỏ', 
+      onOk() {
+        resolve(true); // Trả về giá trị true khi người dùng nhấn OK
+      },
+      onCancel() {
+        resolve(false); // Trả về giá trị false khi người dùng nhấn Cancel
+      },
+    });
+  });
+};
+
+const BASE_URL = "";
+
+const numberToVND = (number) => {
+  return number.toLocaleString("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  });
+};
 
 function ProductItem({ product }) {
-  const { title, price } = product;
+  const {
+    _id,
+    productName,
+    quantity,
+    price,
+    productImage,
+    discount,
+    saleEndTime,
+    saleStartTime,
+  } = product;
+  const [quantitySell, setQuantitySell] = useState(1);
+  const context = useAuth();
+
+  const handleAddToCart = async (id) => {
+    if (context.auth.token === undefined) {
+      alert("Bạn chưa đăng nhập, vui lòng đăng nhập !");
+    } else if (
+      // window.confirm("Bạn có muốn thêm sản phẩm này không ?") == true
+      await showConfirmPro()
+    ) {
+      try {
+        const addProductToCart = await axios
+          .post(
+            `${BASE_URL}/cartProduct/add-to-cart`,
+            {
+              productId: id,
+              quantity: quantitySell,
+            },
+            {
+              headers: { Authorization: context.auth.token },
+              withCredentials: true,
+            }
+          )
+          .then((data) => {
+            toast.success("Thêm sản phẩm vào giỏ hàng thành công");
+            context.handleLoadCartProduct();
+          });
+      } catch (err) {
+        // console.log(err);
+        toast.error(err.response.data.error);
+      }
+    }
+  };
+
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
       <Card className="product-card">
-        <CardActionArea>
+        <CardActionArea component={RouterLink} to={`/product-homepage/${_id}`}>
           <CardMedia
             component="img"
             height="200"
-            image="https://cdn.dummyjson.com/product-images/1/1.jpg"
-            alt={title}
+            image={productImage}
+            alt={productName}
           />
+          {discount !== 0 &&
+          dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
+            <Card
+              style={{
+                position: "absolute",
+                top: "0px",
+                right: "0px",
+                fontSize: "18px",
+                alignItems: "center",
+              }}
+            >
+              <Typography
+                variant="h6"
+                component="h2"
+                sx={{
+                  color: "#fff",
+                  backgroundColor: "#ee4d2d",
+                  fontSize: "1rem",
+                  borderRadius: "2px",
+                  padding: "2px 4px",
+                  fontWeight: "800",
+                  whiteSpace: "nowrap",
+                  textTransform: "uppercase",
+                }}
+              >
+                {discount}%
+              </Typography>
+            </Card>
+          ) : (
+            ""
+          )}
           <CardContent sx={{ textAlign: "center" }}>
             <Typography
               gutterBottom
               variant="h5"
               component="div"
               className="product-title"
+              style={{ color: "#838b8b" }}
             >
-              {title}
+              {productName}
             </Typography>
             <Typography
               variant="body2"
               color="text.secondary"
               className="product-price"
             >
-              ${price}
+              {discount !== 0 &&
+              dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
+                <Box
+                  display="flex"
+                  flexGrow={1}
+                  sx={{
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    component="h2"
+                    sx={{
+                      textDecoration: "line-through",
+                      marginRight: "8px",
+                      color: "gray",
+                    }}
+                  >
+                    {numberToVND(price)}
+                  </Typography>
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    component="h2"
+                    style={{ color: "#ff5722" }}
+                  >
+                    {numberToVND(price - (price * discount) / 100)}
+                  </Typography>
+                </Box>
+              ) : (
+                <Typography
+                  gutterBottom
+                  variant="h6"
+                  component="h2"
+                  style={{ color: "#ff5722" }}
+                >
+                  {numberToVND(price)}
+                </Typography>
+              )}
             </Typography>
           </CardContent>
         </CardActionArea>
@@ -69,6 +222,7 @@ function ProductItem({ product }) {
             size="large"
             color="primary"
             aria-label="add to shopping cart"
+            onClick={() => handleAddToCart(product._id)}
           >
             <AddShoppingCartIcon />
           </IconButton>
@@ -79,138 +233,437 @@ function ProductItem({ product }) {
 }
 
 export default function ProductList() {
-  const [checkedItems, setCheckedItems] = useState({
-    "New Arrival": false,
-    Dining: false,
-    Desks: false,
-    Accents: false,
-    Accessories: false,
-    Tables: false,
-  });
-
-  const handleCheckboxChange = (event) => {
-    const { name, checked } = event.target;
-    setCheckedItems({ ...checkedItems, [name]: checked });
-  };
-
-  const [products, setProducts] = useState([]);
+  const [data, setData] = useState([]);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 12;
+  const [price, setPrice] = useState([0, 1000000]);
+  const [sortBy, setSortBy] = React.useState("price-asc");
 
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = products.slice(
-    indexOfFirstProduct,
-    indexOfLastProduct
-  );
-
-  const handlePageChange = (event, value) => {
-    setCurrentPage(value);
+  // ----------------------------------- FILTER BY PRICE --------------------------------
+  const handlePriceChange = (event, newValue) => {
+    if (newValue) {
+      const [minPrice, maxPrice] = newValue;
+      const priceRange = maxPrice - minPrice;
+      // Kiểm tra nếu price[0] không được kéo qua price[1]
+      if (priceRange < 10000 && event.target === null) {
+        if (event[0] < event[1]) {
+          setPrice([event[0], event[0] + 10000]);
+          filterProductsByPrice(event[0], event[0] + 10000);
+        } else {
+          setPrice([event[1] - 10000, event[1]]);
+          filterProductsByPrice(event[1] - 10000, event[1]);
+        }
+      } else {
+        // Đảm bảo price[0] không vượt qua price[1]
+        if (minPrice !== price[0] || maxPrice !== price[1]) {
+          setPrice(newValue);
+          filterProductsByPrice(minPrice, maxPrice);
+        }
+      }
+    }
   };
+
+  async function filterProductsByPrice(minPrice, maxPrice) {
+    if (price[0] === 0 && price[1] === 1000000) {
+      loadAllProduct(currentPage);
+    } else {
+      try {
+        const loadData = await axios.get(
+          `/product?page=1&limit=12&minPrice=${minPrice}&maxPrice=${maxPrice}`
+        );
+        if (loadData.error) {
+          toast.error(loadData.error);
+        } else {
+          // console.log("Check loaddata", loadData.data);
+          setTotalPages(loadData.data.pages);
+          // console.log("Check totalPage", totalPages);
+          setData(loadData.data.docs);
+          setTotalProducts(loadData.data.limit);
+          setCurrentPage(loadData.data.page);
+          console.log(
+            `/product?page=1&limit=12&minPrice=${minPrice}&maxPrice=${maxPrice}`
+          );
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }
 
   useEffect(() => {
-    fetch("https://dummyjson.com/products")
-      .then((response) => response.json())
-      .then((data) => {
-        const productList = data.products;
-        setProducts(productList);
-      })
-      .catch((error) => {
-        console.error("Đã xảy ra lỗi khi gọi API:", error);
-      });
+    handlePriceChange();
+  }, []);
+
+  // ----------------------------------- API SORT PRODUCT --------------------------------
+
+  const handleSortChange = (event) => {
+    if (event && event.target) {
+      const selectedSort = event.target.value;
+      setSortBy(selectedSort);
+      filterProductsBySort(selectedSort);
+    }
+  };
+
+  async function filterProductsBySort(sortOption) {
+    let sortParam = "";
+    switch (sortOption) {
+      case "price-asc":
+        sortParam = "asc";
+        break;
+      case "price-desc":
+        sortParam = "desc";
+        break;
+      case "rating":
+        sortParam = "rating";
+        break;
+      case "newest":
+        sortParam = "newest";
+        break;
+      default:
+        sortParam = "";
+    }
+
+    if (sortOption === "" && sortOption === undefined) {
+      loadAllProduct(currentPage);
+    } else {
+      try {
+        const loadData = await axios.get(`/product?sortPrice=${sortParam}`);
+        if (loadData.error) {
+          toast.error(loadData.error);
+        } else {
+          // console.log("Check loaddata", loadData.data);
+          setTotalPages(loadData.data.pages);
+          // console.log("Check totalPage", totalPages);
+          setData(loadData.data.docs);
+          setTotalProducts(loadData.data.limit);
+          setCurrentPage(loadData.data.page);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }
+
+  useEffect(() => {
+    handleSortChange();
+  }, []);
+
+  // ----------------------------------- API GET ALL PRODUCT --------------------------------
+
+  useEffect(() => {
+    loadAllProduct(currentPage);
+  }, []);
+
+  const loadAllProduct = async (page) => {
+    try {
+      const loadData = await axios.get(
+        `${BASE_URL}/product?page=${page}&limit=12`
+      );
+      if (loadData.error) {
+        toast.error(loadData.error);
+      } else {
+        setTotalPages(loadData.data.pages);
+        setData(loadData.data.docs);
+        setTotalProducts(loadData.data.limit);
+        setCurrentPage(loadData.data.page);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // --------------------- Click paging -----------------------------
+  const [categoryId, setCategoryId] = useState("");
+  const handlePageClick = (event, value) => {
+    setCurrentPage(value);
+    if (categoryId) {
+      hanldeClickCategory(value, categoryId);
+    } else if (keyword.trim()) {
+      searchProductByName(value);
+    } else {
+      loadAllProduct(value);
+    }
+  };
+
+  // --------------------- GET ALL PRODUCT BY CATEGORY ID PRODUCT -----------------------------
+  async function hanldeClickCategory(cateId) {
+    setCategoryId(cateId);
+    if (cateId === undefined || cateId === "") {
+      loadAllProduct(currentPage);
+    } else {
+      try {
+        const loadData = await axios.get(
+          `/product?page=1&categoryId=${cateId}&limit=12`
+        );
+        if (loadData.error) {
+          toast.error(loadData.error);
+        } else {
+          setTotalPages(loadData.data.pages);
+          setData(loadData.data.docs);
+          setTotalProducts(loadData.data.limit);
+          setCurrentPage(loadData.data.page);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }
+
+  useEffect(() => {
+    hanldeClickCategory();
+  }, []);
+
+  // --------------------- Hanlde Search -----------------------------
+  const [keyword, setKeyword] = useState("");
+
+  const handleKeywordChange = (e) => {
+    setKeyword(e.target.value);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleSearchClick();
+    }
+  };
+
+  const handleSearchClick = async () => {
+    if (keyword.trim() === "") {
+      toast.warning("Hãy nhập kết quả bạn cần tìm");
+      loadAllProduct(currentPage);
+    } else {
+      searchProductByName();
+    }
+  };
+
+  // ----------------------------------- GET ALL PRODUCTS BY PRODUCT NAME --------------------------------
+  const searchProductByName = async (page) => {
+    try {
+      const loadData = await axios.get(
+        `${BASE_URL}/product?product=${keyword.trim()}&page=${page}&limit=12`
+      );
+      if (loadData.data.error) {
+        toast.warning(
+          "Kết quả " +
+            "[" +
+            keyword +
+            "]" +
+            " bạn vừa tìm không có! Vui lòng nhập lại. "
+        );
+        loadAllProduct(currentPage);
+      } else {
+        setData(loadData.data.docs);
+        setTotalProducts(loadData.data.limit);
+        setTotalPages(loadData.data.pages);
+        setCurrentPage(loadData.data.page);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // --------------------- GET ALL CATEGORY PRODUCT -----------------------------
+  const [category, setCategory] = useState([]);
+  async function loadAllCategoryProduct() {
+    try {
+      const loadDataCategoryProduct = await axios.get(
+        `/category?categoryName=Sản phẩm`
+      );
+      if (loadDataCategoryProduct.error) {
+        toast.error(loadDataCategoryProduct.error);
+      } else {
+        setCategory(loadDataCategoryProduct.data.docs);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  useEffect(() => {
+    loadAllCategoryProduct();
   }, []);
 
   return (
     <>
       <Header />
-      <Container sx={{ position: "relative", top: "120px", paddingBottom: "200px" }}>
+      <Container
+        sx={{ position: "relative", top: "120px", paddingBottom: "200px" }}
+      >
+        <Breadcrumbs
+          aria-label="breadcrumb"
+          sx={{ marginBottom: "30px" }}
+          separator={<KeyboardDoubleArrowRightIcon fontSize="small" />}
+        >
+          <Link
+            underline="hover"
+            sx={{ display: "flex", alignItems: "center" }}
+            color="inherit"
+            href="/"
+          >
+            <HomeIcon sx={{ mr: 0.5 }} fontSize="medium" />
+            Trang chủ
+          </Link>
+          <Link
+            underline="hover"
+            sx={{ display: "flex", alignItems: "center" }}
+            color="#000000"
+            href="/product-homepage"
+          >
+            Sản phẩm
+          </Link>
+        </Breadcrumbs>
         <Grid container spacing={1}>
           <Grid item sm={12} md={3} lg={3} className="sidebar">
             <Box className="product_filter">
               <Box className="category">
                 <Typography variant="h3" className="title">
-                  Categories
+                  Danh mục
                 </Typography>
                 <List className="list-categories">
-                  {Object.keys(checkedItems).map((label) => (
-                    <ListItem key={label} className="list-categories-item">
-                      <FormControlLabel
-                        control={
-                          <DsCheckbox
-                            size="small"
-                            checked={checkedItems[label]}
-                            onChange={handleCheckboxChange}
-                            name={label}
-                          />
-                        }
-                        label={label}
-                        sx={{
-                          fontSize: "12px",
-                        }}
-                      />
+                  <ListItem className="list-categories-item">
+                    <Button
+                      size="small"
+                      onClick={() => hanldeClickCategory()}
+                      className="list-categories-item"
+                      variant="text"
+                      sx={{ minWidth: "0" }}
+                    >
+                      Tất cả
+                    </Button>
+                  </ListItem>
+                  {category.map((category, _id) => (
+                    <ListItem key={_id} className="list-categories-item">
+                      <Button
+                        size="small"
+                        onClick={() => hanldeClickCategory(category._id)}
+                        className="list-categories-item"
+                        variant="text"
+                        sx={{ minWidth: "0" }}
+                      >
+                        {category.feature}
+                      </Button>
                     </ListItem>
                   ))}
                 </List>
               </Box>
-              <Box className="price"></Box>
+              <Box className="price">
+                <Typography variant="h3" className="title">
+                  Giá
+                </Typography>
+                <Box className="price-slider-wrapper">
+                  <Slider
+                    className="slider"
+                    size="medium"
+                    value={price}
+                    onChange={handlePriceChange}
+                    valueLabelDisplay="off"
+                    aria-labelledby="range-slider"
+                    getAriaValueText={(value) => `${value}`}
+                    min={0}
+                    max={1000000}
+                    sx={{
+                      color: "orange",
+                      "& .MuiSlider-rail": {
+                        backgroundColor: "orange",
+                      },
+                      "& .MuiSlider-track": {
+                        backgroundColor: "#ff5722",
+                      },
+                      "& .MuiSlider-thumb": {
+                        backgroundColor: "#ff5722",
+                      },
+                      "& .MuiSlider-valueLabel": {
+                        backgroundColor: "#ff5722",
+                        color: "black",
+                      },
+                    }}
+                  />
+                  <Box className="price-slider-amount">
+                    <Typography
+                      variant="body1"
+                      component="span"
+                      className="from"
+                    >
+                      {price[0]}
+                    </Typography>
+                    <Typography variant="body1" component="span" className="to">
+                      {price[1]}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
               <Box className="brand"></Box>
               <Box className="popular_tag"></Box>
             </Box>
           </Grid>
           <Grid item sm={12} md={9} lg={9} className="content-area">
             <Box className="site-main">
-              <Typography variant="h3">Products</Typography>
-              <Box className="shop-top-control">
-                <FormControl
-                  variant="standard"
-                  className="select-item select-form"
-                >
-                  <InputLabel id="select-items-label">Sort</InputLabel>
-                  <Select
-                    labelId="select-items-label"
-                    id="select-items"
-                    label="Sort"
-                    defaultValue={1}
-                    style={{ display: "none" }}
+              <Typography variant="h3">Sản phẩm</Typography>
+              <Grid container className="shop-top-control">
+                <Grid item xl={9} lg={9}>
+                  <Paper
+                    component="form"
+                    sx={{
+                      p: "1px 4px",
+                      display: "flex",
+                      alignItems: "center",
+                      width: "90%",
+                    }}
                   >
-                    <MenuItem value={1}>12 Products/Page</MenuItem>
-                    <MenuItem value={2}>9 Products/Page</MenuItem>
-                    <MenuItem value={3}>10 Products/Page</MenuItem>
-                    <MenuItem value={4}>8 Products/Page</MenuItem>
-                    <MenuItem value={5}>6 Products/Page</MenuItem>
-                  </Select>
-                </FormControl>
-
-                <FormControl
-                  variant="standard"
-                  className="filter-choice select-form"
-                >
-                  <InputLabel id="sort-by-label">Sort by</InputLabel>
-                  <Select
-                    labelId="sort-by-label"
-                    id="sort-by"
-                    label="Sort by"
-                    defaultValue={1}
-                    style={{ display: "none" }}
-                  >
-                    <MenuItem value={1}>Price: Low to High</MenuItem>
-                    <MenuItem value={2}>Sort by popularity</MenuItem>
-                    <MenuItem value={3}>Sort by average rating</MenuItem>
-                    <MenuItem value={4}>Sort by newness</MenuItem>
-                    <MenuItem value={5}>Sort by price: low to high</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
-              <Grid container spacing={2}>
-                {currentProducts.map((product, index) => (
-                  <ProductItem key={index} product={product} />
-                ))}
+                    <InputBase
+                      sx={{ ml: 1, flex: 1 }}
+                      placeholder="Tìm sản phẩm ... "
+                      value={keyword}
+                      onChange={handleKeywordChange}
+                      onKeyDown={handleKeyDown}
+                    />
+                    <IconButton
+                      sx={{ p: "10px" }}
+                      aria-label="search"
+                      onClick={handleSearchClick}
+                    >
+                      <SearchIcon />
+                    </IconButton>
+                  </Paper>
+                </Grid>
+                <Grid item xl={3} lg={3}>
+                  <FormControl fullWidth size="medium">
+                    <Select
+                      className="sort-by-select"
+                      value={sortBy}
+                      onChange={handleSortChange}
+                      fullWidth
+                    >
+                      <MenuItem className="menu-item" value={"price-asc"}>
+                        Giá: Thấp đến Cao
+                      </MenuItem>
+                      <MenuItem className="menu-item" value={"price-desc"}>
+                        Giá: Cao đến Thấp
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
               </Grid>
-              <Stack spacing={2} sx={{ paddingTop: "20px", alignItems: "center" }}>
+              <Grid container spacing={2}>
+                {!data || data.length === 0 ? (
+                  <Typography variant="body1">
+                    Không có sản phẩm tương ứng
+                  </Typography>
+                ) : (
+                  data.map((product, index) => (
+                    <ProductItem key={index} product={product} />
+                  ))
+                )}
+              </Grid>
+              <Stack
+                spacing={2}
+                sx={{ paddingTop: "20px", alignItems: "center" }}
+              >
                 <Pagination
-                  count={Math.ceil(products.length / productsPerPage)}
+                  count={totalPages}
+                  onChange={handlePageClick}
                   page={currentPage}
-                  onChange={handlePageChange}
                   size="large"
                   showFirstButton
                   showLastButton
@@ -221,6 +674,9 @@ export default function ProductList() {
         </Grid>
       </Container>
       <Footer />
+      <div>
+        <FloatingDogImage />
+      </div>
     </>
   );
 }

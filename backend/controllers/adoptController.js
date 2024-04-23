@@ -1,4 +1,9 @@
+const { ca } = require('date-fns/locale')
 const AdoptPet = require('../models/AdoptPet')
+const Pet = require('../models/Pet')
+const User = require('../models/User')
+const jwt = require('jsonwebtoken');
+const AdoptNotification = require('../models/AdoptNotification')
 
 const createNewAdopt = async (req, res) => {
     try {
@@ -36,37 +41,92 @@ const createNewAdopt = async (req, res) => {
     }
 }
 
+//get all adopt pet that forAdoption = true
 const getAllAdopt = async (req, res) => {
     try {
-        const { page, limit, petName, sort } = req.query
+        const { page, limit, categoryId } = req.query
 
-        const query = {}
+        const query = {
+            forAdoption: true
+        }
 
-        if (petName) {
-            query.petName = { $regex: new RegExp(petName, 'i') }
+        if (categoryId) {
+            query.categoryId = categoryId;
         }
 
         const options = {
-            page: parseInt(page, 10) || 1,
-            limit: parseInt(limit, 10) || 10,
-            sort: { createdAt: -1 }, // mắc định sắp xếp theo thời gian gần đây nhất
+            page: parseInt(page) || 1,
+            limit: parseInt(limit) || 12,
         }
 
-        if (sort === 'acs') {
-            options.sort = 1
-        }
-        if (sort === 'desc') {
-            options.sort = -1
-        }
+        const result = await Pet.paginate(query, {
+            page: parseInt(page) || 1,
+            limit: parseInt(limit) || 12,
+            populate: {
+                path: 'userId',
+                model: 'User',
+                select: 'fullname phone',
+            }
+        })
 
-        const result = await AdoptPet.paginate(query, options)
-        if (!result) return res.json({
-            error: "No adopt pet found"
-        })
-        res.status(200).json({
-            result,
-            "query": query
-        })
+        if (!result || result.docs === 0) {
+            return res.status(404).json({
+                error: "There are no Pet available for adoption in the Database",
+            });
+        }
+        res.status(200).json(result);
+
+    } catch (err) {
+        console.log(err)
+        res.status(500).json(err)
+    }
+}
+
+const getAdoptByUsername = async (req, res) => {
+    try {
+        const searchTerm = req.query.name || '';
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
+        // Find the user based on the provided username
+        const users = await User.find({ fullname: new RegExp(searchTerm, 'i') });
+
+        // Extract the user IDs from the found users
+        const userIds = users.map(user => user._id);
+
+        // Find pets where userId is in the list of found user IDs and forAdoption is true
+        const petPaginateResult = await Pet.paginate({ userId: { $in: userIds }, forAdoption: true }, {
+            page, limit, populate: {
+                path: 'userId',
+                model: 'User',
+                select: 'fullname phone',
+            }
+        });
+
+        res.json(petPaginateResult);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+const getAdoptByPetName = async (req, res) => {
+    try {
+        const searchTerm = req.query.name || '';
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
+        const { petName } = req.query
+
+        const result = await Pet.paginate({ petName: { $regex: new RegExp(petName, 'i') }, forAdoption: true }, {
+            page, limit, populate: {
+                path: 'userId',
+                model: 'User',
+                select: 'fullname phone',
+            }
+        });
+        res.status(200).json(result)
+
     } catch (error) {
         console.log(err)
         res.status(500).json({
@@ -74,6 +134,7 @@ const getAllAdopt = async (req, res) => {
         })
     }
 }
+
 
 const getAdoptByUserId = async (req, res) => {
     //get adoptpet by userId
@@ -155,11 +216,104 @@ const updateAdopt = async (req, res) => {
     }
 }
 
+const getAdoptById = async (req, res) => {
+    try {
+        const { adoptId } = req.params
+        //find the result that id = adoptId and forAdoption = true
+        const result = await Pet.findOne({ _id: adoptId, forAdoption: true }).populate('userId', 'fullname phone')
+
+        if (!result) return res.json({
+            error: "No adopt pet found"
+        })
+        res.status(200).json(result)
+    }
+    catch (err) {
+        res.status(500).json({
+            error: err
+        })
+    }
+}
+
+const createAdoptNotification = async (req, res) => {
+    try {
+        const { userId, petId, ownerId } = req.body
+        //check if the user has already created the adopt notification in one pet
+        const check = await AdoptNotification.findOne({ userId: userId, petId: petId })
+        if (check) {
+            return res.status(400).json({
+                error: "You have already created the adopt notification for this pet"
+            })
+        } else {
+            const adoptNotification = new AdoptNotification({
+                userId,
+                petId,
+                ownerId,
+                status: "PENDING"
+            })
+            const result = await adoptNotification.save()
+            if (result) {
+                res.status(201).json({
+                    message: `Created adopt notification`
+                })
+            } else {
+                res.status(400).json({
+                    error: "Create fail"
+                })
+            }
+        }
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
+    }
+}
+
+const getAdoptNotification = async (req, res) => {
+    try {
+        const token = req.headers.authorization;
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const userId = decoded.id;
+
+        // const { userId } = req.body
+
+        const adoptNotifications = await AdoptNotification.find({ ownerId: userId }).populate('petId').populate('ownerId').populate('userId');
+        res.status(200).json(adoptNotifications);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json(err);
+    }
+}
+
+const deleteAdoptNotification = async (req, res) => {
+    try {
+        const { id } = req.params
+        const result = await AdoptNotification.findByIdAndDelete(id)
+        if (!result) return res.json({
+            error: "No adopt notification found"
+        })
+        res.status(200).json({
+            message: `Deleted adopt notification`
+        })
+    } catch (error) {
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
+    }
+}
+
 module.exports = {
     createNewAdopt,
     getAllAdopt,
     getAdoptByUserId,
     updateStatus,
     deleteOne,
-    updateAdopt
-}
+    updateAdopt,
+    getAdoptById,
+    getAdoptByUsername,
+    getAdoptByPetName,
+    createAdoptNotification,
+    getAdoptNotification,
+    deleteAdoptNotification
+}  

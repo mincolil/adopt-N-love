@@ -2,14 +2,31 @@ import "./LandingPage.css";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
 import React, { useState, useEffect } from "react";
-import { Typography, Container, Button, Box, Avatar } from "@mui/material";
+import { Typography, Button, Container, Box, Avatar } from "@mui/material";
+import useAuth from "../../hooks/useAuth";
 import Grid from "@mui/material/Unstable_Grid2";
 import Carousel from "react-material-ui-carousel";
-import styled from "styled-components";
+import Banner from "../../images/banner.png";
+import DogBanner from "../../images/dog_banner.png";
+import ServiceIcon1 from "../../images/service_icon_1.png";
+import ServiceIcon2 from "../../images/service_icon_2.png";
+import ServiceIcon3 from "../../images/service_icon_3.png";
+import Cat from "../../images/cat.png";
+import AdaptIcon1 from "../../images/adapt_icon_1.png";
+import AdaptIcon2 from "../../images/adapt_icon_2.png";
+import Avatar1 from "../../images/avatar1.png";
+import { ToastContainer } from "react-toastify";
+import { notification, Space } from "antd";
+import axios from "axios";
+import { NavLink, useNavigate } from "react-router-dom";
+import FloatingDogImage from "../../components/Floater/FloatingDogImage";
+import { Alert } from "antd";
 
-const DsButton = styled(Button)`
-  text-transform: none !important;
-`;
+const BASE_URL = "";
+
+const onClose = (e) => {
+  console.log(e, "I was closed.");
+};
 
 const Counter = ({ target }) => {
   const [count, setCount] = useState(0);
@@ -34,11 +51,11 @@ const Counter = ({ target }) => {
 
 const testimonials = [
   {
-    name: "Jhon Walker",
+    name: "Minh Du",
     title: "Head of web design",
     testimonial:
       "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exerci.",
-    img: "https://preview.colorlib.com/theme/anipat/img/testmonial/1.png.webp",
+    img: "https://scontent.fhan18-1.fna.fbcdn.net/v/t1.6435-9/171149322_2868980396694590_5496657584718677655_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=5f2048&_nc_ohc=PowdbT7vA94AX9BjArj&_nc_ht=scontent.fhan18-1.fna&oh=00_AfCosvICIsbgK21DzE912hDS6lyixRI0d5Yd3rDtfFEHSg&oe=661A2C3B",
   },
   {
     name: "Nguyen Minh Hieu",
@@ -57,21 +74,69 @@ const testimonials = [
 ];
 
 function Home() {
+  const context = useAuth();
+  const [hasDiscount, setHasDiscount] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(
+          `${BASE_URL}/pet/userId?id=${context.auth.id}`
+        );
+        const count = res.data.docs.filter((pet) => pet.discount > 0).length;
+        setHasDiscount(count > 0);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, [context.auth.id]);
+
+  const [api, contextHolder] = notification.useNotification();
+
+  //--------------------------------------------LOAD PAGE
+  const { auth } = context;
+
   return (
     <>
       <Header />
+      {hasDiscount && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: "180px",
+            right: "10px",
+            zIndex: "9999",
+          }}
+        >
+          <Alert
+            message="Thú cưng của bạn có ưu đãi!"
+            description="Hãy kiểm tra ngay"
+            type="success"
+            showIcon
+            closable
+            onClose={onClose}
+            style={{
+              width: "250px",
+            }}
+          />
+        </div>
+      )}
+      <ToastContainer />
+      {contextHolder}
       <Grid
         className="banner"
         container
         sx={{
-          backgroundImage:
-            'url("https://preview.colorlib.com/theme/anipat/img/banner/banner.png.webp")',
+          backgroundImage: `url(${Banner})`,
           backgroundSize: "cover",
           backgroundRepeat: "round",
           height: "600px",
           position: "relative",
           top: "80px",
         }}
+        item="true"
       >
         <Container
           sx={{ display: "flex", flexWrap: "wrap", alignContent: "center" }}
@@ -86,8 +151,8 @@ function Home() {
                 fontSize: "4rem",
               }}
             >
-              We Care <br />{" "}
-              <span style={{ fontWeight: "800" }}>Your Pets</span>
+              Chăm sóc
+              <br /> Nhận nuôi
             </Typography>
             <Typography
               sx={{
@@ -96,42 +161,29 @@ function Home() {
                 fontFamily: "'Poppins', sans-serif",
               }}
             >
-              Lorem ipsum dolor sit amet, consectetur <br /> adipiscing elit,
-              sed do eiusmod.
+              Chúng tôi chăm sóc thú cưng của bạn với dịch vụ tốt nhất <br />{" "}
+              Nhận nuôi nhưng chú chó và mèo cần tìm một mái nhà mới
             </Typography>
-            <Button
-              variant="contained"
-              sx={{
-                backgroundColor: "#fff",
-                color: "#ff3500",
-                borderRadius: "30px",
-                padding: "17px 50px",
-                textTransform: "none",
-                fontSize: "1rem",
-              }}
-            >
-              Contact us
-            </Button>
+            <Button variant="contained">Liên hệ</Button>
           </Grid>
         </Container>
         <Box
           sx={{ position: "absolute", zIndex: "1", right: "0", bottom: "-15%" }}
         >
-          <img
-            src="https://preview.colorlib.com/theme/anipat/img/banner/dog.png.webp"
-            alt=""
-            style={{ maxWidth: "80%" }}
-          />
+          <img src={DogBanner} alt="" style={{ maxWidth: "80%" }} />
         </Box>
       </Grid>
       <Container className="service">
         <Grid container justifyContent="center">
           <Grid item lg={7} md={10}>
             <Box className="section_title">
-              <Typography variant="h3">Services for every dog</Typography>
+              <Typography variant="h3">
+                Trải nhiệm những dịch vụ của chúng tôi
+              </Typography>
               <Typography variant="h4">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna.
+                Việc chăm sóc bệnh nhân là rất quan trọng, bệnh nhân sẽ được
+                bệnh nhân theo dõi, nhưng đó là thời điểm vô cùng đau đớn và khổ
+                sở.
               </Typography>
             </Box>
           </Grid>
@@ -140,10 +192,7 @@ function Home() {
           <Grid className="single_service" item md={3}>
             <Box className="service_thumb">
               <Box className="service_icon">
-                <img
-                  src="https://preview.colorlib.com/theme/anipat/img/service/service_icon_1.png.webp"
-                  alt=""
-                />
+                <img src={ServiceIcon1} alt="" />
               </Box>
             </Box>
             <Box className="service_content">
@@ -157,10 +206,7 @@ function Home() {
           <Grid className="single_service" item md={3}>
             <Box className="service_thumb">
               <Box className="service_icon">
-                <img
-                  src="https://preview.colorlib.com/theme/anipat/img/service/service_icon_2.png.webp"
-                  alt=""
-                />
+                <img src={ServiceIcon2} alt="" />
               </Box>
             </Box>
             <Box className="service_content">
@@ -174,10 +220,7 @@ function Home() {
           <Grid className="single_service" item md={3}>
             <Box className="service_thumb">
               <Box className="service_icon">
-                <img
-                  src="https://preview.colorlib.com/theme/anipat/img/service/service_icon_3.png.webp"
-                  alt=""
-                />
+                <img src={ServiceIcon3} alt="" />
               </Box>
             </Box>
             <Box className="service_content">
@@ -190,41 +233,6 @@ function Home() {
           </Grid>
         </Grid>
       </Container>
-      <Box className="pet_care_area">
-        <Container>
-          <Grid container alignItems="center">
-            <Grid item lg={5} md={5}>
-              <Box className="pet_thumb">
-                <img
-                  src="https://preview.colorlib.com/theme/anipat/img/about/pet_care.png.webp"
-                  alt=""
-                />
-              </Box>
-            </Grid>
-            <Grid item lg={6} lgOffset={1} mdOffset={1} md={6}>
-              <Box className="pet_info">
-                <Typography variant="h3">
-                  <span>We care your pet </span> <br /> As you care
-                </Typography>
-                <Typography variant="h4">
-                  Lorem ipsum dolor sit, consectetur adipiscing elit, sed do{" "}
-                  <br /> iusmod tempor incididunt ut labore et dolore magna
-                  aliqua. <br /> Quis ipsum suspendisse ultrices gravida. Risus
-                  commodo <br />
-                  viverra maecenas accumsan.
-                </Typography>
-                <Button
-                  href="about.html"
-                  variant="contained"
-                  className="btn-aboutUs"
-                >
-                  About Us
-                </Button>
-              </Box>
-            </Grid>
-          </Grid>
-        </Container>
-      </Box>
       <Box className="adapt_area">
         <Container>
           <Grid container justifyContent={"space-between"}>
@@ -232,20 +240,20 @@ function Home() {
               <Box className="adapt_help">
                 <Box className="section_title">
                   <Typography variant="h3">
-                    <span>We need your</span> <br />
-                    help Adopt Us
+                    <span>Chúng tôi cần bạn</span> <br />
+                    giúp chúng tôi nhận nuôi
                   </Typography>
                   <Typography variant="h4">
-                    Lorem ipsum dolor sit, consectetur adipiscing elit, sed do
-                    iusmod tempor incididunt ut labore et dolore magna aliqua.
-                    Quis ipsum suspendisse ultrices.
+                    Những con vật đáng thương này chưa có gia đình để chăm sóc,
+                    chúng xứng đáng có được tình yêu thương. Đó là một điêu
+                    tuyệt vời
                   </Typography>
                   <Button
                     href="contact.html"
                     variant="contained"
                     className="btn-aboutUs"
                   >
-                    Contact Us
+                    Liên hệ
                   </Button>
                 </Box>
               </Box>
@@ -255,10 +263,7 @@ function Home() {
                 <Grid container alignItems="center" spacing={4}>
                   <Grid item lg={6} md={6}>
                     <Box className="single_adapt text-center">
-                      <img
-                        src="https://preview.colorlib.com/theme/anipat/img/adapt_icon/1.png.webp"
-                        alt=""
-                      />
+                      <img src={AdaptIcon1} alt="" />
                       <Box className="adapt_content">
                         <Counter target={452} />
                         <Typography variant="h4">Pets Available</Typography>
@@ -267,20 +272,14 @@ function Home() {
                   </Grid>
                   <Grid item lg={6} md={6}>
                     <Box className="single_adapt text-center">
-                      <img
-                        src="https://preview.colorlib.com/theme/anipat/img/adapt_icon/1.png.webp"
-                        alt=""
-                      />
+                      <img src={AdaptIcon1} alt="" />
                       <Box className="adapt_content">
                         <Counter target={52} />
                         <Typography variant="h4">Pets Available</Typography>
                       </Box>
                     </Box>
                     <Box className="single_adapt text-center">
-                      <img
-                        src="https://preview.colorlib.com/theme/anipat/img/adapt_icon/2.png.webp"
-                        alt=""
-                      />
+                      <img src={AdaptIcon2} alt="" />
                       <Box className="adapt_content">
                         <Counter target={52} />
                         <Typography variant="h4">Pets Available</Typography>
@@ -288,6 +287,37 @@ function Home() {
                     </Box>
                   </Grid>
                 </Grid>
+              </Box>
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
+      <Box className="pet_care_area">
+        <Container>
+          <Grid container alignItems="center">
+            <Grid item lg={5} md={5}>
+              <Box className="pet_thumb">
+                <img src={Cat} alt="" />
+              </Box>
+            </Grid>
+            <Grid item lg={6} lgOffset={1} mdOffset={1} md={6}>
+              <Box className="pet_info">
+                <Typography variant="h3">
+                  <span>Chúng tôi cần các bạn </span> <br /> nhận nuôi chúng
+                </Typography>
+                <Typography variant="h4">
+                  Những con vật đáng thương này chưa có gia đình để chăm sóc{" "}
+                  <br /> chúng xứng đáng có được tình yêu thương. <br /> Đó là
+                  một điêu tuyệt vời <br />
+                  viverra maecenas accumsan.
+                </Typography>
+                <Button
+                  href="about.html"
+                  variant="contained"
+                  className="btn-aboutUs"
+                >
+                  Liên hệ
+                </Button>
               </Box>
             </Grid>
           </Grid>
@@ -301,7 +331,7 @@ function Home() {
                 {testimonials.map((testimonial, index) => (
                   <Box key={index} className="single_testmonial">
                     <Avatar
-                      src={testimonial.img}
+                      src={Avatar1}
                       alt=""
                       sx={{
                         marginRight: "25px",
@@ -332,7 +362,10 @@ function Home() {
           </Grid>
         </Container>
       </Box>
-      <Footer/>
+      <div>
+        <FloatingDogImage />
+      </div>
+      <Footer />
     </>
   );
 }

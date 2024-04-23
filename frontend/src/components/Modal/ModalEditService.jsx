@@ -61,7 +61,7 @@ const ModalEditSerivce = (props) => {
   const handleDiscountChange = (event) => {
     const newDiscount = parseInt(event.target.value, 10);
 
-    if (newDiscount >= 1 && newDiscount <= 100) {
+    if (newDiscount >= 1 && newDiscount <= 30) {
       setDiscount(newDiscount);
       setSaleStartTime(dayjs());
       setSaleEndTime(dayjs());
@@ -134,7 +134,7 @@ const ModalEditSerivce = (props) => {
         const formData = new FormData();
         formData.append("image", serviceImage);
         const response = await axios.post(
-          `http://localhost:3500/service/upload`,
+          `/service/upload`,
           formData
         );
         const maxSize = 1024 * 1024;
@@ -202,8 +202,8 @@ const ModalEditSerivce = (props) => {
       setSaleEndTime(null);
     } else if (discount < 0) {
       toast.error("% giảm giá không được âm ");
-    } else if (discount > 100) {
-      toast.error("% giảm giá không được lớn hơn 100");
+    } else if (discount > 30) {
+      toast.error("% giảm giá không được lớn hơn 30");
     } else if (
       discount > 0 &&
       discount < 101 &&
@@ -239,7 +239,7 @@ const ModalEditSerivce = (props) => {
       );
     } else {
       try {
-        const res = await axios.patch(`http://localhost:3500/service`, {
+        const res = await axios.patch(`/service`, {
           id: serviceID,
           serviceName: serviceName,
           categoryId: categoryId,
@@ -313,7 +313,7 @@ const ModalEditSerivce = (props) => {
               margin="normal"
               value={serviceName}
               onChange={(e) => handleValidationServiceName(e)}
-              // error={!validServiceName}
+            // error={!validServiceName}
             />
             <FormControl fullWidth margin="normal">
               <InputLabel id="demo-select-small-label">
@@ -330,7 +330,7 @@ const ModalEditSerivce = (props) => {
                       <MenuItem
                         key={value._id}
                         value={value._id}
-                        // onClick={(e) => hanldeClickCategory(e.target.value)}
+                      // onClick={(e) => hanldeClickCategory(e.target.value)}
                       >
                         {value.feature}
                       </MenuItem>
@@ -362,8 +362,8 @@ const ModalEditSerivce = (props) => {
               }}
               variant="filled"
               onChange={(e) => handleValidationPrice(e)}
-              // error={!validPrice}
-              // helperText={validPrice ? "" : "Hãy nhập số tiền dịch vụ"}
+            // error={!validPrice}
+            // helperText={validPrice ? "" : "Hãy nhập số tiền dịch vụ"}
             />
 
             <TextField
@@ -375,9 +375,10 @@ const ModalEditSerivce = (props) => {
               value={discount}
               // onChange={(e) => setDiscount(e.target.value)}
               onChange={handleDiscountChange}
+              inputProps={{ max: 30 }}
             />
 
-            {discount >= 1 && discount <= 100 && (
+            {discount >= 1 && discount <= 30 && (
               <Grid container spacing={3}>
                 <Grid item xs={12} sm={6}>
                   <DateTimePicker
@@ -386,7 +387,7 @@ const ModalEditSerivce = (props) => {
                     onChange={handleStartDateChange}
                     minDate={dayjs()}
                     views={["year", "day", "hours", "minutes", "seconds"]}
-                    // maxDate={currentDate}
+                  // maxDate={currentDate}
                   />
                 </Grid>
 

@@ -1,84 +1,33 @@
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import useAuth from "../../../hooks/useAuth";
 import {
-  Box,
-  Grid,
-  Typography,
-  Button,
-  Toolbar,
-  AppBar,
-  CircularProgress,
-  Backdrop,
-  Paper,
-  Divider,
   Container,
-  createTheme,
-  ThemeProvider,
-  CssBaseline,
+  Typography,
+  Link,
+  Button,
+  Box,
+  Breadcrumbs,
+  Tabs,
+  Tab,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import Footer from "../../../components/Footer/Footer";
-import { NavLink } from "react-router-dom";
-import Chip from "@mui/material/Chip";
 import HomeIcon from "@mui/icons-material/Home";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { emphasize } from "@mui/material/styles";
-import Breadcrumbs from "@mui/material/Breadcrumbs";
-import MuiAccordion from "@mui/material/Accordion";
-import MuiAccordionSummary from "@mui/material/AccordionSummary";
-import MuiAccordionDetails from "@mui/material/AccordionDetails";
-import { Description } from "@mui/icons-material";
+import Grid from "@mui/material/Unstable_Grid2";
+import "./styled/ServiceDetail.css";
+import Header from "../../../components/Header/Header";
+import Footer from "../../../components/Footer/Footer";
 import axios from "axios";
 import { toast } from "react-toastify";
-import useAuth from "../../../hooks/useAuth";
-import { useState } from "react";
-import { useEffect } from "react";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import ChoosePet from "../../../components/Modal/ModalChoosePet";
-import ServiceSlider from "../../../components/Header/SliderService";
 import dayjs from "dayjs";
-import ButtonCustomize from "../../../components/Button/Button";
+import FloatingDogImage from "../../../components/Floater/FloatingDogImage";
+import { notification } from 'antd';
 import CommentService from "../../../components/Comments/CommentsService";
-import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
 
-const Accordion = styled((props) => (
-  <MuiAccordion disableGutters elevation={0} square {...props} />
-))(({ theme }) => ({
-  border: `1px solid ${theme.palette.divider}`,
-  "&:not(:last-child)": {
-    borderBottom: 0,
-  },
-  "&:before": {
-    display: "none",
-  },
-}));
-
-const AccordionSummary = styled((props) => (
-  <MuiAccordionSummary
-    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem" }} />}
-    {...props}
-  />
-))(({ theme }) => ({
-  backgroundColor:
-    theme.palette.mode === "dark"
-      ? "rgba(255, 255, 255, .05)"
-      : "rgba(0, 0, 0, .03)",
-  flexDirection: "row-reverse",
-  "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
-    transform: "rotate(90deg)",
-  },
-  "& .MuiAccordionSummary-content": {
-    marginLeft: theme.spacing(1),
-  },
-}));
-
-const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
-  padding: theme.spacing(2),
-  borderTop: "1px solid rgba(0, 0, 0, .125)",
-}));
-
-const Image = styled("img")({
-  maxWidth: "100%",
-  maxHeight: 400,
-});
+const BASE_URL = "";
 
 const numberToVND = (number) => {
   return number.toLocaleString("vi-VN", {
@@ -87,44 +36,39 @@ const numberToVND = (number) => {
   });
 };
 
-const StyledBreadcrumb = styled(Chip)(({ theme }) => {
-  const backgroundColor =
-    theme.palette.mode === "light"
-      ? theme.palette.grey[100]
-      : theme.palette.grey[800];
-  return {
-    backgroundColor,
-    height: theme.spacing(3),
-    color: theme.palette.text.primary,
-    fontWeight: theme.typography.fontWeightRegular,
-    "&:hover, &:focus": {
-      backgroundColor: emphasize(backgroundColor, 0.06),
-    },
-    "&:active": {
-      boxShadow: theme.shadows[1],
-      backgroundColor: emphasize(backgroundColor, 0.12),
-    },
-  };
-});
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
 
-const CustomContainer = styled(Container)({
-  background:
-    "linear-gradient(to bottom, #F4BEB2, #F4BEB2, #ECDAD6, #E5E6E7, #73A1CC)",
-});
-
-const BASE_URL = "http://localhost:3500";
-
-const defaultTheme = createTheme();
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`product-tabpanel-${index}`}
+      aria-labelledby={`product-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
 
 const ServiceDetail = () => {
   const [dataPet, setDataPet] = useState([]);
   const { serviceId } = useParams();
   const [service, setService] = useState(null);
-  const [quantitySell, setQuantitySell] = useState(1);
-  const [expanded, setExpanded] = useState("panel1");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState({});
+  const [tab, setTab] = useState(0);
   const context = useAuth();
+  const [api, contextHolder] = notification.useNotification();
+
+  const handleChangeTab = (event, newTab) => {
+    setTab(newTab);
+  };
 
   // ----------------------------------- API GET SERVICE BY ID --------------------------------
   useEffect(() => {
@@ -155,18 +99,6 @@ const ServiceDetail = () => {
     );
   }
 
-  const handleIncreaseClick = () => {
-    setQuantitySell((quantitySell) => quantitySell + 1);
-  };
-
-  const handleDecreaseClick = () => {
-    setQuantitySell((quantitySell) => Math.max(quantitySell - 1, 1));
-  };
-
-  const handleChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-  };
-
   // --------------------- GET DETAIL SERVICE BY ID -----------------------------
 
   const handleCloseEditModal = () => {
@@ -176,11 +108,11 @@ const ServiceDetail = () => {
 
   const handleAddToCartClick = async (serviceId) => {
     if (context.auth.token === undefined) {
-      toast.warning("Bạn chưa đăng nhập, vui lòng đăng nhập !");
+      openNotificationWithIcon('error', 'Vui lòng đăng nhập để đăng ký dịch vụ');
     } else {
       try {
         const loadDataPet = await axios.post(
-          `http://localhost:3500/pet/booking`,
+          `/pet/booking`,
           {
             userId: context.auth.id,
             serviceId: serviceId,
@@ -208,207 +140,194 @@ const ServiceDetail = () => {
     }
   };
 
+  //------------------------ANT NOtification---------------------
+
+  const openNotificationWithIcon = (type, mess) => {
+    api[type]({
+      message: 'Notification Title',
+      description:
+        mess,
+    });
+  };
+
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <CssBaseline />
-
-      <CustomContainer component="main" maxWidth="full" sx={{ pt: 12 }}>
-        {/* <MainPost post={mainPost} /> */}
-        <Container
-          maxWidth="full"
-          sx={{
-            bgcolor: "background.paper",
-            p: 3,
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            borderRadius: "16px",
-          }}
+    <>
+      <Header />
+      {contextHolder}
+      <Container
+        sx={{ position: "relative", top: "120px", marginBottom: "150px" }}
+      >
+        <Breadcrumbs
+          aria-label="breadcrumb"
+          separator={<KeyboardDoubleArrowRightIcon fontSize="small" />}
         >
-          <Breadcrumbs maxItems={2} aria-label="breadcrumb">
-            <StyledBreadcrumb
-              component={NavLink}
-              to="/"
-              label="Trang chủ"
-              icon={<HomeIcon fontSize="small" />}
-            />
-            {/* <StyledBreadcrumb component="a" href="#" label="Catalog" /> */}
-            <StyledBreadcrumb
-              component={NavLink}
-              to="/service-homepage"
-              label="Dịch vụ"
-            />
-            <StyledBreadcrumb label="Thông tin chi tiết dịch vụ" />
-          </Breadcrumbs>
-        </Container>
-        <Grid container spacing={1} sx={{ flexGrow: 2 }}>
-          <Grid item xs={12} sm={8}>
-            <Container maxWidth="false" sx={{ pb: 3 }}>
-              <Paper
-                variant="outlined"
-                sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-              >
-                <Grid container spacing={2} sx={{ flexGrow: 2 }}>
-                  <Grid item xs={12} sm={4}>
-                    <Image
-                      src={
-                        service.serviceImage !== undefined
-                          ? `${service.serviceImage}`
-                          : "https://previews.123rf.com/images/bybochka/bybochka1510/bybochka151000200/46365274-pet-care-flat-icon-set-pet-care-banner-background-poster-concept-flat-design-vector-illustration.jpg?fj=1"
-                      }
-                      alt=""
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={8}>
-                    <Typography
-                      variant="h5"
-                      sx={{ textTransform: "uppercase" }}
-                    >
-                      <strong>{service.serviceName}</strong>
-                    </Typography>
-                    {service.discount !== 0 &&
-                    dayjs().isBetween(
-                      dayjs(service.saleStartTime),
-                      dayjs(service.saleEndTime)
-                    ) ? (
-                      <Box
-                        display="flex"
-                        flexGrow={1}
-                        sx={{
-                          justifyContent: "flex-start",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Typography
-                          gutterBottom
-                          variant="h6"
-                          component="h2"
-                          sx={{
-                            textDecoration: "line-through",
-                            marginRight: "8px",
-                            color: "gray",
-                          }}
-                        >
-                          {numberToVND(service.price)}
-                        </Typography>
-                        <Typography
-                          gutterBottom
-                          variant="h6"
-                          component="h2"
-                          sx={{ color: "red" }}
-                        >
-                          {numberToVND(
-                            service.price -
-                              (service.price * service.discount) / 100
-                          )}
-                        </Typography>
-                        <Typography
-                          gutterBottom
-                          variant="h6"
-                          component="h2"
-                          sx={{
-                            color: "#fff",
-                            backgroundColor: "#ee4d2d",
-                            marginLeft: "10px",
-                            fontSize: ".75rem",
-                            borderRadius: "2px",
-                            padding: "2px 4px",
-                            fontWeight: "600",
-                            whiteSpace: "nowrap",
-                            textTransform: "uppercase",
-                          }}
-                        >
-                          {service.discount}% Giảm
-                        </Typography>
-                      </Box>
-                    ) : (
-                      <Typography
-                        gutterBottom
-                        variant="h6"
-                        component="h2"
-                        sx={{
-                          color: "red",
-                        }}
-                      >
-                        {numberToVND(service.price)}
-                      </Typography>
-                    )}
-
-                    <ButtonCustomize
-                      onClick={() => handleAddToCartClick(service._id)}
-                      variant="contained"
-                      sx={{ marginTop: "8px" }}
-                      nameButton="Đăng kí dịch vụ"
-                    />
-                  </Grid>
-                </Grid>
-                <Accordion
-                  expanded={expanded === "panel1"}
-                  onChange={handleChange("panel1")}
-                  sx={{ marginTop: "20px" }}
+          <Link
+            underline="hover"
+            sx={{ display: "flex", alignItems: "center" }}
+            color="inherit"
+            href="/"
+          >
+            <HomeIcon sx={{ mr: 0.5 }} fontSize="medium" />
+            Trang chủ
+          </Link>
+          <Link
+            underline="hover"
+            sx={{ display: "flex", alignItems: "center" }}
+            color="inherit"
+            href="/service-homepage"
+          >
+            Dịch vụ
+          </Link>
+          <Typography
+            sx={{ display: "flex", alignItems: "center" }}
+            color="#000000"
+          >
+            {service && service.serviceName}
+          </Typography>
+        </Breadcrumbs>
+        <Box className="content-details">
+          <Grid container>
+            <Grid item xl={5} lg={5}>
+              <Box>
+                <img
+                  className="img_zoom"
+                  src={
+                    service && service.serviceImage !== undefined
+                      ? `${service.serviceImage}`
+                      : "https://previews.123rf.com/images/bybochka/bybochka1510/bybochka151000200/46365274-pet-care-flat-icon-set-pet-care-banner-background-poster-concept-flat-design-vector-illustration.jpg?fj=1"
+                  }
+                  alt="img"
+                  style={{ width: "-webkit-fill-available" }}
+                />
+              </Box>
+            </Grid>
+            <Grid item xl={7} lg={7} className="details-infor">
+              <Typography variant="h1" className="product-title">
+                {service && service.serviceName}
+              </Typography>
+              {/* <Box className="stars-rating">
+              <Box className="star-rating">
+                <span className="star-5"></span>
+              </Box>
+              <Typography variant="body2" className="count-star">
+                (7)
+              </Typography>
+            </Box> */}
+              {service.discount !== 0 &&
+                dayjs().isBetween(
+                  dayjs(service.saleStartTime),
+                  dayjs(service.saleEndTime)
+                ) ? (
+                <Box
+                  display="flex"
+                  flexGrow={1}
+                  sx={{
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                  }}
                 >
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1bh-content"
-                    id="panel1bh-header"
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    component="h2"
+                    sx={{
+                      textDecoration: "line-through",
+                      marginRight: "8px",
+                      color: "gray",
+                    }}
                   >
-                    <Typography sx={{ width: "33%", flexShrink: 0 }}>
-                      <strong>Thông tin chi tiết dịch vụ</strong>
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>{service.description}</AccordionDetails>
-                </Accordion>
-                <Accordion
-                  expanded={expanded === "panel2"}
-                  onChange={handleChange("panel2")}
-                >
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel2bh-content"
-                    id="panel2bh-header"
-                  >
-                    <Typography sx={{ width: "33%", flexShrink: 0 }}>
-                      <strong> Xem đánh giá địch vụ</strong>
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <CommentService value={service._id} />
-                  </AccordionDetails>
-                </Accordion>
-              </Paper>
-            </Container>
-          </Grid>
-
-          <Grid item xs={12} sm={4}>
-            <Container maxWidth="false" sx={{ pb: 3 }}>
-              <Paper
-                variant="outlined"
-                sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-              >
-                <Grid item xs={12} sm={12}>
-                  <Typography variant="h5" sx={{ textTransform: "uppercase" }}>
-                    <strong>Dịch vụ mới</strong>
+                    {numberToVND(service.price)}
                   </Typography>
-                </Grid>
-                <ServiceSlider loadServiceById={loadServiceById} />
-              </Paper>
-            </Container>
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    component="h2"
+                    style={{ color: "#ff5722" }}
+                  >
+                    {numberToVND(
+                      service.price - (service.price * service.discount) / 100
+                    )}
+                  </Typography>
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    component="h2"
+                    sx={{
+                      color: "#fff",
+                      backgroundColor: "#ee4d2d",
+                      marginLeft: "10px",
+                      fontSize: ".75rem",
+                      borderRadius: "2px",
+                      padding: "2px 4px",
+                      fontWeight: "600",
+                      whiteSpace: "nowrap",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {service.discount}% Giảm
+                  </Typography>
+                </Box>
+              ) : (
+                <Typography
+                  gutterBottom
+                  variant="h6"
+                  component="h2"
+                  style={{ color: "#ff5722" }}
+                >
+                  {numberToVND(service.price)}
+                </Typography>
+              )}
+              <Box className="product-details-description">
+                <Typography variant="body2">
+                  {service && service.description}
+                </Typography>
+              </Box>
+              <Box className="quantity-add-to-cart">
+                <Button
+                  className="single_add_to_cart_button"
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleAddToCartClick(service._id)}
+                >
+                  Đăng ký dịch vụ
+                </Button>
+              </Box>
+            </Grid>
           </Grid>
-        </Grid>
-      </CustomContainer>
-
-      {/* Choose Pet */}
-      <ChoosePet
-        open={isModalOpen}
-        onClose={handleCloseEditModal}
-        service={selectedService}
-        pet={dataPet}
-        loadData={handleAddToCartClick}
-      />
-
-      {/* End footer */}
+        </Box>
+        <Box className="tab-details-product">
+          <Tabs
+            value={tab}
+            onChange={handleChangeTab}
+            aria-label="product tabs"
+            sx={{
+              "& .MuiTabs-flexContainer": {
+                justifyContent: "center",
+              },
+            }}
+          >
+            <Tab label="Chi tiết dịch vụ" />
+            <Tab label="Đánh giá dịch vụ" />
+          </Tabs>
+          <TabPanel value={tab} index={0}>
+            <Typography paragraph>{service && service.description}</Typography>
+          </TabPanel>
+          <TabPanel value={tab} index={1}>
+            <CommentService value={service._id} />
+          </TabPanel>
+        </Box>
+        {/* Choose Pet */}
+        <ChoosePet
+          open={isModalOpen}
+          onClose={handleCloseEditModal}
+          service={selectedService}
+          pet={dataPet}
+          loadData={handleAddToCartClick}
+        />
+      </Container>
       <Footer />
-    </ThemeProvider>
+      <FloatingDogImage />
+    </>
   );
 };
 

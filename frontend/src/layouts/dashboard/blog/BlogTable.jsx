@@ -23,6 +23,7 @@ import {
 import Stack from "@mui/material/Stack";
 import Chip from "@mui/material/Chip";
 import SearchIcon from "@mui/icons-material/Search";
+import { ToastContainer } from "react-toastify";
 
 import CloseIcon from "@mui/icons-material/Close";
 import { styled } from "@mui/material/styles";
@@ -54,7 +55,7 @@ const style = {
 };
 
 // -------------------------------API SERVER----------------------
-const BASE_URL = "http://localhost:3500";
+const BASE_URL = "";
 
 export default function BlogTable() {
   const [data, setData] = useState([]);
@@ -116,6 +117,7 @@ export default function BlogTable() {
 
   return (
     <>
+      <ToastContainer />
       <Grid
         spacing={2}
         container

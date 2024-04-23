@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Background from "../../../images/background.png";
 import {
     TextField,
     Button,
@@ -22,7 +23,7 @@ export default function VerifyCode() {
 
     const handleConfirmVerifyCode = async () => {
         try {
-            await axios.post("http://localhost:3500/verify",
+            await axios.post("/verify",
                 {
                     email: verifyEmail,
                     code: verifyCode
@@ -41,6 +42,7 @@ export default function VerifyCode() {
     };
 
     return (
+
         <Container component="main" maxWidth="sm" sx={{ mb: 4 }} style={{ marginTop: '100px' }}>
             <Paper
                 variant="outlined"
@@ -55,6 +57,7 @@ export default function VerifyCode() {
                 <Grid container spacing={3} style={{ marginTop: "15px" }}>
                     <Grid item xs={12}>
                         <TextField
+                            color="warning"
                             variant="outlined"
                             fullWidth
                             type="text"
@@ -65,6 +68,7 @@ export default function VerifyCode() {
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
+                            color="warning"
                             variant="outlined"
                             fullWidth
                             label="Vui lòng nhập mã xác nhận"
@@ -76,6 +80,7 @@ export default function VerifyCode() {
                 </Grid>
                 <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                     <Button
+                        color="warning"
                         type="button"
                         sx={{ mt: 3, ml: 1 }}
                         variant="contained"

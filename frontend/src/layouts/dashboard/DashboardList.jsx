@@ -1,20 +1,8 @@
 import * as React from "react";
-// import { useTheme } from "@mui/material/styles";
-// import {
-//   LineChart,
-//   Line,
-//   XAxis,
-//   YAxis,
-//   Label,
-//   ResponsiveContainer,
-// } from "recharts";
 import {
-  Box,
   Container,
   Grid,
   Paper,
-  // Toolbar,
-  // Typography,
 } from "@mui/material";
 import ChartDashBroad from "./Chart";
 import DepositsDashboard from "./Deposits";
@@ -26,14 +14,9 @@ import { PieChart } from '@mui/x-charts/PieChart';
 import axios from "axios";
 
 import { useEffect, useState } from "react";
-import { set } from "date-fns";
 
 export default function DashboardList() {
   // const context = useAuth()
-
-  // const theme = useTheme();
-
-  // const drawerWidth = 240;
 
   const [data, setData] = useState([]);
   const [dataBooking, setDataBooking] = useState([]);
@@ -45,10 +28,11 @@ export default function DashboardList() {
   const [revenueService, setRevenueService] = useState();
   const [revenueRaw, setRevenueRaw] = useState();
   const [serviceRaw, setServiceRaw] = useState();
+  const [revenueServiceByPetType, setRevenueServiceByPetType] = useState();
 
   async function loadAllOrder() {
     try {
-      await axios.get(`http://localhost:3500/dashboard/order`)
+      await axios.get(`/dashboard/order`)
         .then((data) => {
           let price = 0;
 
@@ -64,7 +48,7 @@ export default function DashboardList() {
 
   async function loadAllBooking() {
     try {
-      await axios.get(`http://localhost:3500/serviceDashboard/booking`)
+      await axios.get(`/serviceDashboard/booking`)
         .then((data) => {
           setDataBooking(data.data.totalBookings)
         })
@@ -76,7 +60,7 @@ export default function DashboardList() {
     try {
       let totalRevenue = 0;
       await axios
-        .get(`http://localhost:3500/dashboard/revenue-statistics`)
+        .get(`/dashboard/revenue-statistics`)
         .then((data) => {
           data.data.revenueByMonth.map((value) => {
             totalRevenue += value.total
@@ -87,11 +71,11 @@ export default function DashboardList() {
     } catch (err) {
     }
   }
-  
+
   async function revenueServiceStatistics() {
     try {
       await axios
-        .get(`http://localhost:3500/serviceDashboard/revenue-statistics`)
+        .get(`/serviceDashboard/revenue-statistics`)
         .then((data) => {
           setServiceRaw(data.data)
         });
@@ -101,7 +85,7 @@ export default function DashboardList() {
 
   async function loadAllCustomer() {
     try {
-      await axios.get(`http://localhost:3500/dashboard/customer`)
+      await axios.get(`/dashboard/customer`)
         .then((data) => {
           let customer = 0;
           let staff = 0;
@@ -122,7 +106,7 @@ export default function DashboardList() {
 
   async function loadAllPet() {
     try {
-      await axios.get(`http://localhost:3500/pet`)
+      await axios.get(`/pet`)
         .then((data) => {
           setPet(data.data.total)
         })
@@ -132,13 +116,25 @@ export default function DashboardList() {
 
   async function loadRevenueService() {
     try {
-      await axios.get(`http://localhost:3500/serviceDashboard/revenue`)
+      await axios.get(`/serviceDashboard/revenue`)
         .then((data) => {
           setRevenueService(data.data[0].total)
         })
     } catch (err) {
     }
   }
+
+  async function loadRevenueServiceByPetType() {
+    try {
+      await axios.get(`/serviceDashboard/revenue-statistics-by-pet-type`)
+        .then((data) => {
+          console.log(data)
+          setRevenueServiceByPetType(data.data)
+        })
+    } catch (err) {
+    }
+  }
+
 
   useEffect(() => {
     loadAllOrder();
@@ -148,15 +144,16 @@ export default function DashboardList() {
     revenueStatistics()
     loadRevenueService()
     revenueServiceStatistics()
+    loadRevenueServiceByPetType()
   }, []);
 
 
   return (
     <>
       <React.Fragment>
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Container sx={{ mt: 4, mb: 4 }}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={4} lg={3}>
+            <Grid item xs={12} md={6} lg={4}>
               <Paper
                 sx={{
                   p: 2,
@@ -169,7 +166,7 @@ export default function DashboardList() {
               </Paper>
             </Grid>
 
-            <Grid item xs={12} md={4} lg={3}>
+            <Grid item xs={12} md={6} lg={4}>
               <Paper
                 sx={{
                   p: 2,
@@ -182,7 +179,20 @@ export default function DashboardList() {
               </Paper>
             </Grid>
 
-            <Grid item xs={12} md={4} lg={3}>
+            <Grid item xs={12} md={6} lg={4}>
+              <Paper
+                sx={{
+                  p: 2,
+                  display: "flex",
+                  flexDirection: "column",
+                  height: 240,
+                }}
+              >
+                <DepositsDashboard petTypeRaw={revenueServiceByPetType} />
+              </Paper>
+            </Grid>
+
+            <Grid item xs={12} md={6} lg={4}>
               <Paper
                 sx={{
                   p: 2,
@@ -195,7 +205,7 @@ export default function DashboardList() {
               </Paper>
             </Grid>
 
-            <Grid item xs={12} md={4} lg={3}>
+            <Grid item xs={12} md={6} lg={4}>
               <Paper
                 sx={{
                   p: 2,
@@ -204,46 +214,9 @@ export default function DashboardList() {
                   height: 240,
                 }}
               >
-                <DepositsDashboard sold={{serviceSold: dataBooking.length, productSold: data.length}} />
+                <DepositsDashboard sold={{ serviceSold: dataBooking.length, productSold: data.length }} />
               </Paper>
             </Grid>
-
-            {/* <Grid container spacing={1} style={{ margin: '20px 0' }}>
-              <Grid item xs={6}>
-                <PieChart
-                  series={[
-                    {
-                      data: [
-                        { id: 0, value: totalPrice, label: 'DT sản phẩm' },
-                        { id: 1, value: revenue, label: 'DT dịch vụ' },
-                        // { id: 2, value: 20, label: 'series C' },
-                      ],
-                    },
-                  ]}
-                  width={400}
-                  height={200}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <PieChart
-                  series={[
-                    {
-                      data: [
-                        { id: 0, value: 10, label: 'series A' },
-                        { id: 1, value: 15, label: 'series B' },
-                        { id: 2, value: 20, label: 'series C' },
-                      ],
-                    },
-                  ]}
-                  width={400}
-                  height={200}
-                />
-              </Grid>
-            </Grid> */}
-
-            {/* Recent Orders */}
-
-
             <ChartDashBroad />
 
           </Grid>

@@ -43,8 +43,8 @@ const showConfirmRemoveSe = () => {
       title: 'Xác nhận',
       icon: <ExclamationCircleFilled />,
       content: 'Bạn có chắc muốn xoá dịch vụ này không ?',
-      okText: 'Đồng ý', 
-      cancelText: 'Hủy bỏ', 
+      okText: 'Đồng ý',
+      cancelText: 'Hủy bỏ',
       onOk() {
         resolve(true); // Trả về giá trị true khi người dùng nhấn OK
       },
@@ -60,13 +60,13 @@ const showConfirmSe = () => {
       title: 'Xác nhận',
       icon: <ExclamationCircleFilled />,
       content: 'Bạn có muốn sử dụng dịch vụ này ?',
-      okText: 'Đồng ý', 
-      cancelText: 'Hủy bỏ', 
+      okText: 'Đồng ý',
+      cancelText: 'Hủy bỏ',
       onOk() {
-        resolve(true); 
+        resolve(true);
       },
       onCancel() {
-        resolve(false); 
+        resolve(false);
       },
     });
   });
@@ -138,7 +138,7 @@ export default function CartService() {
 
   const handleCheckOut = async () => {
     // if (window.confirm('Bạn có muốn sử dụng dịch vụ này ?') === true) {
-    if (await showConfirmSe()) {  
+    if (await showConfirmSe()) {
       if (data.length === 0) {
         alert('Bạn không có dịch vụ trong giỏ hàng')
         return false
@@ -269,6 +269,11 @@ export default function CartService() {
                       <TableCell className="product-name" data-title="Product">
                         <Typography variant="body1">
                           {service.serviceId.serviceName}
+                        </Typography>
+                      </TableCell>
+                      <TableCell className="product-name" data-title="Product">
+                        <Typography variant="body1">
+                          {service.petId.petName}
                         </Typography>
                       </TableCell>
                       <TableCell data-title="Price">

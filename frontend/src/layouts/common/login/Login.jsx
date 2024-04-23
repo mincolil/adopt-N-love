@@ -296,7 +296,6 @@ const Login = () => {
           </Box>
         </Grid>
       </Grid>
-      <MessengerChat pageId="261557497046784" />
     </ThemeProvider>
   );
 };

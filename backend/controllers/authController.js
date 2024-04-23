@@ -22,7 +22,7 @@ const loginGoogle = async (req, res) => {
         if (!user) {
             let newUser = new User({
                 email: email,
-                role: "user",
+                role: "customer",
                 status: "active",
                 password: googleId + 123456,
                 fullname: email.split('@')[0]

@@ -111,7 +111,10 @@ export default function UserPRofile() {
       toast.error(
         "Tên không được nhập kí tự đặc biệt, số và phải có ít nhất 3 kí tự"
       );
-    } else {
+    } else if (!validPhone) {
+      toast.error("Số điện thoại không hợp lệ. Vui lòng nhập lại");
+    }
+    else {
       try {
         const data = await axios.patch(
           `/user/updateProfile`,

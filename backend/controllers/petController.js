@@ -57,8 +57,8 @@ const uploadPetImage = async (req, res) => {
 
 const createPet = async (req, res) => {
   try {
-    const { userId, petName, rank, status, categoryId, color, weight, height, petImage } = req.body
-    const pet = await Pet.create({ userId, petName, rank, status, categoryId, color, weight, height, petImage })
+    const { userId, petName, rank, status, categoryId, color, weight, height, petImage, breed, age } = req.body
+    const pet = await Pet.create({ userId, petName, rank, status, categoryId, color, weight, height, petImage, breed, age })
     res.status(201).json({
       message: "Created successful",
       pet: pet

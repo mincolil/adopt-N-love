@@ -178,7 +178,7 @@ function Home() {
           <Grid item lg={7} md={10}>
             <Box className="section_title">
               <Typography variant="h3">
-                Trải nhiệm những dịch vụ của chúng tôi
+                Trải nghiệm những dịch vụ của chúng tôi
               </Typography>
               <Typography variant="h4">
                 Việc chăm sóc bệnh nhân là rất quan trọng, bệnh nhân sẽ được
@@ -196,10 +196,9 @@ function Home() {
               </Box>
             </Box>
             <Box className="service_content">
-              <Typography variant="h3">Pet Boarding</Typography>
+              <Typography variant="h3">Nhận nuôi</Typography>
               <Typography variant="h4">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut
+                Giúp đỡ những con vật nhỏ có ngôi nhà để ở, chúng xứng đáng có được tình yêu thương
               </Typography>
             </Box>
           </Grid>
@@ -210,10 +209,9 @@ function Home() {
               </Box>
             </Box>
             <Box className="service_content">
-              <Typography variant="h3">Healthy Meals</Typography>
+              <Typography variant="h3">Dịch vụ</Typography>
               <Typography variant="h4">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut
+                Cung cấp dịch vụ chăm sóc thú cưng tốt nhất, giúp chúng khỏe mạnh và hạnh phúc
               </Typography>
             </Box>
           </Grid>
@@ -224,10 +222,9 @@ function Home() {
               </Box>
             </Box>
             <Box className="service_content">
-              <Typography variant="h3">Pet Spa</Typography>
+              <Typography variant="h3">Sản phẩm</Typography>
               <Typography variant="h4">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut
+                Cung cấp các sản phẩm chăm sóc thú cưng tốt nhất, giúp chúng khỏe mạnh và hạnh phúc
               </Typography>
             </Box>
           </Grid>
@@ -249,7 +246,7 @@ function Home() {
                     tuyệt vời
                   </Typography>
                   <Button
-                    href="contact.html"
+                    href="https://www.facebook.com/profile.php?id=61558254325214&mibextid=LQQJ4d&locale=vi_VN"
                     variant="contained"
                     className="btn-aboutUs"
                   >
@@ -265,8 +262,8 @@ function Home() {
                     <Box className="single_adapt text-center">
                       <img src={AdaptIcon1} alt="" />
                       <Box className="adapt_content">
-                        <Counter target={452} />
-                        <Typography variant="h4">Pets Available</Typography>
+                        <Counter target={20} /> 
+                        <Typography variant="h4">Thú cưng cần nhận nuôi</Typography>
                       </Box>
                     </Box>
                   </Grid>
@@ -274,15 +271,15 @@ function Home() {
                     <Box className="single_adapt text-center">
                       <img src={AdaptIcon1} alt="" />
                       <Box className="adapt_content">
-                        <Counter target={52} />
-                        <Typography variant="h4">Pets Available</Typography>
+                        <Counter target={30} />
+                        <Typography variant="h4">Dịch vụ</Typography>
                       </Box>
                     </Box>
                     <Box className="single_adapt text-center">
                       <img src={AdaptIcon2} alt="" />
                       <Box className="adapt_content">
-                        <Counter target={52} />
-                        <Typography variant="h4">Pets Available</Typography>
+                        <Counter target={20} /> 
+                        <Typography variant="h4">Sản phẩm</Typography>
                       </Box>
                     </Box>
                   </Grid>

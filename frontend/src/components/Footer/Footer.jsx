@@ -161,13 +161,13 @@ const Footer = () => {
                   </Link>
                 </Box>
                 <Typography className="address_text">
-                  239 E 5th St, New York NY 10003, USA
+                  Khu Giáo dục và Đào tạo Khu Công nghệ cao Hòa Lạc Km29, Đại lộ Thăng Long, Thạch Hoà, Thạch Thất, Hà Nội 13100
                 </Typography>
                 <Box className="social_links">
                   <List spacing={2} sx={{ display: "flex" }}>
                     <ListItem disablePadding>
                       <ListItemButton sx={{ paddingLeft: "0" }}>
-                        <Link href="#">
+                        <Link href="https://www.facebook.com/profile.php?id=61558254325214&mibextid=LQQJ4d&locale=vi_VN">
                           <FacebookIcon sx={{ color: "#7a7a7a" }} />
                         </Link>
                       </ListItemButton>

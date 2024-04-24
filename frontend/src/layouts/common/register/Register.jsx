@@ -52,6 +52,7 @@ const Register = () => {
         password,
         passwordConfirm,
         role: "customer",
+        phone: "",
       })
         .then((data) => {
           toast.success("Tạo tài khoản thành công");

@@ -25,7 +25,8 @@ const loginGoogle = async (req, res) => {
                 role: "customer",
                 status: "active",
                 password: googleId + 123456,
-                fullname: email.split('@')[0]
+                fullname: email.split('@')[0],
+                phone: '',
             })
             const docs = await newUser.save()
             if (docs) {

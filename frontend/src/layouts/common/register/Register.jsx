@@ -1,12 +1,8 @@
 import * as React from "react";
-import Banner from "../../../images/banner.png";
-import DogBanner from "../../../images/dog_banner.png";
 import Background from "../../../images/dog_background.png";
 import Cat from "../../../images/cat.png";
 import { ToastContainer } from "react-toastify";
-//MUI
 import {
-  Avatar,
   Button,
   CssBaseline,
   TextField,
@@ -18,15 +14,11 @@ import {
   createTheme,
   ThemeProvider,
 } from "@mui/material";
-//MUI Icon
-import PetsIcon from "@mui/icons-material/Pets";
-// Router
 import { NavLink, useNavigate } from "react-router-dom";
-// Axios
 import axios from "axios";
 import { toast } from "react-toastify";
-//React
 import { useState } from "react";
+import styled from "styled-components";
 
 const defaultTheme = createTheme();
 
@@ -41,6 +33,10 @@ const Register = () => {
 
   // const PWD_REGEX =
   //   /(?=(.*[0-9]))(?=.*[\!@#$%^&*()\\[\]{}\-_+=~`|:;"'<>,./?])(?=.*[a-z])(?=(.*[A-Z]))(?=(.*)).{8,}/;
+
+  const StyledNavLink = styled(NavLink)`
+  text-decoration: none;
+`;
 
   const registerUser = async (e) => {
     e.preventDefault();
@@ -197,14 +193,14 @@ const Register = () => {
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <NavLink to="/reset-password" variant="body2">
+                  <StyledNavLink to="/reset-password" variant="body2">
                     Quên mật khẩu?
-                  </NavLink>
+                  </StyledNavLink>
                 </Grid>
                 <Grid item>
-                  <NavLink to="/sign-in" variant="body2">
+                  <StyledNavLink to="/sign-in" variant="body2">
                     {"Bạn đã có tài khoản? Đăng nhập tại đây!"}
-                  </NavLink>
+                  </StyledNavLink>
                 </Grid>
               </Grid>
             </Box>

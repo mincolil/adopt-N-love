@@ -8,7 +8,7 @@
 }
 
 .details-infor .adopt-name {
-    font-family: "Poppins", sans-serif !important;
+    font-family: "Open Sans", sans-serif !important;
     font-size: 30px !important;
     font-weight: 600 !important;
     color: #333;
@@ -37,7 +37,7 @@
     padding: 15px 50px !important;
     background-color: #ab8e66 !important;
     border-radius: 30px !important;
-    font-family: "Poppins", sans-serif !important;
+    font-family: "Open Sans", sans-serif !important;
     margin-right: 20px !important;
 }
 
@@ -45,5 +45,5 @@
     font-size: 13px !important;
     padding: 15px 30px !important;
     border-radius: 30px !important;
-    font-family: "Poppins", sans-serif !important;
+    font-family: "Open Sans", sans-serif !important;
 }

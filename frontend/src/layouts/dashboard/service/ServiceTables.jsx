@@ -1,35 +1,25 @@
 import * as React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import { useState } from "react";
 import {
-  ButtonGroup,
-  FormControl,
-  InputLabel,
-  MenuItem,
   Pagination,
-  Select,
   TableSortLabel,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Chip,
+  Stack,
+  IconButton,
+  TextField,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import Chip from "@mui/material/Chip";
-import Stack from "@mui/material/Stack";
 import SearchIcon from "@mui/icons-material/Search";
-import IconButton from "@mui/material/IconButton";
-import TextField from "@mui/material/TextField";
-import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import { ToastContainer } from "react-toastify";
-
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-
-//React
-import { useState } from "react";
-// Axios
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
@@ -117,9 +107,7 @@ export default function ServiceTable() {
   const [category, setCategory] = useState([]);
   async function loadAllCategoryService() {
     try {
-      const loadData = await axios.get(
-        `/category?categoryName=Dịch vụ`
-      );
+      const loadData = await axios.get(`/category?categoryName=Dịch vụ`);
       if (loadData.error) {
         toast.error(loadData.error);
       } else {
@@ -220,10 +208,10 @@ export default function ServiceTable() {
       if (loadData.data.error) {
         toast.warning(
           "Kết quả " +
-          "[" +
-          keyword +
-          "]" +
-          " bạn vừa tìm không có! Vui lòng nhập lại."
+            "[" +
+            keyword +
+            "]" +
+            " bạn vừa tìm không có! Vui lòng nhập lại."
         );
         loadAllService(currentPage);
       } else {
@@ -293,7 +281,7 @@ export default function ServiceTable() {
         </Grid>
       </Grid>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
-        <TableContainer sx={{ maxHeight: 440 }}>
+        <TableContainer>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
@@ -311,6 +299,7 @@ export default function ServiceTable() {
                   </TableSortLabel>
                 </TableCell>
                 <TableCell align="left">Trạng thái</TableCell>
+                <TableCell align="center">Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -347,8 +336,17 @@ export default function ServiceTable() {
                           variant="outlined"
                           label={value.status ? "Hoạt động" : "Không hoạt động"}
                           color={statusColor}
-                        // onClick={() => handleUpdateServiceStatus(value._id)}
+                          // onClick={() => handleUpdateServiceStatus(value._id)}
                         />
+                      </TableCell>
+                      <TableCell align="center">
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          onClick={() => handleEditService(value)}
+                        >
+                          Edit
+                        </Button>
                       </TableCell>
                     </TableRow>
                   );

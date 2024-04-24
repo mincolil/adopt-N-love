@@ -161,7 +161,7 @@ function Home() {
               sx={{
                 lineHeight: "1.3",
                 fontWeight: "lighter",
-                fontFamily: "'Poppins', sans-serif",
+                fontFamily: "'Open Sans', sans-serif",
                 fontSize: "4rem",
               }}
             >
@@ -172,7 +172,7 @@ function Home() {
               sx={{
                 marginTop: "20px",
                 marginBottom: "40px",
-                fontFamily: "'Poppins', sans-serif",
+                fontFamily: "'Open Sans', sans-serif",
               }}
             >
               Chúng tôi chăm sóc thú cưng của bạn với dịch vụ tốt nhất <br />{" "}

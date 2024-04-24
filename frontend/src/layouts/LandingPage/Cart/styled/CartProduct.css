@@ -15,7 +15,7 @@
   color: #222 !important;
   margin-bottom: 40px !important;
   text-transform: uppercase !important;
-  font-family: "Poppins", sans-serif !important;
+  font-family: "Open Sans", sans-serif !important;
 }
 
 .cart_item {
@@ -34,7 +34,7 @@
 .product-name p {
   font-weight: 500 !important;
   font-size: 16px !important;
-  font-family: "Poppins", sans-serif !important;
+  font-family: "Open Sans", sans-serif !important;
   color: #ab8e66 !important;
   text-transform: capitalize;
 }
@@ -53,7 +53,7 @@
   text-transform: capitalize !important;
   font-weight: 600 !important;
   font-size: 16px !important;
-  font-family: "Poppins", sans-serif !important;
+  font-family: "Open Sans", sans-serif !important;
   margin-right: 20px;
 }
 
@@ -70,5 +70,5 @@
   border-radius: 10px !important;
   padding: 8px 20px !important;
   font-size: 14px !important;
-  font-family: "Poppins", sans-serif !important;
+  font-family: "Open Sans", sans-serif !important;
 }

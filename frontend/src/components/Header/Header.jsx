@@ -89,7 +89,7 @@ const Header = () => {
                   color: "#000",
                   "& > button": {
                     fontSize: "20px",
-                    fontFamily: "'Poppins', sans-serif !important",
+                    fontFamily: "'Open Sans', sans-serif !important",
                   },
                 }}
               >
@@ -97,7 +97,7 @@ const Header = () => {
                   color="inherit"
                   href="/"
                   sx={{
-                    fontFamily: "'Poppins', sans-serif !important",
+                    fontFamily: "'Open Sans', sans-serif !important",
                     fontSize: "20px",
                   }}
                 >
@@ -105,7 +105,7 @@ const Header = () => {
                 </DsButton>
 
                 <DsButton color="inherit" href="/adopt-homepage" sx={{
-                  fontFamily: "'Poppins', sans-serif !important",
+                  fontFamily: "'Open Sans', sans-serif !important",
                   fontSize: "20px",
                 }}>
                   Nhận nuôi
@@ -116,7 +116,7 @@ const Header = () => {
                   color="inherit"
                   href="/service-homepage"
                   sx={{
-                    fontFamily: "'Poppins', sans-serif !important",
+                    fontFamily: "'Open Sans', sans-serif !important",
                     fontSize: "20px",
                   }}
                 >
@@ -127,7 +127,7 @@ const Header = () => {
                   color="inherit"
                   href="/product-homepage"
                   sx={{
-                    fontFamily: "'Poppins', sans-serif !important",
+                    fontFamily: "'Open Sans', sans-serif !important",
                     fontSize: "20px",
                   }}
                 >
@@ -135,7 +135,7 @@ const Header = () => {
                 </DsButton>
 
                 <DsButton color="inherit" href="/blog-homepage" sx={{
-                  fontFamily: "'Poppins', sans-serif !important",
+                  fontFamily: "'Open Sans', sans-serif !important",
                   fontSize: "20px",
                 }}>Blog</DsButton>
               </Box>

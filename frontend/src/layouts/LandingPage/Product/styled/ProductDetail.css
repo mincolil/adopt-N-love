@@ -8,7 +8,7 @@
 }
 
 .details-infor .product-title {
-  font-family: "Poppins", sans-serif !important;
+  font-family: "Open Sans", sans-serif !important;
   font-size: 24px !important;
   font-weight: 600 !important;
   color: #333;
@@ -16,7 +16,7 @@
 }
 
 .availability {
-  font-family: "Poppins", sans-serif !important;
+  font-family: "Open Sans", sans-serif !important;
   font-size: 14px !important;
   color: #555555;
   margin-top: 10px !important;
@@ -37,14 +37,14 @@
 }
 
 .product-details-description {
-  font-family: "Poppins", sans-serif !important;
+  font-family: "Open Sans", sans-serif !important;
   font-size: 14px !important;
   color: #555555;
   margin-bottom: 15px !important;
 }
 
 .variations .text-attribute {
-  font-family: "Poppins", sans-serif !important;
+  font-family: "Open Sans", sans-serif !important;
   font-size: 14px !important;
   font-weight: 600 !important;
 }
@@ -81,7 +81,7 @@
   padding: 15px 30px !important;
   background-color: #ab8e66 !important;
   border-radius: 30px !important;
-  font-family: "Poppins", sans-serif !important;
+  font-family: "Open Sans", sans-serif !important;
 }
 
 .tab-details-product button {

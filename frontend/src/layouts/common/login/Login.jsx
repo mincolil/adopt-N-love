@@ -29,7 +29,6 @@ import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import styled from "styled-components";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { MessengerChat } from "react-messenger-chat-plugin";
 
 const defaultTheme = createTheme();
 

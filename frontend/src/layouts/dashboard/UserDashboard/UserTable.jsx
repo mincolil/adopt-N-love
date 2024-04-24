@@ -463,7 +463,7 @@ const BasicTable = () => {
             key: 'action',
             render: (text, record) => (
                 <Space size="middle">
-                    <Button onClick={(e) => handleLoadUserbId(record._id, record.password)}>Edit</Button>
+                    <Button onClick={(e) => handleLoadUserbId(record._id, record.password)}>Chỉnh sửa</Button>
                 </Space>
             ),
         },

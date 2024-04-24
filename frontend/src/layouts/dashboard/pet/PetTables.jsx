@@ -483,8 +483,8 @@ export default function PetTable() {
       key: 'action',
       render: (text, record) => (
         <Space size="middle">
-          <Button onMouseDown={(e) => handleUpdatePet(record, e)}>Edit</Button>
-          <Button onMouseDown={(e) => handleDetailPet(record, e)}>Detail</Button>
+          <Button onMouseDown={(e) => handleUpdatePet(record, e)}>Chỉnh sửa</Button>
+          <Button onMouseDown={(e) => handleDetailPet(record, e)}>Chi tiết</Button>
         </Space>
 
       ),

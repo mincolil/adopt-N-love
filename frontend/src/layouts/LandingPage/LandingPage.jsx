@@ -52,24 +52,38 @@ const Counter = ({ target }) => {
 const testimonials = [
   {
     name: "Minh Du",
-    title: "Head of web design",
+    title: "Founder của dự án",
     testimonial:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exerci.",
-    img: "https://scontent.fhan18-1.fna.fbcdn.net/v/t1.6435-9/171149322_2868980396694590_5496657584718677655_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=5f2048&_nc_ohc=PowdbT7vA94AX9BjArj&_nc_ht=scontent.fhan18-1.fna&oh=00_AfCosvICIsbgK21DzE912hDS6lyixRI0d5Yd3rDtfFEHSg&oe=661A2C3B",
+      "Người sáng lập của dự án này, tôi rất hạnh phúc khi tham gia vào dự án này. Tôi mong rằng chúng tôi sẽ giúp được nhiều thú cưng hơn nữa.",
+    img: "https://www.facebook.com/messenger_media/?attachment_id=1140938320274011&message_id=mid.%24cAAAACUuXzqiVG8jOQ2O6oN-osR5_&thread_id=100044918885425",
   },
   {
     name: "Nguyen Minh Hieu",
-    title: "Head of web design",
+    title: "Designer của dự án",
     testimonial:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exerci.",
-    img: "https://preview.colorlib.com/theme/anipat/img/testmonial/1.png.webp",
+      "Người cộng tác viên của dự án này, tôi rất hạnh phúc khi tham gia vào dự án này. Tôi mong rằng chúng tôi sẽ giúp được nhiều thú cưng hơn nữa.",
+    img: "https://www.facebook.com/messenger_media/?attachment_id=1599220030918743&message_id=mid.%24gABg--O5xqUaVG8tR5GO6oYB3UYJk&thread_id=6824638314293574",
   },
   {
     name: "Dang Huy",
-    title: "Head of web design",
+    title: "Developer của dự án",
     testimonial:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exerci.",
+      "Là một người yêu thú cưng, tôi rất hạnh phúc khi tham gia vào dự án này. Tôi mong rằng chúng tôi sẽ giúp được nhiều thú cưng hơn nữa.",
     img: "https://preview.colorlib.com/theme/anipat/img/testmonial/1.png.webp",
+  },
+  {
+    name: "Tan Dang",
+    title: "Developer của dự án",
+    testimonial:
+      "Người thích chó, tôi rất hạnh phúc khi tham gia vào dự án này. Tôi mong rằng chúng tôi sẽ giúp được nhiều thú cưng hơn nữa.",
+    img: "https://www.facebook.com/messenger_media/?attachment_id=822216926603424&message_id=mid.%24gABg--O5xqUaVG7GFimO6mw0Wkc2Y&thread_id=6824638314293574",
+  },
+  {
+    name: "Duc Vu",
+    title: "Developer của dự án",
+    testimonial:
+      "Linh hồn của dự án này, tôi rất hạnh phúc khi tham gia vào dự án này. Tôi mong rằng chúng tôi sẽ giúp được nhiều thú cưng hơn nữa.",
+    img: "https://www.facebook.com/messenger_media/?attachment_id=946719040103312&message_id=mid.%24gABg--O5xqUaVG8LB-WO6n1yaId9o&thread_id=6824638314293574",
   },
 ];
 
@@ -262,7 +276,7 @@ function Home() {
                     <Box className="single_adapt text-center">
                       <img src={AdaptIcon1} alt="" />
                       <Box className="adapt_content">
-                        <Counter target={20} /> 
+                        <Counter target={20} />
                         <Typography variant="h4">Thú cưng cần nhận nuôi</Typography>
                       </Box>
                     </Box>
@@ -278,7 +292,7 @@ function Home() {
                     <Box className="single_adapt text-center">
                       <img src={AdaptIcon2} alt="" />
                       <Box className="adapt_content">
-                        <Counter target={20} /> 
+                        <Counter target={20} />
                         <Typography variant="h4">Sản phẩm</Typography>
                       </Box>
                     </Box>

@@ -438,7 +438,7 @@ export default function BookingSlotTable() {
             key: 'action',
             render: (text, record) => (
                 <Space size="middle">
-                    <Button onClick={(e) => handleEditSlot(record._id, record.petId._id)}>Edit</Button>
+                    <Button onClick={(e) => handleEditSlot(record._id, record.petId._id)}>Chỉnh sửa</Button>
                 </Space>
             ),
         },

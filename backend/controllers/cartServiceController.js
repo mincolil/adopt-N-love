@@ -237,7 +237,7 @@ const checkoutStripe = async (req, res) => {
                 //list of cart items
                 cartServiceItems: JSON.stringify(cartItems),
             },
-            success_url: 'http://localhost:3000/service-purchase',
+            success_url: 'https://adoptnlove.netlify.app/service-purchase',
             cancel_url: 'http://localhost:3000/cancel',
         });
 

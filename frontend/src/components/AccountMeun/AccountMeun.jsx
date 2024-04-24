@@ -14,7 +14,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
-import { GoogleLogout, useGoogleLogout } from 'react-google-login';
+// import { GoogleLogout, useGoogleLogout } from 'react-google-login';
 
 import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -37,13 +37,24 @@ export default function AccountMenu() {
   const navigate = useNavigate();
 
   // const clientId = "424228344980-l67mummet93pgl903qru8ejvjeoo098s.apps.googleusercontent.com";
-  const clientId = "424228344980-rs1e1chulrhg9uhc51u3p3q7espor5pd.apps.googleusercontent.com";
+  const clientId = "424228344980-5arbdr989ojpjsd909ve7v5r7qut1uu6.apps.googleusercontent.com";
 
   const handleLogout = async (e) => {
     try {
       localStorage.removeItem("token");
       //remove google token
       navigate("/sign-in");
+    } catch (error) {
+      console.error(error);
+      toast.error(error);
+    }
+  };
+
+  const handleLogoutold = async () => {
+    try {
+      localStorage.removeItem("token"); // xóa token lưu trữ trong localStorage
+      navigate("/sign-in"); // chuyển hướng về trang đăng nhập
+      toast.success("Đăng xuất thành công!");
     } catch (error) {
       console.error(error);
       toast.error(error);
@@ -188,7 +199,7 @@ export default function AccountMenu() {
         </MenuItem>
 
 
-        <GoogleLogout
+        {/* <GoogleLogout
           clientId={clientId}
           buttonText="hehehe"
           onLogoutSuccess={handleLogout}
@@ -200,7 +211,14 @@ export default function AccountMenu() {
             </MenuItem>
           )}
         >
-        </GoogleLogout>
+        </GoogleLogout> */}
+
+        <MenuItem onClick={handleLogout}>
+          <ListItemIcon>
+            <Logout fontSize="small" />
+          </ListItemIcon>
+          Đăng xuất
+        </MenuItem>
 
 
       </Menu>

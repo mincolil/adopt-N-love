@@ -52,9 +52,8 @@ const FloatingDogImage = () => {
                     }}
                 />
             )} */}
-
             <a href="/pet-user" >
-                <img src={dogImage} alt="Floating Dog" style={{ width: '100px' }} />
+                <img src={dogImage} alt="Floating Dog" style={{ width: '90px' }} />
             </a>
         </div>
     );

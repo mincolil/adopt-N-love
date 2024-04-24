@@ -24,7 +24,8 @@ import { toast } from "react-toastify";
 import useAuth from "../../../hooks/useAuth";
 import { jwtDecode } from "jwt-decode";
 
-import GoogleLogin, { GoogleLogout } from "react-google-login";
+// import GoogleLogin from "react-google-login";
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import styled from "styled-components";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -109,15 +110,18 @@ const Login = () => {
   };
 
   //----------------------LOGIN WITH GG---------------------
-  // const clientid = "424228344980-l67mummet93pgl903qru8ejvjeoo098s.apps.googleusercontent.com";
   const clientid =
-    "424228344980-rs1e1chulrhg9uhc51u3p3q7espor5pd.apps.googleusercontent.com";
+    "424228344980-5arbdr989ojpjsd909ve7v5r7qut1uu6.apps.googleusercontent.com";
+
 
   const responseGoogle = async (response) => {
-    const { tokenId, profileObj } = response;
-    const token = tokenId;
-    const email = profileObj.email;
-    const googleId = profileObj.googleId;
+    console.log(response);
+
+    const decode = jwtDecode(response.credential);
+    console.log(decode);
+    const email = decode.email;
+    const googleId = decode.jti;
+    console.log(email, googleId);
 
     try {
       const { data } = await axios
@@ -268,15 +272,18 @@ const Login = () => {
               >
                 Đăng nhập
               </Button>
-              <StyledGoogleLogin
-                clientId={clientid}
-                buttonText="Đăng nhập bằng Google"
-                onSuccess={responseGoogle}
-                onFailure={onFailure}
-                cookiePolicy={"single_host_origin"}
-                isSignedIn={true}
-                prompt="select_account"
-              />
+              <GoogleOAuthProvider clientId={clientid}>
+                <StyledGoogleLogin
+                  clientId={clientid}
+                  buttonText="Đăng nhập bằng Google"
+                  onSuccess={responseGoogle}
+                  onFailure={onFailure}
+                  cookiePolicy={"single_host_origin"}
+                  isSignedIn={true}
+                  prompt="select_account"
+                />
+              </GoogleOAuthProvider>
+
               <Grid container>
                 <Grid item xs>
                   <StyledNavLink to="/reset-password" variant="body2">
@@ -296,7 +303,6 @@ const Login = () => {
           </Box>
         </Grid>
       </Grid>
-      <MessengerChat pageId="261557497046784" />
     </ThemeProvider>
   );
 };

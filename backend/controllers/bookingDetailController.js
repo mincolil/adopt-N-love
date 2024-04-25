@@ -24,6 +24,8 @@ const getAllBookingDetail = async (req, res) => {
             };
         });
 
+        bookingDetailsWithPrice.sort((a, b) => new Date(b.bookingDate) - new Date(a.bookingDate));
+
         if (!bookingDetailsWithPrice) {
             return res.status(404).json({ message: 'BookingDetail not found!' });
         }

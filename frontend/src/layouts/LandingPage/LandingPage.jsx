@@ -52,24 +52,38 @@ const Counter = ({ target }) => {
 const testimonials = [
   {
     name: "Minh Du",
-    title: "Head of web design",
+    title: "Founder của dự án",
     testimonial:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exerci.",
-    img: "https://scontent.fhan18-1.fna.fbcdn.net/v/t1.6435-9/171149322_2868980396694590_5496657584718677655_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=5f2048&_nc_ohc=PowdbT7vA94AX9BjArj&_nc_ht=scontent.fhan18-1.fna&oh=00_AfCosvICIsbgK21DzE912hDS6lyixRI0d5Yd3rDtfFEHSg&oe=661A2C3B",
+      "Người sáng lập của dự án này, tôi rất hạnh phúc khi tham gia vào dự án này. Tôi mong rằng chúng tôi sẽ giúp được nhiều thú cưng hơn nữa.",
+    img: "https://www.facebook.com/messenger_media/?attachment_id=1140938320274011&message_id=mid.%24cAAAACUuXzqiVG8jOQ2O6oN-osR5_&thread_id=100044918885425",
   },
   {
     name: "Nguyen Minh Hieu",
-    title: "Head of web design",
+    title: "Designer của dự án",
     testimonial:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exerci.",
-    img: "https://preview.colorlib.com/theme/anipat/img/testmonial/1.png.webp",
+      "Người cộng tác viên của dự án này, tôi rất hạnh phúc khi tham gia vào dự án này. Tôi mong rằng chúng tôi sẽ giúp được nhiều thú cưng hơn nữa.",
+    img: "https://www.facebook.com/messenger_media/?attachment_id=1599220030918743&message_id=mid.%24gABg--O5xqUaVG8tR5GO6oYB3UYJk&thread_id=6824638314293574",
   },
   {
     name: "Dang Huy",
-    title: "Head of web design",
+    title: "Developer của dự án",
     testimonial:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exerci.",
+      "Là một người yêu thú cưng, tôi rất hạnh phúc khi tham gia vào dự án này. Tôi mong rằng chúng tôi sẽ giúp được nhiều thú cưng hơn nữa.",
     img: "https://preview.colorlib.com/theme/anipat/img/testmonial/1.png.webp",
+  },
+  {
+    name: "Tan Dang",
+    title: "Developer của dự án",
+    testimonial:
+      "Người thích chó, tôi rất hạnh phúc khi tham gia vào dự án này. Tôi mong rằng chúng tôi sẽ giúp được nhiều thú cưng hơn nữa.",
+    img: "https://www.facebook.com/messenger_media/?attachment_id=822216926603424&message_id=mid.%24gABg--O5xqUaVG7GFimO6mw0Wkc2Y&thread_id=6824638314293574",
+  },
+  {
+    name: "Duc Vu",
+    title: "Developer của dự án",
+    testimonial:
+      "Linh hồn của dự án này, tôi rất hạnh phúc khi tham gia vào dự án này. Tôi mong rằng chúng tôi sẽ giúp được nhiều thú cưng hơn nữa.",
+    img: "https://www.facebook.com/messenger_media/?attachment_id=946719040103312&message_id=mid.%24gABg--O5xqUaVG8LB-WO6n1yaId9o&thread_id=6824638314293574",
   },
 ];
 
@@ -147,7 +161,7 @@ function Home() {
               sx={{
                 lineHeight: "1.3",
                 fontWeight: "lighter",
-                fontFamily: "'Poppins', sans-serif",
+                fontFamily: "'Open Sans', sans-serif",
                 fontSize: "4rem",
               }}
             >
@@ -158,7 +172,7 @@ function Home() {
               sx={{
                 marginTop: "20px",
                 marginBottom: "40px",
-                fontFamily: "'Poppins', sans-serif",
+                fontFamily: "'Open Sans', sans-serif",
               }}
             >
               Chúng tôi chăm sóc thú cưng của bạn với dịch vụ tốt nhất <br />{" "}
@@ -178,7 +192,7 @@ function Home() {
           <Grid item lg={7} md={10}>
             <Box className="section_title">
               <Typography variant="h3">
-                Trải nhiệm những dịch vụ của chúng tôi
+                Trải nghiệm những dịch vụ của chúng tôi
               </Typography>
               <Typography variant="h4">
                 Việc chăm sóc bệnh nhân là rất quan trọng, bệnh nhân sẽ được
@@ -196,10 +210,9 @@ function Home() {
               </Box>
             </Box>
             <Box className="service_content">
-              <Typography variant="h3">Pet Boarding</Typography>
+              <Typography variant="h3">Nhận nuôi</Typography>
               <Typography variant="h4">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut
+                Giúp đỡ những con vật nhỏ có ngôi nhà để ở, chúng xứng đáng có được tình yêu thương
               </Typography>
             </Box>
           </Grid>
@@ -210,10 +223,9 @@ function Home() {
               </Box>
             </Box>
             <Box className="service_content">
-              <Typography variant="h3">Healthy Meals</Typography>
+              <Typography variant="h3">Dịch vụ</Typography>
               <Typography variant="h4">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut
+                Cung cấp dịch vụ chăm sóc thú cưng tốt nhất, giúp chúng khỏe mạnh và hạnh phúc
               </Typography>
             </Box>
           </Grid>
@@ -224,10 +236,9 @@ function Home() {
               </Box>
             </Box>
             <Box className="service_content">
-              <Typography variant="h3">Pet Spa</Typography>
+              <Typography variant="h3">Sản phẩm</Typography>
               <Typography variant="h4">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut
+                Cung cấp các sản phẩm chăm sóc thú cưng tốt nhất, giúp chúng khỏe mạnh và hạnh phúc
               </Typography>
             </Box>
           </Grid>
@@ -249,7 +260,7 @@ function Home() {
                     tuyệt vời
                   </Typography>
                   <Button
-                    href="contact.html"
+                    href="https://www.facebook.com/profile.php?id=61558254325214&mibextid=LQQJ4d&locale=vi_VN"
                     variant="contained"
                     className="btn-aboutUs"
                   >
@@ -265,8 +276,8 @@ function Home() {
                     <Box className="single_adapt text-center">
                       <img src={AdaptIcon1} alt="" />
                       <Box className="adapt_content">
-                        <Counter target={452} />
-                        <Typography variant="h4">Pets Available</Typography>
+                        <Counter target={20} />
+                        <Typography variant="h4">Thú cưng cần nhận nuôi</Typography>
                       </Box>
                     </Box>
                   </Grid>
@@ -274,15 +285,15 @@ function Home() {
                     <Box className="single_adapt text-center">
                       <img src={AdaptIcon1} alt="" />
                       <Box className="adapt_content">
-                        <Counter target={52} />
-                        <Typography variant="h4">Pets Available</Typography>
+                        <Counter target={30} />
+                        <Typography variant="h4">Dịch vụ</Typography>
                       </Box>
                     </Box>
                     <Box className="single_adapt text-center">
                       <img src={AdaptIcon2} alt="" />
                       <Box className="adapt_content">
-                        <Counter target={52} />
-                        <Typography variant="h4">Pets Available</Typography>
+                        <Counter target={20} />
+                        <Typography variant="h4">Sản phẩm</Typography>
                       </Box>
                     </Box>
                   </Grid>

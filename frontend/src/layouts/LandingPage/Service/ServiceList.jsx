@@ -124,7 +124,7 @@ function ServiceItem({ service }) {
             alt={serviceName}
           />
           {discount !== 0 &&
-          dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
+            dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
             <Card
               style={{
                 position: "absolute",
@@ -172,7 +172,7 @@ function ServiceItem({ service }) {
               className="product-price"
             >
               {discount !== 0 &&
-              dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
+                dayjs().isBetween(dayjs(saleStartTime), dayjs(saleEndTime)) ? (
                 <Box
                   display="flex"
                   flexGrow={1}
@@ -470,10 +470,10 @@ export default function ServiceList() {
       if (loadData.data.error) {
         openNotificationWithIcon(
           "Kết quả " +
-            "[" +
-            keyword +
-            "]" +
-            " bạn vừa tìm không có! Vui lòng nhập lại."
+          "[" +
+          keyword +
+          "]" +
+          " bạn vừa tìm không có! Vui lòng nhập lại."
         );
         loadAllService(currentPage);
       } else {
@@ -553,7 +553,7 @@ export default function ServiceList() {
                       onClick={() => hanldeClickCategory()}
                       className="list-categories-item"
                       variant="text"
-                      sx={{minWidth:"0"}}
+                      sx={{ minWidth: "0" }}
                     >
                       Tất cả
                     </Button>

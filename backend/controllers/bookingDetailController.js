@@ -16,32 +16,15 @@ const getAllBookingDetail = async (req, res) => {
         //add virtual field price to bookingDetails, price = serviceId.price - serviceId.price * serviceId.discount / 100 - serviceId.price * petId.discount / 100
 
         const bookingDetailsWithPrice = bookingDetails.map(detail => {
-            const servicePrice = detail.serviceId.price;
-            const serviceDiscount = detail.serviceId.discount;
-            const petDiscount = detail.petId.discount;
-
-            // Calculate total price
-            //4 conditions if service has discount and pet has discount, service has discount, pet has discount, no discount
-            if (detail.serviceId.saleStartTime <= new Date() && detail.serviceId.saleEndTime >= new Date() && serviceDiscount !== 0 && petDiscount !== 0) {
-                totalPrice = servicePrice * (1 - serviceDiscount / 100) * (1 - petDiscount / 100);
-            }
-            else if (detail.serviceId.saleStartTime <= new Date() && detail.serviceId.saleEndTime >= new Date() && serviceDiscount !== 0) {
-                totalPrice = servicePrice * (1 - serviceDiscount / 100);
-            }
-            else if (petDiscount !== 0) {
-                totalPrice = servicePrice * (1 - petDiscount / 100);
-            }
-            else {
-                totalPrice = servicePrice;
-            }
-
 
             // Add price field to the detail object
             return {
                 ...detail.toObject(), // Convert Mongoose document to plain JavaScript object
-                price: totalPrice
+                price: detail.discountedPrice
             };
         });
+
+        bookingDetailsWithPrice.sort((a, b) => new Date(b.bookingDate) - new Date(a.bookingDate));
 
         if (!bookingDetailsWithPrice) {
             return res.status(404).json({ message: 'BookingDetail not found!' });

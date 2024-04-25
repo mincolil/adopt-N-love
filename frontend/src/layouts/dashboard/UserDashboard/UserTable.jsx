@@ -1,11 +1,5 @@
 import * as React from "react";
 import {
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
     Box,
     Modal,
     DialogTitle,
@@ -21,24 +15,15 @@ import {
     RadioGroup,
     FormControlLabel,
     Radio,
-    Stack,
-    Pagination
 } from "@mui/material";
 
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-
 import CloseIcon from "@mui/icons-material/Close";
-
 import ButtonCustomize from "../../../components/Button/Button";
-
-//React
 import { useRef, useState, useEffect, useCallback } from "react";
 import useAuth from "../../../hooks/useAuth";
-// Axios
 import axios from "axios";
 import { toast } from "react-toastify";
-
-//ant
 import { Table, Tag } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Space } from 'antd';
@@ -463,7 +448,7 @@ const BasicTable = () => {
             key: 'action',
             render: (text, record) => (
                 <Space size="middle">
-                    <Button onClick={(e) => handleLoadUserbId(record._id, record.password)}>Edit</Button>
+                    <Button onClick={(e) => handleLoadUserbId(record._id, record.password)}>Chỉnh sửa</Button>
                 </Space>
             ),
         },
